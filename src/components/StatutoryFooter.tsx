@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FileText, Scale, Recycle, X, Shield } from 'lucide-react';
 import { clinicalEstablishment } from '@/data/compliance';
@@ -121,53 +122,51 @@ function LegalBody({ id }: { id: Exclude<LegalDoc, null> }) {
 /** Statutory compliance bar with DPDP / telemedicine / BMW legal modals. */
 export default function StatutoryFooter() {
   const [open, setOpen] = useState<LegalDoc>(null);
+  const [mounted, setMounted] = useState(false);
   const active = docs.find((d) => d.id === open);
 
-  return (
-    <>
-      <div className="border-t border-slate-200 bg-slate-100/90">
-        <div className="section-shell py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <p className="text-[11px] text-slate-500 flex items-center gap-1.5">
-            <FileText className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            Statutory notices · DPDP 2023 · Clinical Establishments Act · BMW Rules 2016
-          </p>
-          <div className="flex flex-wrap gap-x-3 gap-y-1">
-            {docs.map((doc) => (
-              <button
-                key={doc.id}
-                type="button"
-                onClick={() => setOpen(doc.id)}
-                className="text-[11px] font-semibold text-teal-800 hover:text-teal-600 underline underline-offset-2"
-              >
-                {doc.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+  useEffect(() => setMounted(true), []);
 
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const modal =
+    mounted &&
+    createPortal(
       <AnimatePresence>
         {open && active && (
           <motion.div
+            key={open}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[90] bg-slate-900/45 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4"
+            className="fixed inset-0 z-[200] bg-slate-900/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4"
             role="presentation"
             onClick={() => setOpen(null)}
           >
             <motion.div
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 16 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.22 }}
               role="dialog"
               aria-modal="true"
               aria-labelledby="statutory-modal-title"
               onClick={(e) => e.stopPropagation()}
-              className="w-full sm:max-w-lg bg-white border border-slate-200 rounded-t-2xl sm:rounded-2xl max-h-[85vh] overflow-y-auto shadow-xl"
+              className="w-full sm:max-w-lg bg-white border border-slate-200 rounded-t-2xl sm:rounded-2xl max-h-[85vh] overflow-y-auto shadow-2xl"
             >
-              <div className="sticky top-0 flex items-start justify-between gap-3 px-5 py-4 border-b border-slate-200 bg-white/95 backdrop-blur">
+              <div className="sticky top-0 flex items-start justify-between gap-3 px-5 py-4 border-b border-slate-200 bg-white/95 backdrop-blur z-10">
                 <div className="flex items-start gap-2.5">
                   <div className="w-9 h-9 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0">
                     <active.icon className="w-4 h-4 text-teal-700" />
@@ -180,18 +179,44 @@ export default function StatutoryFooter() {
                   type="button"
                   onClick={() => setOpen(null)}
                   className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg"
-                  aria-label="Close"
+                  aria-label="Close statutory notice"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="px-5 py-4">
+              <div className="px-5 py-4 pb-8">
                 <LegalBody id={open} />
               </div>
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    );
+
+  return (
+    <>
+      <div className="relative z-10 border-t border-slate-200 bg-slate-100/90">
+        <div className="section-shell py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <p className="text-[11px] text-slate-500 flex items-center gap-1.5">
+            <FileText className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            Statutory notices · DPDP 2023 · Clinical Establishments Act · BMW Rules 2016
+          </p>
+          <div className="flex flex-wrap gap-x-1 gap-y-1">
+            {docs.map((doc) => (
+              <button
+                key={doc.id}
+                type="button"
+                onClick={() => setOpen(doc.id)}
+                className="text-[11px] font-semibold text-teal-800 hover:text-teal-600 underline underline-offset-2 px-2 py-1.5 rounded-md hover:bg-teal-50/80"
+              >
+                {doc.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      {modal}
     </>
   );
 }
