@@ -172,7 +172,7 @@ export default function Navbar() {
                 title={`24/7 Casualty · 1066 · Desk ${hospitalInfo.phone}`}
               >
                 <Ambulance className="w-3.5 h-3.5 shrink-0" aria-hidden />
-                <span className="whitespace-nowrap">1066</span>
+                <span className="whitespace-nowrap">Casualty: 1066</span>
               </a>
               <button
                 type="button"
