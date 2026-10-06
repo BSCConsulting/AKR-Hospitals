@@ -17,7 +17,7 @@ export default function MobileStickyBar() {
           </a>
           <a
             href="#appointments"
-            className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 rounded-xl text-xs font-bold bg-teal-600 text-white shadow-md shadow-teal-600/20 active:scale-95 transition-transform"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 rounded-xl text-xs font-bold bg-teal-700 text-white shadow-md shadow-teal-700/20 active:scale-95 transition-transform"
           >
             <Calendar className="w-4 h-4" />
             Book OPD Slot

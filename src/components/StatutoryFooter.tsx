@@ -198,8 +198,8 @@ export default function StatutoryFooter() {
     <>
       <div className="relative z-10 border-t border-slate-200 bg-slate-100/90">
         <div className="section-shell py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <p className="text-[11px] text-slate-500 flex items-center gap-1.5">
-            <FileText className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <p className="text-[11px] text-slate-600 flex items-center gap-1.5">
+            <FileText className="w-3.5 h-3.5 text-slate-500 shrink-0" />
             Statutory notices · DPDP 2023 · Clinical Establishments Act · BMW Rules 2016
           </p>
           <div className="flex flex-wrap gap-x-1 gap-y-1">

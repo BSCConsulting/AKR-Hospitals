@@ -86,7 +86,7 @@ export default function HeroCampCallout() {
             href={WHATSAPP_CAMP_RSVP}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors shadow-sm"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-[#128C7E] text-white hover:bg-[#0f7a6e] transition-colors shadow-sm"
           >
             <WhatsAppIcon className="w-4 h-4" />
             WhatsApp RSVP

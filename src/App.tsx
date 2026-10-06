@@ -38,7 +38,7 @@ function Footer() {
               </div>
               <div>
                 <span className="text-slate-900 font-bold text-base">
-                  AKR <span className="text-teal-600">Hospital</span>
+                  AKR <span className="text-teal-700">Hospital</span>
                 </span>
                 <div className="text-[10px] text-slate-500 uppercase tracking-wide">Multi-Speciality</div>
               </div>
@@ -60,7 +60,7 @@ function Footer() {
 
           {/* Col 2 — Quick Links */}
           <div className="space-y-3">
-            <h4 className="text-slate-900 font-semibold text-sm">Quick Links</h4>
+            <h2 className="text-slate-900 font-semibold text-sm">Quick Links</h2>
             <nav className="flex flex-col gap-2 text-sm">
               {[
                 { href: '#departments', label: 'Specialties / Clinical Wings' },
@@ -83,7 +83,7 @@ function Footer() {
 
           {/* Col 3 — Address & contact */}
           <div className="space-y-3">
-            <h4 className="text-slate-900 font-semibold text-sm">Visit & Contact</h4>
+            <h2 className="text-slate-900 font-semibold text-sm">Visit & Contact</h2>
             <div className="flex items-start gap-2.5 text-sm text-slate-600">
               <MapPin className="w-4 h-4 mt-0.5 text-teal-600 shrink-0" />
               <span>{hospitalInfo.address}</span>
@@ -124,7 +124,7 @@ function Footer() {
 
           {/* Col 4 — Emergency */}
           <div className="space-y-3">
-            <h4 className="text-slate-900 font-semibold text-sm">Emergency Helpline</h4>
+            <h2 className="text-slate-900 font-semibold text-sm">Emergency Helpline</h2>
             <div className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-3.5 space-y-2.5">
               <a
                 href={hospitalInfo.phoneTel}
@@ -136,7 +136,7 @@ function Footer() {
                     Casualty · Primary
                   </div>
                   <div className="text-red-700 font-bold text-lg mt-0.5">{hospitalInfo.phone}</div>
-                  <div className="text-xs text-red-700/80 mt-0.5">24/7 trauma & emergency desk</div>
+                  <div className="text-xs text-red-800 mt-0.5">24/7 trauma & emergency desk</div>
                 </div>
               </a>
               <div className="pl-6 border-t border-red-200/80 pt-2">

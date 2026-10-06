@@ -446,7 +446,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                     }`}
                   >
                     <div className="text-xs font-semibold">{period.label}</div>
-                    <div className="text-[10px] text-slate-500">{period.hint}</div>
+                    <div className="text-[10px] text-slate-600">{period.hint}</div>
                   </button>
                 ))}
               </div>
@@ -674,9 +674,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                         />
                         <div className="min-w-0 flex-1">
                           <div
-                            className={`text-sm font-medium text-slate-800 truncate ${
-                              q.status === 'in-consult' ? 'animate-pulse' : ''
-                            }`}
+                            className="text-sm font-medium text-slate-900 truncate"
                           >
                             {privacyQueueLabel(q.token, q.department, q.status)}
                           </div>
@@ -709,7 +707,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
               <button
                 type="button"
                 onClick={onGenerateToken}
-                className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-teal-600 text-white hover:bg-teal-500 shadow-md shadow-teal-600/15 transition-colors"
+                className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-teal-700 text-white hover:bg-teal-600 shadow-md shadow-teal-700/15 transition-colors"
               >
                 <Ticket className="w-4 h-4" />
                 Open Token Tracker
