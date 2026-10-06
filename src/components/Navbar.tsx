@@ -164,20 +164,20 @@ export default function Navbar() {
             </nav>
 
             {/* Mobile / tablet — dial 1066 (primary emergency); full desk number in menu */}
-            <div className="flex lg:hidden items-center gap-2 ml-auto shrink-0">
+            <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 ml-auto shrink-0 relative z-10">
               <a
                 href="tel:1066"
-                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 min-h-11 h-11 rounded-full text-[11px] sm:text-xs font-bold bg-red-50 text-red-700 border border-red-200 active:bg-red-100"
+                className="inline-flex items-center gap-1 px-2 sm:px-2.5 min-h-11 h-11 rounded-full text-[11px] sm:text-xs font-bold bg-red-50 text-red-700 border border-red-200 active:bg-red-100"
                 aria-label="Call casualty 1066"
                 title={`24/7 Casualty · 1066 · Desk ${hospitalInfo.phone}`}
               >
                 <Ambulance className="w-3.5 h-3.5 shrink-0" aria-hidden />
-                <span>Casualty: 1066</span>
+                <span className="whitespace-nowrap">1066</span>
               </a>
               <button
                 type="button"
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className="p-2 text-slate-600 hover:text-slate-900 rounded-lg"
+                onClick={() => setMobileOpen((v) => !v)}
+                className="inline-flex items-center justify-center min-h-11 min-w-11 p-2 text-slate-600 hover:text-slate-900 rounded-lg relative z-10"
                 aria-label="Toggle menu"
                 aria-expanded={mobileOpen}
                 aria-controls="mobile-nav-menu"
