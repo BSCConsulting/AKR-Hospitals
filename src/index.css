@@ -69,6 +69,17 @@
     @apply glass-surface;
   }
 
+  .shimmer-bar {
+    background: linear-gradient(
+      90deg,
+      rgba(13, 148, 136, 0.15) 0%,
+      rgba(16, 185, 129, 0.55) 45%,
+      rgba(13, 148, 136, 0.15) 100%
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+
   /* Fallback when backdrop-filter unsupported */
   @supports not ((backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px))) {
     .glass-surface,

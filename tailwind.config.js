@@ -15,7 +15,9 @@ export default {
         'slide-up': 'slideUp 0.5s ease-out',
         'fade-in': 'fadeIn 0.6s ease-out',
         'scan': 'scan 3s ease-in-out infinite',
-        'ticker': 'ticker 20s linear infinite',
+        'ticker': 'ticker 28s linear infinite',
+        'float-slow': 'floatSlow 6s ease-in-out infinite',
+        'shimmer': 'shimmer 2.4s linear infinite',
       },
       keyframes: {
         pulseRing: {
@@ -37,6 +39,14 @@ export default {
         ticker: {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
+        },
+        floatSlow: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
       },
     },

@@ -8,14 +8,14 @@ export default function LocationSection() {
   const casualtyPhone = phone.replace(/\s/g, '');
 
   return (
-    <section id="location" className="relative py-20 lg:py-28">
+    <section id="location" className="relative py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="max-w-2xl mb-12"
+          className="max-w-2xl mb-7"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium mb-4">
             <MapPin className="w-3.5 h-3.5" />

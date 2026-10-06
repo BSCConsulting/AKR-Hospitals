@@ -8,14 +8,14 @@ interface PatientServicesSectionProps {
 
 export default function PatientServicesSection({ onCheckEligibility }: PatientServicesSectionProps) {
   return (
-    <section id="cashless" className="relative py-20 lg:py-24 scroll-mt-24">
+    <section id="cashless" className="relative py-12 lg:py-14 scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="max-w-2xl mb-10"
+          className="max-w-2xl mb-7"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-xs font-medium mb-4">
             <ShieldCheck className="w-3.5 h-3.5" />

@@ -255,14 +255,14 @@ export default function CampsAndOffersSection() {
   const hasCamp = getActiveCamps().length > 0;
 
   return (
-    <section id="camps" className="relative py-20 lg:py-24 overflow-hidden">
+    <section id="camps" className="relative py-12 lg:py-14 overflow-hidden">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="max-w-2xl mb-10 sm:mb-12"
+          className="max-w-2xl mb-7 sm:mb-7"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium mb-4">
             <Sparkles className="w-3.5 h-3.5" />

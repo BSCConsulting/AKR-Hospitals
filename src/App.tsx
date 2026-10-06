@@ -2,6 +2,9 @@ import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import { getDateTabs } from '@/data/mockData';
 import HeroTriage from '@/components/HeroTriage';
+import TrustMarquee from '@/components/TrustMarquee';
+import ImpactStats from '@/components/ImpactStats';
+import FacilityPulse from '@/components/FacilityPulse';
 import CampsAndOffersSection from '@/components/CampsAndOffersSection';
 import BentoGrid from '@/components/BentoGrid';
 import PatientServicesSection from '@/components/PatientServicesSection';
@@ -194,6 +197,9 @@ function App() {
             onGenerateToken={() => setTokenOpen(true)}
             onConfirmBooking={handleConfirmBooking}
           />
+          <TrustMarquee />
+          <ImpactStats />
+          <FacilityPulse />
           <CampsAndOffersSection />
           <BentoGrid />
           <PatientServicesSection onCheckEligibility={() => setEligibilityOpen(true)} />

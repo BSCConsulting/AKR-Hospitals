@@ -31,6 +31,8 @@ import {
 } from '@/data/mockData';
 import { hasFreeOpConsultation } from '@/data/promotions';
 import HeroCampCallout from '@/components/HeroCampCallout';
+import CarePathway from '@/components/CarePathway';
+import AnimatedCounter from '@/components/AnimatedCounter';
 
 const statusConfig = {
   'in-consult': {
@@ -175,31 +177,39 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
   const selectedSlotObj = timeSlots.find((s) => s.id === selectedSlot);
 
   return (
-    <section id="home" className="relative overflow-hidden pb-4">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-16 lg:pt-14 lg:pb-24">
+    <section id="home" className="relative overflow-hidden pb-2">
+      {/* Soft floating orbs for first-impression depth */}
+      <div className="pointer-events-none absolute top-16 right-[8%] w-40 h-40 rounded-full bg-teal-300/20 blur-3xl animate-float-slow hidden lg:block" />
+      <div className="pointer-events-none absolute top-40 left-[4%] w-28 h-28 rounded-full bg-sky-300/20 blur-2xl animate-float-slow [animation-delay:1.2s] hidden lg:block" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-8 lg:pt-8 lg:pb-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid lg:grid-cols-12 gap-8 lg:gap-10"
+          className="grid lg:grid-cols-12 gap-5 lg:gap-7"
         >
-          <div className="lg:col-span-7 space-y-5">
+          <div className="lg:col-span-7 space-y-3.5">
             <motion.div
               variants={itemVariants}
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium"
             >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
               <Shield className="w-3.5 h-3.5" />
               NABH Accredited • Est. {hospitalInfo.established}
             </motion.div>
 
-            <motion.div variants={itemVariants} className="space-y-3">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-[1.1]">
+            <motion.div variants={itemVariants} className="space-y-2">
+              <h1 className="text-3xl sm:text-5xl lg:text-[3.25rem] font-bold text-slate-900 tracking-tight leading-[1.08]">
                 Advanced care,{' '}
                 <span className="bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
                   closer to you
                 </span>
               </h1>
-              <p className="text-slate-600 text-lg max-w-xl leading-relaxed">
+              <p className="text-slate-600 text-base sm:text-lg max-w-xl leading-relaxed">
                 {hospitalInfo.tagline} A {hospitalInfo.beds}-bed multi-speciality hospital
                 serving Madhira and the Khammam region with 24/7 trauma care, maternity,
                 diagnostics, and cashless insurance — all under one roof.
@@ -207,30 +217,39 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <div className="inline-flex items-center gap-3 sm:gap-5 px-4 py-2.5 glass-surface !rounded-full">
-                {[
-                  { icon: HeartPulse, value: hospitalInfo.beds, label: 'Beds', color: 'text-rose-500' },
-                  { divider: true },
-                  { icon: Stethoscope, value: hospitalInfo.doctors, label: 'Doctors', color: 'text-teal-600' },
-                  { divider: true },
-                  {
-                    icon: Shield,
-                    value: `${insuranceProviders.length}+`,
-                    label: 'Insurers',
-                    color: 'text-emerald-600',
-                  },
-                ].map((stat, i) =>
-                  'divider' in stat ? (
-                    <div key={`d${i}`} className="w-px h-5 bg-slate-200" />
-                  ) : (
-                    <div key={stat.label} className="flex items-center gap-1.5">
-                      <stat.icon className={`w-3.5 h-3.5 ${stat.color}`} />
-                      <span className="text-sm font-bold text-slate-900">{stat.value}</span>
-                      <span className="text-[11px] text-slate-500">{stat.label}</span>
-                    </div>
-                  )
-                )}
+              <div className="inline-flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 glass-surface !rounded-2xl sm:!rounded-full">
+                <div className="flex items-center gap-1.5">
+                  <HeartPulse className="w-3.5 h-3.5 text-rose-500" />
+                  <AnimatedCounter
+                    value={hospitalInfo.beds}
+                    className="text-sm font-bold text-slate-900"
+                  />
+                  <span className="text-[11px] text-slate-500">Beds</span>
+                </div>
+                <div className="hidden sm:block w-px h-5 bg-slate-200" />
+                <div className="flex items-center gap-1.5">
+                  <Stethoscope className="w-3.5 h-3.5 text-teal-600" />
+                  <AnimatedCounter
+                    value={hospitalInfo.doctors}
+                    className="text-sm font-bold text-slate-900"
+                  />
+                  <span className="text-[11px] text-slate-500">Doctors</span>
+                </div>
+                <div className="hidden sm:block w-px h-5 bg-slate-200" />
+                <div className="flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-emerald-600" />
+                  <AnimatedCounter
+                    value={insuranceProviders.length}
+                    suffix="+"
+                    className="text-sm font-bold text-slate-900"
+                  />
+                  <span className="text-[11px] text-slate-500">Insurers</span>
+                </div>
               </div>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <CarePathway />
             </motion.div>
 
             <motion.div variants={itemVariants}>
@@ -463,47 +482,91 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
             </motion.div>
           </div>
 
-          {/* Live queue — privacy compliant */}
-          <motion.div variants={itemVariants} className="lg:col-span-5">
-            <div className="glass-surface p-5 sm:p-6 h-full">
-              <div className="flex items-center justify-between mb-4">
+          {/* Live queue — privacy compliant + animated wait bars */}
+          <motion.div variants={itemVariants} className="lg:col-span-5 lg:sticky lg:top-24 self-start">
+            <div className="glass-surface p-4 sm:p-5 overflow-hidden relative">
+              <div className="absolute inset-x-0 top-0 h-1 shimmer-bar" aria-hidden />
+              <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-teal-600" />
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                  </span>
                   <h3 className="text-slate-900 font-semibold text-sm">Live OPD Queue</h3>
                 </div>
-                <span className="text-[11px] font-mono text-slate-500 tabular-nums">
+                <span className="text-[11px] font-mono text-teal-700 bg-teal-50 border border-teal-100 px-2 py-0.5 rounded-md tabular-nums">
                   {formatClock(queueTime)}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 mb-4">
-                Patient names are hidden for privacy. Status shown by token only.
+
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                {[
+                  { label: 'Serving', value: opdQueue.find((q) => q.status === 'in-consult')?.token ?? '—' },
+                  { label: 'Next', value: opdQueue.find((q) => q.status === 'next')?.token ?? '—' },
+                  { label: 'Waiting', value: String(opdQueue.filter((q) => q.status === 'waiting').length) },
+                ].map((cell) => (
+                  <div key={cell.label} className="rounded-xl bg-white/80 border border-slate-200 px-2 py-2 text-center">
+                    <div className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">{cell.label}</div>
+                    <div className="text-sm font-bold text-slate-900 mt-0.5">{cell.value}</div>
+                  </div>
+                ))}
+              </div>
+
+              <p className="text-[11px] text-slate-500 mb-3">
+                Privacy-safe view — token & department only.
               </p>
-              <div className="space-y-2.5">
-                {opdQueue.map((q) => {
+              <div className="space-y-2">
+                {opdQueue.map((q, qi) => {
                   const cfg = statusConfig[q.status];
                   const Icon = cfg.icon;
+                  const progress =
+                    q.status === 'in-consult' ? 92 : q.status === 'next' ? 68 : Math.max(18, 55 - q.waitMinutes);
                   return (
-                    <div
+                    <motion.div
                       key={q.id}
-                      className={`flex items-center gap-3 rounded-xl border border-slate-200/80 px-3 py-2.5 ${cfg.bg}`}
+                      initial={{ opacity: 0, x: 12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.15 + qi * 0.06 }}
+                      className={`rounded-xl border border-slate-200/80 px-3 py-2.5 ${cfg.bg}`}
                     >
-                      <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.dot}`} />
-                      <div className="min-w-0 flex-1">
-                        <div className="text-sm font-medium text-slate-800 truncate">
-                          {privacyQueueLabel(q.token, q.department, q.status)}
+                      <div className="flex items-center gap-3">
+                        <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.dot}`} />
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-medium text-slate-800 truncate">
+                            {privacyQueueLabel(q.token, q.department, q.status)}
+                          </div>
+                          <div className="mt-1.5 h-1.5 rounded-full bg-white/80 overflow-hidden border border-slate-200/60">
+                            <motion.div
+                              className={`h-full rounded-full ${
+                                q.status === 'in-consult'
+                                  ? 'bg-emerald-500'
+                                  : q.status === 'next'
+                                    ? 'bg-amber-400'
+                                    : 'bg-teal-400'
+                              }`}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${progress}%` }}
+                              transition={{ delay: 0.3 + qi * 0.08, duration: 0.7, ease: 'easeOut' }}
+                            />
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <Icon className={`w-4 h-4 ml-auto ${cfg.color}`} />
+                          {q.waitMinutes > 0 && (
+                            <div className="text-[10px] text-slate-500 mt-1">~{q.waitMinutes}m</div>
+                          )}
                         </div>
                       </div>
-                      <Icon className={`w-4 h-4 shrink-0 ${cfg.color}`} />
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
               <button
                 type="button"
                 onClick={onGenerateToken}
-                className="mt-5 w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-white border border-slate-200 text-slate-700 hover:border-teal-300 hover:text-teal-800 transition-colors"
+                className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-teal-600 text-white hover:bg-teal-500 shadow-md shadow-teal-600/15 transition-colors"
               >
-                <Ticket className="w-4 h-4 text-teal-600" />
+                <Ticket className="w-4 h-4" />
                 Open Token Tracker
               </button>
             </div>
