@@ -7,25 +7,30 @@ interface DoctorAvatarProps {
 }
 
 const sizeMap = {
-  sm: 'w-10 h-10',
-  md: 'w-14 h-14',
-  lg: 'w-16 h-16',
-};
+  sm: { className: 'w-10 h-10', px: 40 },
+  md: { className: 'w-14 h-14', px: 56 },
+  lg: { className: 'w-16 h-16', px: 64 },
+} as const;
 
 /** Professional portrait placeholder with medical-neutral styling. */
 export default function DoctorAvatar({ name, className = '', size = 'md' }: DoctorAvatarProps) {
   const seed = encodeURIComponent(name.replace(/^Dr\.\s*/i, ''));
   const src = `https://api.dicebear.com/9.x/notionists/svg?seed=${seed}&backgroundColor=ccfbf1,e0f2fe&radius=50`;
+  const dim = sizeMap[size];
 
   return (
     <div
-      className={`relative ${sizeMap[size]} rounded-full overflow-hidden bg-gradient-to-br from-teal-50 to-sky-50 border-2 border-white shadow-md shadow-slate-900/5 ring-1 ring-slate-200/80 ${className}`}
+      className={`relative ${dim.className} rounded-full overflow-hidden bg-gradient-to-br from-teal-50 to-sky-50 border-2 border-white shadow-md shadow-slate-900/5 ring-1 ring-slate-200/80 shrink-0 ${className}`}
+      aria-hidden
     >
       <img
         src={src}
         alt=""
+        width={dim.px}
+        height={dim.px}
         className="w-full h-full object-cover"
         loading="lazy"
+        decoding="async"
         onError={(e) => {
           e.currentTarget.style.display = 'none';
           const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;

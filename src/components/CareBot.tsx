@@ -671,7 +671,7 @@ export default function CareBot({
             <div className="relative">
               <div className="absolute inset-0 bg-teal-400/35 rounded-full blur-xl animate-pulse" />
               <div className="relative w-14 h-14 rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center overflow-hidden">
-                <img src="/carebot-avatar.webp" alt="CareBot" className="w-full h-full object-cover" />
+                <img src="/carebot-avatar.webp" alt="CareBot" width={40} height={40} className="w-full h-full object-cover" decoding="async" />
               </div>
               <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white animate-pulse" />
             </div>
@@ -693,7 +693,7 @@ export default function CareBot({
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-white/90 shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="relative w-10 h-10 rounded-full overflow-hidden border border-teal-500/30">
-                  <img src="/carebot-avatar.webp" alt="CareBot" className="w-full h-full object-cover" />
+                  <img src="/carebot-avatar.webp" alt="CareBot" width={40} height={40} className="w-full h-full object-cover" decoding="async" />
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-1 ring-slate-900" />
                 </div>
                 <div>
@@ -765,7 +765,7 @@ export default function CareBot({
               {isTyping && (
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full overflow-hidden border border-slate-700 shrink-0">
-                    <img src="/carebot-avatar.webp" alt="CareBot" className="w-full h-full object-cover" />
+                    <img src="/carebot-avatar.webp" alt="CareBot" width={40} height={40} className="w-full h-full object-cover" decoding="async" />
                   </div>
                   <div className="bg-slate-800/80 rounded-2xl rounded-tl-sm px-4 py-2.5 flex items-center gap-1">
                     {[0, 1, 2].map((i) => (
@@ -868,7 +868,7 @@ function MessageBubble({
   return (
     <div className="flex items-start gap-2">
       <div className="w-7 h-7 rounded-full overflow-hidden border border-slate-700 shrink-0 mt-0.5">
-        <img src="/carebot-avatar.webp" alt="CareBot" className="w-full h-full object-cover" />
+        <img src="/carebot-avatar.webp" alt="CareBot" width={40} height={40} className="w-full h-full object-cover" decoding="async" />
       </div>
       <div className="flex-1 min-w-0 space-y-2">
         <div

@@ -200,11 +200,15 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                   {bookingDetails.patientName ? ` · ${bookingDetails.patientName}` : ''}
                 </p>
                 <div className="flex justify-center pt-1">
-                  <img
-                    src={generateQrDataUrl(qrData)}
-                    alt="Appointment QR Code"
-                    className="w-32 h-32 rounded-lg bg-white p-1.5 border border-slate-200"
-                  />
+                        <img
+                          src={generateQrDataUrl(qrData)}
+                          alt="Appointment QR Code"
+                          width={128}
+                          height={128}
+                          className="w-32 h-32 rounded-lg bg-white p-1.5 border border-slate-200"
+                          loading="lazy"
+                          decoding="async"
+                        />
                 </div>
               </motion.div>
 

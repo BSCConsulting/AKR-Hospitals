@@ -36,10 +36,13 @@ export default function FounderSection() {
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-teal-300/50 via-emerald-200/40 to-sky-200/40 blur-sm" />
               <div className="relative rounded-2xl overflow-hidden border border-white shadow-lg shadow-slate-900/10 bg-slate-100 aspect-[3/4] max-h-[28rem] mx-auto">
                 <img
-                  src="/founder-dr-kondal-rao.png"
+                  src="/founder-dr-kondal-rao.webp"
                   alt="Dr. A. Kondal Rao, Founder & Chief Physician"
+                  width={681}
+                  height={1024}
                   className="w-full h-full object-cover object-[center_15%]"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="absolute bottom-4 left-4 right-4">

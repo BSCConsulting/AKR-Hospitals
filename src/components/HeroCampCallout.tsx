@@ -44,9 +44,9 @@ export default function HeroCampCallout() {
 
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+            <p className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
               Free Mega Urology Medical Camp
-            </h2>
+            </p>
             <p className="text-sm font-semibold text-teal-800 mt-0.5">
               {camp.timeWindow ?? '10:00 AM – 2:00 PM'}
             </p>

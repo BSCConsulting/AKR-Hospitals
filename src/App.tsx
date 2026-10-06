@@ -214,9 +214,15 @@ function App() {
 
   return (
     <div className="page-canvas text-slate-700">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[300] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-teal-600 focus:text-white focus:text-sm focus:font-semibold"
+      >
+        Skip to main content
+      </a>
       <div className="relative z-[1]">
         <Navbar />
-        <main>
+        <main id="main-content">
           <HeroTriage
             onGenerateToken={() => setTokenOpen(true)}
             onConfirmBooking={handleConfirmBooking}

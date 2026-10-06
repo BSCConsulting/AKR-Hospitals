@@ -52,7 +52,7 @@ export default function BentoGrid() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 md:gap-6 lg:gap-6">
           {departments.map((dept, index) => (
             <BentoCard
               key={dept.id}

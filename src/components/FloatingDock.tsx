@@ -90,7 +90,14 @@ export default function FloatingDock({ onOpenCareBot, careBotOpen }: FloatingDoc
               aria-label="Open CareBot assistant"
             >
               <span className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-teal-100 shrink-0">
-                <img src="/carebot-avatar.webp" alt="" className="w-full h-full object-cover" />
+                <img
+                  src="/carebot-avatar.webp"
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                  decoding="async"
+                />
               </span>
               CareBot
             </motion.button>
