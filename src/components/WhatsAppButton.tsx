@@ -18,10 +18,11 @@ export default function WhatsAppButton({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={`inline-flex items-center gap-1.5 text-xs font-medium text-[#095c52] bg-[#0B6E62]/10 border border-[#0B6E62]/30 px-3 py-1.5 rounded-full hover:bg-[#0B6E62]/15 transition-colors ${className}`}
+        className={`inline-flex items-center gap-1.5 h-7 text-[11px] font-semibold text-[#095c52] bg-[#0B6E62]/10 border border-[#0B6E62]/30 px-2.5 rounded-full hover:bg-[#0B6E62]/15 transition-colors whitespace-nowrap ${className}`}
       >
         <WhatsAppIcon className="w-3.5 h-3.5 text-[#0B6E62]" />
-        Chat on WhatsApp
+        <span className="xl:hidden">WhatsApp</span>
+        <span className="hidden xl:inline">Chat on WhatsApp</span>
       </a>
     );
   }

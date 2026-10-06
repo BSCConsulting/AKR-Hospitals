@@ -237,7 +237,13 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
               <Shield className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">{accreditation.nabh.full}</span>
+              <span className="truncate" title={accreditation.nabh.full}>
+                <span className="sm:hidden">NABH Accredited</span>
+                <span className="hidden sm:inline lg:hidden">
+                  NABH · {accreditation.nabh.certNo}
+                </span>
+                <span className="hidden lg:inline">{accreditation.nabh.full}</span>
+              </span>
             </motion.div>
 
             <motion.div variants={itemVariants} className="space-y-2">
@@ -544,7 +550,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                   whileHover={selectedSlot && selectedDoctor ? { scale: 1.02 } : undefined}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                     selectedSlot && selectedDoctor
-                      ? 'bg-[#0D9488] text-white shadow-md shadow-teal-600/20'
+                      ? 'bg-teal-700 text-white shadow-md shadow-teal-700/20'
                       : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                   }`}
                 >
