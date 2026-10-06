@@ -18,9 +18,9 @@ export default function WhatsAppButton({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={`inline-flex items-center gap-1.5 text-xs font-medium text-[#0f7a6e] bg-[#128C7E]/10 border border-[#128C7E]/30 px-3 py-1.5 rounded-full hover:bg-[#128C7E]/15 transition-colors ${className}`}
+        className={`inline-flex items-center gap-1.5 text-xs font-medium text-[#095c52] bg-[#0B6E62]/10 border border-[#0B6E62]/30 px-3 py-1.5 rounded-full hover:bg-[#0B6E62]/15 transition-colors ${className}`}
       >
-        <WhatsAppIcon className="w-3.5 h-3.5 text-[#128C7E]" />
+        <WhatsAppIcon className="w-3.5 h-3.5 text-[#0B6E62]" />
         Chat on WhatsApp
       </a>
     );

@@ -149,7 +149,7 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
             href={camp.whatsappCTA}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-[#128C7E] text-white hover:bg-[#0f7a6e] transition-colors shadow-md shadow-[#128C7E]/20"
+            className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-[#0B6E62] text-white hover:bg-[#095c52] transition-colors shadow-md shadow-[#0B6E62]/20"
           >
             <WhatsAppIcon className="w-4 h-4" />
             Book Camp Slot via WhatsApp
@@ -250,7 +250,7 @@ function PreventativePackagesFallback() {
         href={WHATSAPP_OPD_INQUIRE}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-5 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-[#128C7E] text-white hover:bg-[#0f7a6e] transition-colors"
+        className="mt-5 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-[#0B6E62] text-white hover:bg-[#095c52] transition-colors"
       >
         <WhatsAppIcon className="w-4 h-4" />
         Enquire on WhatsApp

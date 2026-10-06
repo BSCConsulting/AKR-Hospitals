@@ -69,7 +69,7 @@ export default function FloatingDock({ onOpenCareBot, careBotOpen }: FloatingDoc
               href={WHATSAPP_OPD_INQUIRE}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 pl-3 pr-4 h-12 rounded-full bg-[#128C7E] text-white text-sm font-semibold shadow-lg shadow-[#128C7E]/25 hover:bg-[#0f7a6e]"
+              className="flex items-center gap-2 pl-3 pr-4 h-12 rounded-full bg-[#0B6E62] text-white text-sm font-semibold shadow-lg shadow-[#0B6E62]/25 hover:bg-[#095c52]"
               aria-label="Chat on WhatsApp"
             >
               <WhatsAppIcon className="w-5 h-5" />

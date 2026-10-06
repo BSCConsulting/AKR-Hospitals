@@ -108,7 +108,7 @@ function Footer() {
               href={WHATSAPP_OPD_INQUIRE}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-start gap-2.5 text-sm text-slate-600 hover:text-[#128C7E] transition-colors"
+              className="flex items-start gap-2.5 text-sm text-slate-600 hover:text-[#0B6E62] transition-colors"
             >
               <WhatsAppIcon className="w-4 h-4 mt-0.5 text-[#25D366] shrink-0" />
               {hospitalInfo.appointmentLine} (WhatsApp)
