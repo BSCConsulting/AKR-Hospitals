@@ -1,49 +1,36 @@
-import { Phone, Ambulance, HeartPulse } from 'lucide-react';
+import { Ambulance } from 'lucide-react';
 import { hospitalInfo } from '@/data/mockData';
 
 export default function EmergencyBar() {
-  const contacts = [
-    { icon: Ambulance, label: 'Ambulance', number: hospitalInfo.emergencyPhone, color: 'text-rose-400' },
-    { icon: Phone, label: 'Call', number: hospitalInfo.phone, color: 'text-teal-400' },
-    { icon: HeartPulse, label: 'Trauma', number: hospitalInfo.phone, color: 'text-amber-400' },
-  ];
-
   return (
     <>
-      {/* Mobile sticky bottom bar — strictly < 768px */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
-        <div className="bg-slate-950/95 backdrop-blur-xl border-t border-slate-800 shadow-2xl shadow-black/50">
-          <div className="grid grid-cols-3 gap-px bg-slate-800/50">
-            {contacts.map((c) => (
-              <a
-                key={c.label}
-                href={`tel:${c.number.replace(/\s/g, '')}`}
-                className="flex flex-col items-center justify-center py-2.5 bg-slate-950 active:bg-slate-900 transition-colors"
-              >
-                <c.icon className={`w-5 h-5 ${c.color} mb-1`} />
-                <span className="text-[10px] text-slate-300 font-medium">{c.label}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Mobile: compact high-contrast emergency strip above home indicator */}
+      <a
+        href={`tel:${hospitalInfo.emergencyPhone}`}
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-2 py-3 bg-[#DC2626] text-white font-semibold text-sm shadow-[0_-4px_20px_rgba(220,38,38,0.25)]"
+        aria-label="Call 1066 emergency hotline"
+      >
+        <Ambulance className="w-4 h-4" />
+        {hospitalInfo.emergencyPhone} · 24/7 EMERGENCY
+      </a>
 
-      {/* Desktop floating emergency panel */}
-      <div className="hidden md:flex fixed bottom-6 left-6 z-40 flex-col gap-2">
-        <a
-          href={`tel:${hospitalInfo.emergencyPhone}`}
-          className="group flex items-center gap-3 px-5 py-3.5 bg-gradient-to-r from-rose-600 to-red-600 rounded-2xl shadow-xl shadow-rose-600/30 hover:shadow-rose-600/50 hover:scale-105 transition-all"
-        >
-          <div className="relative">
-            <Ambulance className="w-5 h-5 text-white" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-white ring-2 ring-rose-600 animate-pulse" />
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="text-white font-bold text-sm">{hospitalInfo.emergencyPhone}</span>
-            <span className="text-rose-200 text-[10px] font-medium uppercase tracking-wide">24/7 Emergency</span>
-          </div>
-        </a>
-      </div>
+      {/* Desktop / tablet: pinned bottom-left, no collision with right dock */}
+      <a
+        href={`tel:${hospitalInfo.emergencyPhone}`}
+        className="hidden md:flex fixed bottom-6 left-6 z-50 items-center gap-3 px-5 py-3.5 rounded-2xl bg-[#DC2626] text-white shadow-xl shadow-red-600/25 hover:bg-red-700 hover:scale-[1.02] transition-all"
+        aria-label="Call 1066 emergency hotline"
+      >
+        <div className="relative">
+          <Ambulance className="w-5 h-5 text-white" />
+          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-white ring-2 ring-red-600 animate-pulse" />
+        </div>
+        <div className="flex flex-col leading-none">
+          <span className="font-bold text-sm tracking-wide">{hospitalInfo.emergencyPhone}</span>
+          <span className="text-red-100 text-[10px] font-semibold uppercase tracking-wide mt-0.5">
+            24/7 Emergency
+          </span>
+        </div>
+      </a>
     </>
   );
 }

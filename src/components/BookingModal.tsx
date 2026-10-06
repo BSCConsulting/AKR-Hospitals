@@ -134,7 +134,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             onClick={handleClose}
-            className="fixed inset-0 z-[80] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-[80] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4"
             role="presentation"
           >
             <motion.div
@@ -146,26 +146,26 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
               role="dialog"
               aria-modal="true"
               aria-labelledby="booking-modal-title"
-              className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800 bg-slate-900/95">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 bg-white/95">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-lg bg-teal-500/15 border border-teal-500/30 flex items-center justify-center">
                     <Calendar className="w-4.5 h-4.5 text-teal-400" />
                   </div>
                   <div>
-                    <h3 id="booking-modal-title" className="text-white font-semibold text-sm">
+                    <h3 id="booking-modal-title" className="text-slate-900 font-semibold text-sm">
                       {step === 'form' ? 'Confirm Your Appointment' : 'Demo Appointment Pass'}
                     </h3>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[11px] text-slate-500">
                       {step === 'form' ? 'Enter patient details' : 'Confirm this slot at reception'}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={handleClose}
-                  className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                  className="p-2 text-slate-500 hover:text-white hover:bg-slate-100 rounded-lg transition-colors"
                   aria-label="Close"
                 >
                   <X className="w-5 h-5" />
@@ -183,23 +183,23 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                 </div>
 
                 {/* Booking summary */}
-                <div className="bg-slate-800/50 border border-slate-800 rounded-xl p-4 space-y-2.5">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2.5">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1.5 text-slate-300">
+                    <span className="flex items-center gap-1.5 text-slate-600">
                       <Stethoscope className="w-4 h-4 text-teal-400" />
                       {bookingDetails.department}
                     </span>
-                    <span className="flex items-center gap-1.5 text-slate-300">
+                    <span className="flex items-center gap-1.5 text-slate-600">
                       <Clock className="w-4 h-4 text-teal-400" />
                       {bookingDetails.dateLabel}, {bookingDetails.time}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-300">{bookingDetails.doctorName}</span>
-                    <span className="text-slate-400 text-xs">{bookingDetails.doctorCredentials}</span>
+                    <span className="text-slate-600">{bookingDetails.doctorName}</span>
+                    <span className="text-slate-500 text-xs">{bookingDetails.doctorCredentials}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1.5 text-slate-300">
+                    <span className="flex items-center gap-1.5 text-slate-600">
                       <MapPin className="w-4 h-4 text-teal-400" />
                       {bookingDetails.room}
                     </span>
@@ -210,7 +210,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                 {step === 'form' ? (
                   <>
                     <div className="space-y-1.5">
-                      <label htmlFor="patient-name" className="text-xs font-medium text-slate-300">
+                      <label htmlFor="patient-name" className="text-xs font-medium text-slate-600">
                         Patient Name
                       </label>
                       <div className="relative">
@@ -222,14 +222,14 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                           onChange={(e) => setPatientName(e.target.value)}
                           placeholder="Enter full name"
                           aria-invalid={Boolean(errors.name)}
-                          className="w-full bg-slate-800 text-slate-100 text-sm rounded-lg pl-10 pr-4 py-2.5 border border-slate-700 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-slate-500"
+                          className="w-full bg-slate-100 text-slate-800 text-sm rounded-lg pl-10 pr-4 py-2.5 border border-slate-200 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-slate-400"
                         />
                       </div>
                       {errors.name && <p className="text-xs text-rose-400">{errors.name}</p>}
                     </div>
 
                     <div className="space-y-1.5">
-                      <label htmlFor="patient-mobile" className="text-xs font-medium text-slate-300">
+                      <label htmlFor="patient-mobile" className="text-xs font-medium text-slate-600">
                         Mobile Number
                       </label>
                       <div className="relative">
@@ -242,7 +242,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                           placeholder="10-digit mobile number"
                           maxLength={10}
                           aria-invalid={Boolean(errors.mobile)}
-                          className="w-full bg-slate-800 text-slate-100 text-sm rounded-lg pl-10 pr-4 py-2.5 border border-slate-700 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-slate-500"
+                          className="w-full bg-slate-100 text-slate-800 text-sm rounded-lg pl-10 pr-4 py-2.5 border border-slate-200 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-slate-400"
                         />
                       </div>
                       {errors.mobile && <p className="text-xs text-rose-400">{errors.mobile}</p>}
@@ -268,7 +268,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                         Demo Pass Ready
                       </div>
                       <div className="text-3xl font-bold text-white tracking-tight">{token}</div>
-                      <p className="text-xs text-slate-300">
+                      <p className="text-xs text-slate-600">
                         Show this reference at reception to complete booking
                       </p>
                       <div className="flex justify-center pt-1">
@@ -278,7 +278,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                           className="w-32 h-32 rounded-lg bg-white p-1.5"
                         />
                       </div>
-                      <p className="text-[10px] text-slate-400">
+                      <p className="text-[10px] text-slate-500">
                         QR contains slot details only (no patient phone or name)
                       </p>
                     </motion.div>
@@ -288,21 +288,21 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                         href={calendarUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-teal-500/40 transition-all"
+                        className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-teal-500/40 transition-all"
                       >
                         <CalendarPlus className="w-4 h-4 text-teal-400" />
                         Calendar
                       </a>
                       <button
                         onClick={handleShare}
-                        className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-teal-500/40 transition-all"
+                        className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-teal-500/40 transition-all"
                       >
                         <Share2 className="w-4 h-4 text-teal-400" />
                         Share
                       </button>
                       <button
                         onClick={() => window.print()}
-                        className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-teal-500/40 transition-all"
+                        className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-teal-500/40 transition-all"
                       >
                         <Download className="w-4 h-4 text-teal-400" />
                         Save
@@ -312,7 +312,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
 
                     <button
                       onClick={handleClose}
-                      className="w-full px-4 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                      className="w-full px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-white hover:bg-slate-100 transition-colors"
                     >
                       Done
                     </button>

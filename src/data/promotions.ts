@@ -41,7 +41,7 @@ export const promotions: Promotion[] = [
     isActive: true,
     title: 'Free Mega Urology Medical Camp',
     highlightBadge: 'Free OP & 50% Off Ultrasound',
-    date: 'Sunday, 13th September | 10:00 AM - 2:00 PM',
+    date: 'Sunday, 11th October 2026 | 10:00 AM - 2:00 PM',
     timeWindow: '10:00 AM – 2:00 PM',
     statusLabel: 'LIMITED TIME CAMP',
     announcementText:
@@ -186,3 +186,5 @@ export const ROUTINE_SUBSIDIES = [
 
 export const SUPPORT_PHONE = '+91 87492 73030';
 export const SUPPORT_PHONE_TEL = 'tel:+918749273030';
+export const APPOINTMENT_PHONE = '+91 98490 57185';
+export const APPOINTMENT_PHONE_TEL = 'tel:+919849057185';

@@ -1,3 +1,80 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-700 antialiased;
+    background-color: #f8fafc;
+  }
+
+  ::selection {
+    @apply bg-teal-200/60 text-slate-900;
+  }
+}
+
+@layer components {
+  .page-canvas {
+    @apply relative min-h-screen overflow-x-hidden;
+    background-color: #f8fafc;
+  }
+
+  .page-canvas::before,
+  .page-canvas::after {
+    content: '';
+    position: fixed;
+    border-radius: 9999px;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(120px);
+  }
+
+  .page-canvas::before {
+    width: 42rem;
+    height: 42rem;
+    top: -8rem;
+    left: -6rem;
+    background: rgba(13, 148, 136, 0.07);
+  }
+
+  .page-canvas::after {
+    width: 36rem;
+    height: 36rem;
+    bottom: 10%;
+    right: -8rem;
+    background: rgba(59, 130, 246, 0.05);
+  }
+
+  .glass-surface {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05);
+    border-radius: 1rem;
+  }
+
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  }
+
+  .glass-panel {
+    @apply glass-surface;
+  }
+
+  /* Fallback when backdrop-filter unsupported */
+  @supports not ((backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px))) {
+    .glass-surface,
+    .glass-nav,
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.95);
+    }
+  }
+}

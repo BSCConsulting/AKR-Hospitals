@@ -97,7 +97,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             onClick={onClose}
-            className="fixed inset-0 z-[60] bg-slate-950/70 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm"
           />
 
           {/* Announcement banner */}
@@ -121,22 +121,22 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-            className="fixed top-0 right-0 bottom-0 z-[70] w-full sm:w-[440px] bg-slate-900 border-l border-slate-800 overflow-y-auto"
+            className="fixed top-0 right-0 bottom-0 z-[70] w-full sm:w-[440px] bg-white border-l border-slate-200 overflow-y-auto"
           >
             {/* Header */}
-            <div className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-xl border-b border-slate-800 px-5 py-4 flex items-center justify-between">
+            <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-xl border-b border-slate-200 px-5 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-lg bg-teal-500/15 border border-teal-500/30 flex items-center justify-center">
                   <Ticket className="w-4.5 h-4.5 text-teal-400" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold text-sm">Your Live Token</h3>
-                  <p className="text-[11px] text-slate-300">OPD Queue Status</p>
+                  <h3 className="text-slate-900 font-semibold text-sm">Your Live Token</h3>
+                  <p className="text-[11px] text-slate-600">OPD Queue Status</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                className="p-2 text-slate-600 hover:text-white hover:bg-slate-100 rounded-lg transition-colors"
                 aria-label="Close drawer"
               >
                 <X className="w-5 h-5" />
@@ -174,7 +174,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25, duration: 0.4 }}
-                className="bg-slate-800/50 border border-slate-800 rounded-xl p-4"
+                className="bg-slate-50 border border-slate-200 rounded-xl p-4"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
@@ -182,7 +182,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                       <Stethoscope className="w-5 h-5 text-emerald-400" />
                     </div>
                     <div>
-                      <div className="text-[11px] text-slate-300 uppercase tracking-wide">
+                      <div className="text-[11px] text-slate-600 uppercase tracking-wide">
                         Now Serving
                       </div>
                       <div className="text-lg font-bold text-white">
@@ -191,7 +191,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-[11px] text-slate-300 uppercase tracking-wide">
+                    <div className="text-[11px] text-slate-600 uppercase tracking-wide">
                       You are
                     </div>
                     <div className="text-lg font-bold text-amber-400">
@@ -212,10 +212,10 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35, duration: 0.4 }}
-                className="bg-slate-800/50 border border-slate-800 rounded-xl p-4 space-y-3"
+                className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-slate-200">
+                  <div className="flex items-center gap-2 text-sm text-slate-700">
                     <Clock className="w-4 h-4 text-teal-400" />
                     Estimated Wait
                   </div>
@@ -223,7 +223,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                     {formatWait(waitSeconds)}
                   </div>
                 </div>
-                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <motion.div
                     className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full"
                     initial={{ width: 0 }}
@@ -231,7 +231,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                     transition={{ duration: 0.5, ease: 'linear' }}
                   />
                 </div>
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-300">
+                <div className="flex items-center gap-1.5 text-[11px] text-slate-600">
                   <Activity className="w-3 h-3 text-teal-400 animate-pulse" />
                   {isPaused
                     ? 'Queue is paused. Wait time is estimated and may change.'
@@ -246,21 +246,21 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                 transition={{ delay: 0.4, duration: 0.4 }}
                 className="space-y-2.5"
               >
-                <div className="text-xs text-slate-300 font-medium uppercase tracking-wide">
+                <div className="text-xs text-slate-600 font-medium uppercase tracking-wide">
                   Notifications
                 </div>
 
                 {/* Audio announcement sim */}
                 <button
                   onClick={triggerAnnouncement}
-                  className="group flex items-center gap-3 w-full px-4 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-teal-500/40 rounded-xl transition-all"
+                  className="group flex items-center gap-3 w-full px-4 py-3.5 bg-slate-100 hover:bg-slate-50 border border-slate-200 hover:border-teal-500/40 rounded-xl transition-all"
                 >
                   <div className="w-10 h-10 rounded-lg bg-teal-500/15 flex items-center justify-center shrink-0 group-hover:bg-teal-500/25 transition-colors">
                     <Volume2 className="w-5 h-5 text-teal-400" />
                   </div>
                   <div className="flex-1 text-left">
                     <div className="text-sm font-semibold text-white">Simulate Audio Announcement</div>
-                    <div className="text-[11px] text-slate-300 mt-0.5">
+                    <div className="text-[11px] text-slate-600 mt-0.5">
                       Hear "Now calling Token A-019 to Room 3"
                     </div>
                   </div>
@@ -272,19 +272,19 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                   className={`group flex items-center gap-3 w-full px-4 py-3.5 rounded-xl border transition-all ${
                     whatsappNotify
                       ? 'bg-emerald-500/10 border-emerald-500/30'
-                      : 'bg-slate-800 border-slate-700 hover:border-slate-600'
+                      : 'bg-slate-100 border-slate-200 hover:border-slate-600'
                   }`}
                 >
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
                     whatsappNotify ? 'bg-emerald-500/25' : 'bg-slate-700'
                   }`}>
-                    <MessageCircle className={`w-5 h-5 ${whatsappNotify ? 'text-emerald-400' : 'text-slate-400'}`} />
+                    <MessageCircle className={`w-5 h-5 ${whatsappNotify ? 'text-emerald-400' : 'text-slate-500'}`} />
                   </div>
                   <div className="flex-1 text-left">
                     <div className="text-sm font-semibold text-white">
                       WhatsApp Alert {whatsappNotify && '— On'}
                     </div>
-                    <div className="text-[11px] text-slate-300 mt-0.5">
+                    <div className="text-[11px] text-slate-600 mt-0.5">
                       Coming soon — WhatsApp queue alerts
                     </div>
                   </div>
@@ -317,7 +317,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                 transition={{ delay: 0.45, duration: 0.4 }}
                 className="space-y-2.5"
               >
-                <div className="text-xs text-slate-300 font-medium uppercase tracking-wide mb-1">
+                <div className="text-xs text-slate-600 font-medium uppercase tracking-wide mb-1">
                   Quick Actions
                 </div>
 
@@ -326,14 +326,14 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                   href={mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-3 w-full px-4 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-teal-500/40 rounded-xl transition-all"
+                  className="group flex items-center gap-3 w-full px-4 py-3.5 bg-slate-100 hover:bg-slate-50 border border-slate-200 hover:border-teal-500/40 rounded-xl transition-all"
                 >
                   <div className="w-10 h-10 rounded-lg bg-teal-500/15 flex items-center justify-center shrink-0 group-hover:bg-teal-500/25 transition-colors">
                     <Navigation className="w-5 h-5 text-teal-400" />
                   </div>
                   <div className="flex-1 text-left">
                     <div className="text-sm font-semibold text-white">Navigate to Hospital</div>
-                    <div className="text-[11px] text-slate-300 flex items-center gap-1 mt-0.5">
+                    <div className="text-[11px] text-slate-600 flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3 h-3" />
                       {hospitalInfo.address}
                     </div>
@@ -344,14 +344,14 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                 {/* Reception dialer */}
                 <a
                   href={`tel:${receptionPhone}`}
-                  className="group flex items-center gap-3 w-full px-4 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-emerald-500/40 rounded-xl transition-all"
+                  className="group flex items-center gap-3 w-full px-4 py-3.5 bg-slate-100 hover:bg-slate-50 border border-slate-200 hover:border-emerald-500/40 rounded-xl transition-all"
                 >
                   <div className="w-10 h-10 rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0 group-hover:bg-emerald-500/25 transition-colors">
                     <Phone className="w-5 h-5 text-emerald-400" />
                   </div>
                   <div className="flex-1 text-left">
                     <div className="text-sm font-semibold text-white">Call Reception</div>
-                    <div className="text-[11px] text-slate-300 mt-0.5">{hospitalInfo.phone}</div>
+                    <div className="text-[11px] text-slate-600 mt-0.5">{hospitalInfo.phone}</div>
                   </div>
                   <Phone className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors" />
                 </a>
@@ -362,7 +362,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.55, duration: 0.4 }}
-                className="text-[11px] text-slate-400 text-center pt-2"
+                className="text-[11px] text-slate-500 text-center pt-2"
               >
                 Show this token at the reception desk. Your slot will be held for 15 minutes
                 after your token is called.

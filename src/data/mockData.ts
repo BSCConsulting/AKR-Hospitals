@@ -85,7 +85,7 @@ export const hospitalInfo = {
   taglineTe: "నాణ్యమైన వైద్యం... ఇప్పుడు మీకు అందుబాటులో!",
   phone: "+91 87492 73030",
   emergencyPhone: "1066",
-  appointmentLine: "+91 9849057185",
+  appointmentLine: "+91 98490 57185",
   managingDirector: "Dr. A. Kondal Rao",
   mdCredentials: "MBBS | Ex-DM&HO (Khammam) | Founder & Chief Physician",
   address: "Samatha Nagar, Didugupadu, Madhira, Khammam, Telangana 507203",
@@ -153,11 +153,12 @@ export const specialOffers: SpecialOffer[] = [
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "#home" },
+  { label: "Book", href: "#appointments" },
   { label: "Camps", href: "#camps" },
   { label: "Departments", href: "#departments" },
+  { label: "Insurance", href: "#cashless" },
   { label: "Founder", href: "#founder" },
   { label: "Specialists", href: "#specialists" },
-  { label: "Cashless", href: "#cashless" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -370,6 +371,7 @@ export const insuranceProviders: InsuranceProvider[] = [
   },
 ];
 
+/** Clinical Centers of Excellence only — admin/insurance lives in PatientServicesSection. */
 export const departments: Department[] = [
   {
     id: "trauma",
@@ -379,7 +381,7 @@ export const departments: Department[] = [
       "24/7 Level-1 trauma center with advanced C-arm image intensifier for real-time intraoperative imaging. Rapid-response team for polytrauma, fractures, and orthopedic emergencies.",
     icon: "ambulance",
     color: "rose",
-    accent: "#f43f5e",
+    accent: "#e11d48",
     wing: "Wing A — Emergency Block",
     floor: "Ground Floor",
     stats: [
@@ -404,7 +406,7 @@ export const departments: Department[] = [
       "State-of-the-art labor suites with fetal monitoring, painless delivery options, and dedicated NICU support for high-risk pregnancies.",
     icon: "baby",
     color: "pink",
-    accent: "#ec4899",
+    accent: "#db2777",
     wing: "Wing B — Maternity Block",
     floor: "2nd Floor",
     stats: [
@@ -421,26 +423,26 @@ export const departments: Department[] = [
     bentoSpan: "md:col-span-2",
   },
   {
-    id: "cashless-tpa",
-    name: "Cashless Insurance / TPA Desk",
-    shortName: "Cashless",
+    id: "urology",
+    name: "Urology & General Surgery",
+    shortName: "Urology",
     description:
-      "Empanelled with leading private insurers and TPA partners for seamless cashless treatment. Dedicated pre-authorization desk with rapid claim processing.",
-    icon: "shield-check",
+      "Comprehensive urology and general surgery services including stone management, prostate care, and elective procedures with modern OT support.",
+    icon: "activity",
     color: "teal",
     accent: "#0d9488",
-    wing: "Wing C — Administration",
+    wing: "Wing C — Surgical Block",
     floor: "1st Floor",
     stats: [
-      { label: "Insurers", value: "5+" },
-      { label: "Pre-Auth TAT", value: "< 60 min" },
-      { label: "Approval Rate", value: "96%" },
+      { label: "OT Suites", value: "4" },
+      { label: "Consultants", value: "5" },
+      { label: "Day-care", value: "Yes" },
     ],
     features: [
-      "Private insurance empanelled",
-      "Cashless TPA desk",
-      "Dedicated claim officer",
-      "On-spot eligibility check",
+      "Kidney stone management",
+      "Prostate evaluation",
+      "Day-care procedures",
+      "Post-op recovery suite",
     ],
     bentoSpan: "md:col-span-2",
   },
@@ -452,7 +454,7 @@ export const departments: Department[] = [
       "Comprehensive eye care including phacoemulsification, LASIK, and diabetic retinopathy management with advanced slit-lamp and OCT imaging.",
     icon: "eye",
     color: "sky",
-    accent: "#0ea5e9",
+    accent: "#0284c7",
     wing: "Wing D — Specialty OPD",
     floor: "3rd Floor",
     stats: [
@@ -476,7 +478,7 @@ export const departments: Department[] = [
       "128-slice CT scanner with low-dose protocols. 24/7 radiology reporting with sub-30-minute turnaround for emergency scans.",
     icon: "scan-line",
     color: "indigo",
-    accent: "#6366f1",
+    accent: "#4f46e5",
     wing: "Wing E — Diagnostics",
     floor: "Ground Floor",
     stats: [
@@ -494,11 +496,12 @@ export const departments: Department[] = [
   },
 ];
 
+/** Privacy-safe queue display — token + department only, never full patient names. */
 export const opdQueue: QueuePatient[] = [
   {
     id: "q1",
     token: "A-014",
-    patientName: "R. Sharma",
+    patientName: "Token A-014",
     department: "General Medicine",
     status: "in-consult",
     waitMinutes: 0,
@@ -506,7 +509,7 @@ export const opdQueue: QueuePatient[] = [
   {
     id: "q2",
     token: "A-015",
-    patientName: "K. Reddy",
+    patientName: "Token A-015",
     department: "Orthopedics",
     status: "next",
     waitMinutes: 3,
@@ -514,7 +517,7 @@ export const opdQueue: QueuePatient[] = [
   {
     id: "q3",
     token: "A-016",
-    patientName: "S. Iyer",
+    patientName: "Token A-016",
     department: "Cardiology",
     status: "waiting",
     waitMinutes: 12,
@@ -522,7 +525,7 @@ export const opdQueue: QueuePatient[] = [
   {
     id: "q4",
     token: "A-017",
-    patientName: "M. Khan",
+    patientName: "Token A-017",
     department: "Dermatology",
     status: "waiting",
     waitMinutes: 18,
@@ -530,7 +533,7 @@ export const opdQueue: QueuePatient[] = [
   {
     id: "q5",
     token: "A-018",
-    patientName: "P. Nair",
+    patientName: "Token A-018",
     department: "Pediatrics",
     status: "waiting",
     waitMinutes: 25,

@@ -30,6 +30,10 @@ interface CareBotProps {
   onGenerateToken: () => void;
   onBookAppointment: () => void;
   onCheckEligibility: () => void;
+  /** Controlled open state when launcher is hosted in FloatingDock */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideLauncher?: boolean;
 }
 
 interface Message {
@@ -116,19 +120,19 @@ const T = {
     casualty_loc_msg: `Casualty is located at Ground Floor, Wing A — Emergency Block. ${hospitalInfo.address}. Tap "Navigate" to get directions.`,
     // Special offers
     qr_special_offers: '🏷️ Special Offers & Discounts',
-    qr_call_appointment: '📞 Call: 9849057185',
+    qr_call_appointment: '📞 Call: +91 98490 57185',
     qr_book_lab_test: '🧪 Book Lab Test (30% Off)',
     offers_title: 'Special Offers & Discounts',
     offers_summary: 'Current offers: 1) Free OP with Dr. Kondal Rao, 2) 30% off Lab tests, 3) 20% off Pharmacy, and 4) ₹20 Blood Sugar check.',
-    offers_call: 'Call: 9849057185',
+    offers_call: 'Call: +91 98490 57185',
     offers_lab: 'Book Lab Test (30% Off)',
     // Q&A knowledge base
     qa_1: `AKR Multi Speciality Hospital is headed by our Managing Director, **Dr. Kondal Rao**, offering expert clinical consultations and 24/7 care.`,
-    qa_2: `Yes! We provide **Free OP Consultation** with Dr. Kondal Rao as part of our community healthcare initiative. Book via the bot or call +91 9849057185.`,
+    qa_2: `Yes! We provide **Free OP Consultation** with Dr. Kondal Rao as part of our community healthcare initiative. Book via the bot or call +91 98490 57185.`,
     qa_3: `Yes, we offer a flat **30% discount on all Laboratory Tests** at our computerized diagnostic center.`,
     qa_4: `Random/Fasting Blood Sugar tests are available at just **₹20/-** with instant reporting.`,
     qa_5: `Yes, our 24/7 in-house pharmacy offers a **20% discount on medicines** on valid prescriptions.`,
-    qa_6: `You can call our direct appointment desk directly at **+91 9849057185** or book a slot right here in the app.`,
+    qa_6: `You can call our direct appointment desk directly at **+91 98490 57185** or book a slot right here in the app.`,
     qa_7: `Yes, Dr. AKR Hospital is operational **24 Hours (24/7)** for Casualty, Emergency Trauma, Pharmacy, and Inpatient services.`,
     qa_8: `We are located **Opposite Susheela College, Wyra Road, Madhira** (Samatha Nagar / Didugupadu). Tap 'Navigate' for Google Maps directions.`,
     qa_9: `Current offers: 1) Free OP with Dr. Kondal Rao, 2) 30% off Lab tests, 3) 20% off Pharmacy, and 4) ₹20 Blood Sugar check.`,
@@ -190,11 +194,11 @@ const T = {
     casualty_loc_msg: `క్యాజువాలిటీ గ్రౌండ్ ఫ్లోర్, Wing A — ఎమర్జెన్సీ బ్లాక్‌లో ఉంది. ${hospitalInfo.address}. దారి కోసం "నావిగేట్" నొక్కండి.`,
     // Special offers
     qr_special_offers: '🏷️ ప్రత్యేక ఆఫర్లు & తగ్గింపులు',
-    qr_call_appointment: '📞 కాల్: 9849057185',
+    qr_call_appointment: '📞 కాల్: +91 98490 57185',
     qr_book_lab_test: '🧪 ల్యాబ్ పరీక్ష (30% తగ్గింపు)',
     offers_title: 'ప్రత్యేక ఆఫర్లు & తగ్గింపులు',
     offers_summary: 'ప్రత్యేక ఆఫర్లు: 1) డా॥ కొండల్ రావు గారి ఉచిత OP, 2) ల్యాబ్‌లో 30% తగ్గింపు, 3) మెడికల్ షాపులో 20% తగ్గింపు, 4) కేవలం ₹20/- లకే షుగర్ పరీక్ష.',
-    offers_call: 'కాల్: 9849057185',
+    offers_call: 'కాల్: +91 98490 57185',
     offers_lab: 'ల్యాబ్ పరీక్ష బుక్ చేయండి (30% తగ్గింపు)',
     // Q&A knowledge base
     qa_1: `మా ఆసుపత్రి మేనేజింగ్ డైరెక్టర్ **డా॥ కొండల్ రావు గారు**. వారి పర్యవేక్షణలో 24 గంటల నాణ్యమైన వైద్య సేవలు అందించబడుతున్నాయి.`,
@@ -376,8 +380,16 @@ export default function CareBot({
   onGenerateToken,
   onBookAppointment,
   onCheckEligibility,
+  open: openProp,
+  onOpenChange,
+  hideLauncher = false,
 }: CareBotProps) {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = openProp ?? internalOpen;
+  const setOpen = (value: boolean) => {
+    onOpenChange?.(value);
+    if (openProp === undefined) setInternalOpen(value);
+  };
   const [lang, setLang] = useState<Lang>('en');
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -644,24 +656,24 @@ export default function CareBot({
 
   return (
     <>
-      {/* Floating launcher */}
+      {/* Floating launcher — skipped when FloatingDock hosts the trigger */}
       <AnimatePresence>
-        {!open && (
+        {!hideLauncher && !open && (
           <motion.button
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             onClick={() => setOpen(true)}
-            className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-40 group"
+            className="fixed bottom-36 right-4 md:bottom-24 md:right-6 z-40 group"
             aria-label="Open CareBot"
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-teal-500/40 rounded-full blur-xl animate-pulse" />
-              <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full bg-slate-900/80 backdrop-blur-xl border border-teal-500/30 shadow-2xl shadow-teal-500/20 flex items-center justify-center overflow-hidden group-hover:border-teal-400/50 transition-all">
+              <div className="absolute inset-0 bg-teal-400/35 rounded-full blur-xl animate-pulse" />
+              <div className="relative w-14 h-14 rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center overflow-hidden">
                 <img src="/carebot-avatar.webp" alt="CareBot" className="w-full h-full object-cover" />
               </div>
-              <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 ring-2 ring-slate-950 animate-pulse" />
+              <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white animate-pulse" />
             </div>
           </motion.button>
         )}
@@ -675,17 +687,17 @@ export default function CareBot({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed bottom-0 md:bottom-6 right-0 md:right-6 z-50 w-full md:w-[400px] h-[100vh] md:h-[600px] md:max-h-[80vh] bg-slate-900/95 backdrop-blur-2xl border border-slate-800 md:rounded-2xl shadow-2xl shadow-black/50 flex flex-col overflow-hidden"
+            className="fixed bottom-0 md:bottom-6 right-0 md:right-6 z-50 w-full md:w-[400px] h-[100vh] md:h-[600px] md:max-h-[80vh] bg-white/95 backdrop-blur-2xl border border-slate-200 md:rounded-2xl shadow-2xl shadow-slate-900/15 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900/80 shrink-0">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-white/90 shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="relative w-10 h-10 rounded-full overflow-hidden border border-teal-500/30">
                   <img src="/carebot-avatar.webp" alt="CareBot" className="w-full h-full object-cover" />
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-1 ring-slate-900" />
                 </div>
                 <div>
-                  <div className="text-white font-semibold text-sm flex items-center gap-1.5">
+                  <div className="text-slate-900 font-semibold text-sm flex items-center gap-1.5">
                     CareBot
                     <span className="text-[9px] font-medium text-teal-300 bg-teal-500/10 px-1.5 py-0.5 rounded-full border border-teal-500/20">AI</span>
                   </div>
@@ -770,7 +782,7 @@ export default function CareBot({
             </div>
 
             {/* Persistent toolbar */}
-            <div className="flex items-center justify-around px-4 py-2 border-t border-slate-800/50 bg-slate-900/60 shrink-0">
+            <div className="flex items-center justify-around px-4 py-2 border-t border-slate-200 bg-slate-50/90 shrink-0">
               {persistentTools.map((tool) => (
                 <button
                   key={tool.key}
@@ -784,7 +796,7 @@ export default function CareBot({
             </div>
 
             {/* Input bar */}
-            <div className="px-3 py-3 border-t border-slate-800 bg-slate-900/80 shrink-0">
+            <div className="px-3 py-3 border-t border-slate-200 bg-white/90 shrink-0">
               <div className="flex items-center gap-2">
                 <input
                   ref={inputRef}
@@ -862,8 +874,8 @@ function MessageBubble({
         <div
           className={`rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed font-sans ${
             message.type === 'emergency'
-              ? 'bg-rose-950/60 border border-rose-600/40 text-slate-100'
-              : 'bg-slate-800/80 text-slate-100'
+              ? 'bg-rose-50 border border-rose-200 text-slate-800'
+              : 'bg-slate-100 text-slate-800'
           }`}
         >
           {/* Emergency */}
