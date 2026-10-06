@@ -28,6 +28,7 @@ import {
   type TimeSlot,
   type Doctor,
 } from '@/data/mockData';
+import { hasFreeOpConsultation } from '@/data/promotions';
 
 const statusConfig = {
   'in-consult': {
@@ -94,6 +95,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [queueTime, setQueueTime] = useState(0);
   const dateTabs = useMemo(() => getDateTabs(), []);
+  const freeOpActive = hasFreeOpConsultation();
 
   useEffect(() => {
     const interval = setInterval(() => setQueueTime((t) => t + 1), 1000);
@@ -259,18 +261,26 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                     <Calendar className="w-4 h-4 text-teal-400" />
                     <h3 className="text-white font-semibold text-sm">Book an OPD Slot</h3>
                   </div>
-                  <select
-                    value={selectedDept}
-                    onChange={(e) => handleDeptChange(e.target.value)}
-                    aria-label="Department"
-                    className="bg-slate-800 text-slate-200 text-xs rounded-lg px-3 py-1.5 border border-slate-700 focus:border-teal-500 focus:outline-none cursor-pointer"
-                  >
-                    {opdSpecialties.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="flex items-center gap-2 flex-wrap justify-end">
+                    {freeOpActive && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 shadow-sm shadow-emerald-500/10">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        Free OP Consultation Active
+                      </span>
+                    )}
+                    <select
+                      value={selectedDept}
+                      onChange={(e) => handleDeptChange(e.target.value)}
+                      aria-label="Department"
+                      className="bg-slate-800 text-slate-200 text-xs rounded-lg px-3 py-1.5 border border-slate-700 focus:border-teal-500 focus:outline-none cursor-pointer"
+                    >
+                      {opdSpecialties.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 {/* Date tabs */}

@@ -153,6 +153,7 @@ export const specialOffers: SpecialOffer[] = [
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "#home" },
+  { label: "Camps", href: "#camps" },
   { label: "Departments", href: "#departments" },
   { label: "Founder", href: "#founder" },
   { label: "Specialists", href: "#specialists" },

@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import AnnouncementBar from '@/components/AnnouncementBar';
 import Navbar from '@/components/Navbar';
 import HeroTriage from '@/components/HeroTriage';
+import CampsAndOffersSection from '@/components/CampsAndOffersSection';
 import BentoGrid from '@/components/BentoGrid';
 import EmergencyBar from '@/components/EmergencyBar';
 import LiveTokenDrawer from '@/components/LiveTokenDrawer';
@@ -166,12 +168,14 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 antialiased">
+      <AnnouncementBar />
       <Navbar />
       <main>
         <HeroTriage
           onGenerateToken={() => setTokenOpen(true)}
           onConfirmBooking={handleConfirmBooking}
         />
+        <CampsAndOffersSection />
         <BentoGrid onCheckEligibility={() => setEligibilityOpen(true)} />
         <FounderSection />
         <DoctorsDirectory onBookDoctor={handleBookDoctor} />
