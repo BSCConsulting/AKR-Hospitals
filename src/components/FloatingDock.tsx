@@ -41,7 +41,7 @@ export default function FloatingDock({ onOpenCareBot, careBotOpen }: FloatingDoc
   return (
     <div
       ref={rootRef}
-      className="fixed z-40 right-4 md:right-6 bottom-6 flex flex-col-reverse items-center gap-3"
+      className="fixed z-40 right-4 md:right-6 bottom-[5.75rem] md:bottom-6 flex flex-col-reverse items-center gap-3"
       aria-label="Quick contact menu"
     >
       <button

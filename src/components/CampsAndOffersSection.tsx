@@ -20,6 +20,7 @@ import {
   type Promotion,
 } from '@/data/promotions';
 import { WHATSAPP_OPD_INQUIRE } from '@/lib/whatsapp';
+import CampCountdown from '@/components/CampCountdown';
 
 function CampFeatureCard({ camp }: { camp: Promotion }) {
   return (
@@ -58,12 +59,15 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
           )}
         </div>
 
-        <div>
-          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">{camp.title}</h3>
-          <p className="mt-2 flex items-start gap-2 text-sm text-slate-600">
-            <CalendarDays className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
-            {camp.date}
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">{camp.title}</h3>
+            <p className="mt-2 flex items-start gap-2 text-sm text-slate-600">
+              <CalendarDays className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" />
+              {camp.date}
+            </p>
+          </div>
+          <CampCountdown />
         </div>
 
         {camp.timeWindow && (
@@ -260,14 +264,14 @@ export default function CampsAndOffersSection() {
   const hasCamp = getActiveCamps().length > 0;
 
   return (
-    <section id="camps" className="relative py-12 lg:py-14 overflow-hidden">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="camps" className="relative section-pad overflow-hidden">
+      <div className="relative section-shell">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="max-w-2xl mb-7 sm:mb-7"
+          className="max-w-2xl section-header"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium mb-4">
             <Sparkles className="w-3.5 h-3.5" />

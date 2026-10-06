@@ -7,6 +7,7 @@ import {
   ArrowRight,
   BadgeCheck,
   CircleDollarSign,
+  IdCard,
 } from 'lucide-react';
 import { doctors, type Doctor } from '@/data/mockData';
 import DoctorAvatar from '@/components/DoctorAvatar';
@@ -15,16 +16,20 @@ interface DoctorsDirectoryProps {
   onBookDoctor: (doctor: Doctor, preferNextDay?: boolean) => void;
 }
 
+function formatRegDisplay(reg: string) {
+  return reg.replace(/TSMC Reg No:/i, 'TSMC Reg #').trim();
+}
+
 export default function DoctorsDirectory({ onBookDoctor }: DoctorsDirectoryProps) {
   return (
-    <section id="specialists" className="relative py-12 lg:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="specialists" className="relative section-pad">
+      <div className="section-shell">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="max-w-2xl mb-7"
+          className="max-w-2xl section-header"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium mb-4">
             <Stethoscope className="w-3.5 h-3.5" />
@@ -67,28 +72,32 @@ function DoctorCard({
       whileHover={{ y: -4 }}
       className="group glass-surface p-5"
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
+      <div className="flex items-start justify-between mb-4 gap-2">
+        <div className="flex items-center gap-3 min-w-0">
           <DoctorAvatar name={doctor.name} size="md" />
-          <div>
+          <div className="min-w-0">
             <h3 className="text-slate-900 font-semibold text-sm">{doctor.name}</h3>
             <p className="text-[11px] text-slate-500 mt-0.5">{doctor.credentials}</p>
             {doctor.designation && (
               <p className="text-[11px] text-teal-800 font-medium mt-0.5">{doctor.designation}</p>
             )}
-            <p className="text-[10px] text-slate-500 mt-1">{doctor.registrationNumber}</p>
           </div>
         </div>
         {doctor.available ? (
-          <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+          <span className="shrink-0 flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Available
+            Available Today
           </span>
         ) : (
-          <span className="text-[10px] font-medium text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
-            Off today
+          <span className="shrink-0 text-[10px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+            Next Available: Tomorrow
           </span>
         )}
+      </div>
+
+      <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-slate-700 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg mb-3">
+        <IdCard className="w-3.5 h-3.5 text-teal-600" />
+        {formatRegDisplay(doctor.registrationNumber)}
       </div>
 
       <div className="flex items-center gap-1.5 text-xs text-teal-700 mb-3 font-medium">
@@ -97,19 +106,26 @@ function DoctorCard({
       </div>
 
       <div className="space-y-2 mb-4">
-        <div className="flex items-center gap-2 text-xs text-slate-600">
-          <MapPin className="w-3.5 h-3.5 text-slate-400" />
-          {doctor.room}
+        <div className="flex items-center justify-between gap-2 text-xs text-slate-600">
+          <span className="flex items-center gap-2">
+            <MapPin className="w-3.5 h-3.5 text-slate-400" />
+            {doctor.room}
+          </span>
+          <span className="flex items-center gap-1 font-semibold text-slate-800">
+            <CircleDollarSign className="w-3.5 h-3.5 text-teal-600" />
+            {doctor.campWaiverEligible || doctor.fee === 0
+              ? '₹0 Waiver'
+              : `₹${doctor.fee}`}
+          </span>
         </div>
         <div className="flex items-center gap-2 text-xs text-slate-600">
           <Calendar className="w-3.5 h-3.5 text-slate-400" />
           OPD: {doctor.opdDays.join(', ')}
         </div>
-        <div className="flex items-center gap-2 text-xs text-slate-600">
-          <CircleDollarSign className="w-3.5 h-3.5 text-slate-400" />
+        <div className="rounded-lg bg-teal-50/70 border border-teal-100 px-2.5 py-1.5 text-[11px] text-teal-900">
           {doctor.campWaiverEligible || doctor.fee === 0
-            ? '₹0 OP Registration (Community Waiver)'
-            : `Standard consultation ₹${doctor.fee}`}
+            ? 'Consultation: ₹0 OP Registration (Community Waiver)'
+            : `Consultation fee: ₹${doctor.fee} · Cabin ${doctor.room.replace(/^Cabin\s*/i, '')}`}
         </div>
         <div className="flex items-center gap-2 text-xs text-slate-600">
           <BadgeCheck className="w-3.5 h-3.5 text-slate-400" />
@@ -124,7 +140,7 @@ function DoctorCard({
       <button
         type="button"
         onClick={() => onBook(doctor, !doctor.available)}
-        className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+        className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all active:scale-95 ${
           doctor.available
             ? 'bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-600/15'
             : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200'

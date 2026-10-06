@@ -121,7 +121,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-            className="fixed top-0 right-0 bottom-0 z-[70] w-full sm:w-[440px] bg-white border-l border-slate-200 overflow-y-auto"
+            className="fixed top-0 right-0 bottom-0 z-[70] w-full sm:w-[440px] max-h-screen bg-white border-l border-slate-200 overflow-y-auto overscroll-contain shadow-2xl"
           >
             {/* Header */}
             <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-xl border-b border-slate-200 px-5 py-4 flex items-center justify-between">
@@ -144,9 +144,10 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
             </div>
 
             {/* Body */}
-            <div className="px-5 py-6 space-y-5">
-              <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2.5 text-xs text-amber-200">
+            <div className="px-5 py-6 space-y-5 max-h-[calc(100vh-4.5rem)] overflow-y-auto">
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-900">
                 Demo walk-in token for preview. Collect your real OPD token at the reception desk.
+                Live board shows token numbers & clinical wings only — patient names stay masked.
               </div>
 
               {/* Token number card */}
@@ -154,16 +155,16 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15, duration: 0.4 }}
-                className="relative bg-gradient-to-br from-teal-600/20 to-emerald-600/10 border border-teal-500/30 rounded-2xl p-6 text-center overflow-hidden"
+                className="relative bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-200 rounded-2xl p-6 text-center overflow-hidden"
               >
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-400 to-transparent opacity-50" />
-                <div className="text-xs text-teal-300 font-medium uppercase tracking-wider mb-2">
+                <div className="text-xs text-teal-700 font-medium uppercase tracking-wider mb-2">
                   Sample Token Number
                 </div>
-                <div className="text-5xl font-bold text-white tracking-tight mb-3">
+                <div className="text-5xl font-bold text-slate-900 tracking-tight mb-3">
                   {assignedToken}
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/25 text-amber-200 text-xs font-medium">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-medium">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   Demo Preview
                 </div>

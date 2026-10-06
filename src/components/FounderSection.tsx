@@ -21,8 +21,8 @@ const highlights = [
 
 export default function FounderSection() {
   return (
-    <section id="founder" className="relative py-12 lg:py-16 overflow-hidden">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="founder" className="relative section-pad overflow-hidden">
+      <div className="relative section-shell">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}

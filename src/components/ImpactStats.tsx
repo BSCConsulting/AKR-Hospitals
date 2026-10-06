@@ -42,8 +42,8 @@ const stats = [
 /** Dense animated impact band — fills visual whitespace with proof. */
 export default function ImpactStats() {
   return (
-    <section className="relative py-8 lg:py-10" aria-label="Hospital impact metrics">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section className="relative py-8 md:py-10" aria-label="Hospital impact metrics">
+      <div className="section-shell">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {stats.map((stat, i) => (
             <motion.div

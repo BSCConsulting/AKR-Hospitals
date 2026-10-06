@@ -220,7 +220,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
       <div className="pointer-events-none absolute top-16 right-[8%] w-40 h-40 rounded-full bg-teal-300/20 blur-3xl animate-float-slow hidden lg:block" />
       <div className="pointer-events-none absolute top-40 left-[4%] w-28 h-28 rounded-full bg-sky-300/20 blur-2xl animate-float-slow [animation-delay:1.2s] hidden lg:block" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-8 lg:pt-8 lg:pb-10">
+      <div className="relative section-shell pt-6 pb-8 md:pt-8 md:pb-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -355,6 +355,11 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 </div>
               </div>
 
+              <p className="text-[11px] text-slate-500 leading-relaxed rounded-lg border border-slate-200 bg-slate-50/80 px-3 py-2">
+                By proceeding, you consent to Dr. AKR Hospital contacting you for appointment
+                confirmations via SMS/WhatsApp under the DPDP Act. We never share patient records.
+              </p>
+
               <div className="space-y-1.5">
                 <label htmlFor="hero-visit-reason" className="text-xs font-medium text-slate-600">
                   Reason for Visit / Triage
@@ -455,11 +460,12 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                       type="button"
                       disabled={!slot.available}
                       onClick={() => handleSlotClick(slot)}
-                      whileHover={slot.available ? { scale: 1.03 } : undefined}
-                      whileTap={slot.available ? { scale: 0.97 } : undefined}
+                      whileHover={slot.available ? { scale: 1.04 } : undefined}
+                      whileTap={slot.available ? { scale: 0.95 } : undefined}
+                      transition={{ type: 'spring', stiffness: 420, damping: 22 }}
                       className={`relative px-2 py-2.5 rounded-lg text-center text-xs font-medium border transition-colors ${
                         isSelected
-                          ? 'bg-[#0D9488] text-white border-[#0D9488] shadow-md shadow-teal-600/25 font-bold'
+                          ? 'bg-[#0D9488] text-white border-[#0D9488] shadow-md shadow-teal-600/25 font-bold ring-2 ring-teal-300/60'
                           : slot.available
                             ? 'bg-[rgba(255,255,255,0.9)] text-[#1E293B] border-[rgba(203,213,225,0.8)] hover:border-teal-300'
                             : 'bg-[rgba(241,245,249,0.6)] text-[#94A3B8] border-slate-200 cursor-not-allowed'
@@ -636,9 +642,9 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
               </div>
 
               <p className="text-[11px] text-slate-500 mb-3">
-                Privacy-safe view — token & department only.
+                Privacy-safe view — token & clinical wing only. Patient names are never shown.
               </p>
-              <div className="space-y-2">
+              <div className="space-y-2 max-h-[480px] overflow-y-auto pr-0.5 overscroll-contain">
                 {filteredQueue.length === 0 && (
                   <div className="rounded-xl border border-dashed border-slate-200 px-3 py-4 text-center text-xs text-slate-500">
                     No tokens in this department right now.
@@ -649,18 +655,29 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                   const Icon = cfg.icon;
                   const progress =
                     q.status === 'in-consult' ? 92 : q.status === 'next' ? 68 : Math.max(18, 55 - q.waitMinutes);
+                  const isActive = q.status === 'in-consult' || q.status === 'next';
                   return (
                     <motion.div
                       key={q.id}
                       initial={{ opacity: 0, x: 12 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.15 + qi * 0.06 }}
-                      className={`rounded-xl border border-slate-200/80 px-3 py-2.5 ${cfg.bg}`}
+                      className={`rounded-xl border border-slate-200/80 px-3 py-2.5 ${cfg.bg} ${
+                        isActive ? 'ring-1 ring-emerald-200/80' : ''
+                      }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.dot}`} />
+                        <div
+                          className={`w-2 h-2 rounded-full shrink-0 ${cfg.dot} ${
+                            isActive ? 'animate-pulse' : ''
+                          }`}
+                        />
                         <div className="min-w-0 flex-1">
-                          <div className="text-sm font-medium text-slate-800 truncate">
+                          <div
+                            className={`text-sm font-medium text-slate-800 truncate ${
+                              q.status === 'in-consult' ? 'animate-pulse' : ''
+                            }`}
+                          >
                             {privacyQueueLabel(q.token, q.department, q.status)}
                           </div>
                           <div className="mt-1.5 h-1.5 rounded-full bg-white/80 overflow-hidden border border-slate-200/60">

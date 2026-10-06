@@ -19,16 +19,25 @@ const iconMap: Record<string, LucideIcon> = {
   activity: Activity,
 };
 
+/** 12-col balanced bento: 3+2 on desktop, no orphaned empty cells. */
+const spanByIndex = [
+  'md:col-span-3 lg:col-span-4',
+  'md:col-span-3 lg:col-span-4',
+  'md:col-span-3 lg:col-span-4',
+  'md:col-span-3 lg:col-span-6',
+  'md:col-span-6 lg:col-span-6',
+] as const;
+
 export default function BentoGrid() {
   return (
-    <section id="departments" className="relative py-12 lg:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="departments" className="relative section-pad">
+      <div className="section-shell">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="max-w-2xl mb-7"
+          className="max-w-2xl section-header"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium mb-4">
             <Activity className="w-3.5 h-3.5" />
@@ -43,9 +52,14 @@ export default function BentoGrid() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[minmax(180px,auto)]">
+        <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 md:gap-6">
           {departments.map((dept, index) => (
-            <BentoCard key={dept.id} dept={dept} index={index} />
+            <BentoCard
+              key={dept.id}
+              dept={dept}
+              index={index}
+              span={spanByIndex[index] ?? 'md:col-span-3 lg:col-span-4'}
+            />
           ))}
         </div>
       </div>
@@ -53,7 +67,15 @@ export default function BentoGrid() {
   );
 }
 
-function BentoCard({ dept, index }: { dept: Department; index: number }) {
+function BentoCard({
+  dept,
+  index,
+  span,
+}: {
+  dept: Department;
+  index: number;
+  span: string;
+}) {
   const Icon = iconMap[dept.icon] ?? Activity;
   const isHighlighted = dept.highlight;
 
@@ -64,8 +86,8 @@ function BentoCard({ dept, index }: { dept: Department; index: number }) {
       viewport={{ once: true, margin: '-60px' }}
       transition={{ delay: index * 0.06, duration: 0.45 }}
       whileHover={{ y: -4 }}
-      className={`group relative overflow-hidden glass-surface ${dept.bentoSpan} ${
-        isHighlighted ? 'md:p-7 p-5' : 'p-5'
+      className={`group relative overflow-hidden glass-surface ${span} p-5 ${
+        isHighlighted ? 'lg:p-6' : ''
       }`}
     >
       <div
@@ -73,11 +95,11 @@ function BentoCard({ dept, index }: { dept: Department; index: number }) {
         style={{ backgroundColor: dept.accent }}
       />
 
-      <div className="relative h-full flex flex-col">
+      <div className="relative h-full flex flex-col min-h-[200px]">
         <div className="flex items-start justify-between mb-3">
           <div
             className={`rounded-xl flex items-center justify-center ${
-              isHighlighted ? 'w-14 h-14' : 'w-11 h-11'
+              isHighlighted ? 'w-12 h-12' : 'w-11 h-11'
             }`}
             style={{
               backgroundColor: `${dept.accent}14`,
@@ -94,10 +116,10 @@ function BentoCard({ dept, index }: { dept: Department; index: number }) {
           </span>
         </div>
 
-        <h3 className={`font-bold text-slate-900 tracking-tight ${isHighlighted ? 'text-xl' : 'text-base'}`}>
+        <h3 className={`font-bold text-slate-900 tracking-tight ${isHighlighted ? 'text-lg' : 'text-base'}`}>
           {dept.name}
         </h3>
-        <p className={`text-slate-600 mt-2 leading-relaxed ${isHighlighted ? 'text-sm' : 'text-xs line-clamp-3'}`}>
+        <p className="text-slate-600 mt-2 leading-relaxed text-sm line-clamp-3">
           {dept.description}
         </p>
 

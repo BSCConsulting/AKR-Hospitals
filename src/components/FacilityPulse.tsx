@@ -40,7 +40,7 @@ const facilities = [
 export default function FacilityPulse() {
   return (
     <section className="relative pb-6 lg:pb-8" aria-label="Campus capacity snapshot">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="section-shell">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -23,6 +23,20 @@
     background-color: #f8fafc;
   }
 
+  /** Standardized content shell — clamps ultrawide edge bleed. */
+  .section-shell {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /** Institutional vertical rhythm for major sections. */
+  .section-pad {
+    @apply py-12 md:py-16;
+  }
+
+  .section-header {
+    @apply mb-6 md:mb-8;
+  }
+
   .page-canvas::before,
   .page-canvas::after {
     content: '';

@@ -3,6 +3,7 @@ import { Phone, Stethoscope } from 'lucide-react';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
 import { getFeaturedCamp, SUPPORT_PHONE, SUPPORT_PHONE_TEL } from '@/data/promotions';
 import { WHATSAPP_CAMP_RSVP } from '@/lib/whatsapp';
+import CampCountdown from '@/components/CampCountdown';
 
 const FALLBACK_PERKS = [
   'Free Consultation',
@@ -41,13 +42,16 @@ export default function HeroCampCallout() {
           Upcoming Community Camp • Sunday, Oct 11, 2026
         </div>
 
-        <div>
-          <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-            Free Mega Urology Medical Camp
-          </h2>
-          <p className="text-sm font-semibold text-teal-800 mt-0.5">
-            {camp.timeWindow ?? '10:00 AM – 2:00 PM'}
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+              Free Mega Urology Medical Camp
+            </h2>
+            <p className="text-sm font-semibold text-teal-800 mt-0.5">
+              {camp.timeWindow ?? '10:00 AM – 2:00 PM'}
+            </p>
+          </div>
+          <CampCountdown />
         </div>
 
         <div className="flex flex-wrap gap-1.5">
