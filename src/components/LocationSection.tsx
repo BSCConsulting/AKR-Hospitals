@@ -100,7 +100,7 @@ export default function LocationSection() {
                   href={mapsDirectionsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-semibold bg-teal-600 text-white hover:bg-teal-500 transition-all shadow-md shadow-teal-600/15"
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-semibold bg-teal-700 text-white hover:bg-teal-600 transition-all shadow-md shadow-teal-700/15"
                 >
                   <Navigation className="w-4 h-4" />
                   Open Google Maps Directions

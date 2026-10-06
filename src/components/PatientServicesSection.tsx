@@ -113,7 +113,7 @@ export default function PatientServicesSection({ onCheckEligibility }: PatientSe
               <button
                 type="button"
                 onClick={onCheckEligibility}
-                className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-teal-600 text-white hover:bg-teal-500 transition-colors shadow-md shadow-teal-600/15 active:scale-95"
+                className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-teal-700 text-white hover:bg-teal-600 transition-colors shadow-md shadow-teal-700/15 active:scale-95"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 Check Eligibility

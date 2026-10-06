@@ -258,7 +258,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors shadow-md shadow-[#25D366]/20"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-[#128C7E] text-white hover:bg-[#0f7a6e] transition-colors shadow-md shadow-[#128C7E]/20"
               >
                 <WhatsAppIcon className="w-4 h-4" />
                 Receive details via WhatsApp

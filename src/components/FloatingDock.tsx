@@ -49,7 +49,7 @@ export default function FloatingDock({ onOpenCareBot, careBotOpen }: FloatingDoc
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
         aria-label={expanded ? 'Close contact menu' : 'Open contact menu'}
-        className="relative w-14 h-14 rounded-full bg-teal-600 text-white shadow-lg shadow-teal-600/30 flex items-center justify-center hover:bg-teal-500 transition-colors"
+        className="relative w-14 h-14 rounded-full bg-teal-700 text-white shadow-lg shadow-teal-700/30 flex items-center justify-center hover:bg-teal-600 transition-colors"
       >
         {expanded ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
         {!expanded && (
@@ -69,7 +69,7 @@ export default function FloatingDock({ onOpenCareBot, careBotOpen }: FloatingDoc
               href={WHATSAPP_OPD_INQUIRE}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 pl-3 pr-4 h-12 rounded-full bg-[#25D366] text-white text-sm font-semibold shadow-lg shadow-[#25D366]/25 hover:bg-[#20bd5a]"
+              className="flex items-center gap-2 pl-3 pr-4 h-12 rounded-full bg-[#128C7E] text-white text-sm font-semibold shadow-lg shadow-[#128C7E]/25 hover:bg-[#0f7a6e]"
               aria-label="Chat on WhatsApp"
             >
               <WhatsAppIcon className="w-5 h-5" />
