@@ -2,10 +2,7 @@ import { motion } from 'framer-motion';
 import { Phone, Stethoscope } from 'lucide-react';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
 import { getFeaturedCamp, SUPPORT_PHONE, SUPPORT_PHONE_TEL } from '@/data/promotions';
-
-const CAMP_WA =
-  'https://wa.me/919849057185?text=' +
-  encodeURIComponent('I want to register for Free Urology Camp');
+import { WHATSAPP_CAMP_RSVP } from '@/lib/whatsapp';
 
 const FALLBACK_PERKS = [
   'Free Consultation',
@@ -73,9 +70,16 @@ export default function HeroCampCallout() {
           </p>
         )}
 
+        <p className="text-[11px] text-slate-600 leading-relaxed rounded-lg border border-sky-200 bg-sky-50/80 px-3 py-2">
+          <strong className="text-slate-800">Ultrasound subsidy:</strong> 50% off ultrasound applies
+          during camp hours (Sunday, Oct 11, 2026 · 10:00 AM – 2:00 PM) and notified OPD windows —
+          present camp token / RSVP confirmation at the diagnostics desk. Routine scans outside these
+          windows follow standard tariffs unless a separate subsidy is announced.
+        </p>
+
         <div className="flex flex-col xs:flex-row sm:flex-row gap-2 pt-0.5">
           <a
-            href={CAMP_WA}
+            href={WHATSAPP_CAMP_RSVP}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors shadow-sm"

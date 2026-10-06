@@ -60,6 +60,7 @@ export default function FounderSection() {
               Dr. A. Kondal Rao
             </h2>
             <p className="mt-1 text-base font-medium text-slate-600">MBBS</p>
+            <p className="mt-1 text-xs font-semibold text-teal-800">TSMC Reg No: TSMC/04218/1992</p>
 
             <blockquote className="mt-6 relative rounded-xl border border-teal-100 bg-teal-50/70 px-4 py-4">
               <Quote className="absolute top-3 right-3 w-5 h-5 text-teal-300" />

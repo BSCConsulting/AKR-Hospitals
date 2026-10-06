@@ -1,8 +1,9 @@
 import { ShieldCheck, Award, Ambulance, Building2, Clock, BadgeCheck } from 'lucide-react';
+import { accreditation } from '@/data/compliance';
 
 const items = [
-  { icon: ShieldCheck, label: 'NABH Accredited' },
-  { icon: Award, label: 'ISO 9001:2015' },
+  { icon: ShieldCheck, label: accreditation.nabh.full },
+  { icon: Award, label: accreditation.iso.short },
   { icon: Ambulance, label: '24/7 Trauma & Casualty' },
   { icon: Building2, label: '250-Bed Campus' },
   { icon: Clock, label: 'OPD 9 AM – 8 PM' },

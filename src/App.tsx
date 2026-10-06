@@ -10,30 +10,19 @@ import BentoGrid from '@/components/BentoGrid';
 import PatientServicesSection from '@/components/PatientServicesSection';
 import FloatingDock from '@/components/FloatingDock';
 import LiveTokenDrawer from '@/components/LiveTokenDrawer';
-import BookingModal from '@/components/BookingModal';
+import BookingModal, { type BookingDetails } from '@/components/BookingModal';
 import EligibilityChecker from '@/components/EligibilityChecker';
 import DoctorsDirectory from '@/components/DoctorsDirectory';
 import CareBot from '@/components/CareBot';
 import FounderSection from '@/components/FounderSection';
 import LocationSection from '@/components/LocationSection';
-import { WHATSAPP_LINK } from '@/components/WhatsAppButton';
+import StatutoryFooter from '@/components/StatutoryFooter';
+import { WHATSAPP_OPD_INQUIRE } from '@/lib/whatsapp';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
 import { Phone, Mail, MapPin, Activity, Shield, Award, Clock } from 'lucide-react';
 import { hospitalInfo, type Doctor } from '@/data/mockData';
+import { accreditation } from '@/data/compliance';
 import { getTodayBookingDefaults } from '@/lib/dates';
-
-interface BookingDetails {
-  department: string;
-  date: string;
-  dateLabel: string;
-  time: string;
-  doctorName: string;
-  doctorCredentials: string;
-  room: string;
-  fee: number;
-  patientName?: string;
-  mobile?: string;
-}
 
 function Footer() {
   return (
@@ -56,12 +45,13 @@ function Footer() {
               {hospitalInfo.tagline} Serving Madhira, Telangana since {hospitalInfo.established} with
               compassion, innovation, and unwavering commitment to patient outcomes.
             </p>
-            <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
-                <Shield className="w-3.5 h-3.5" /> NABH Accredited
+            <div className="flex flex-col gap-2">
+              <span className="inline-flex items-start gap-1.5 text-xs text-emerald-800 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200 max-w-md">
+                <Shield className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                <span>{accreditation.nabh.full}</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-xs text-teal-800 bg-teal-50 px-3 py-1.5 rounded-full border border-teal-200">
-                <Award className="w-3.5 h-3.5" /> ISO 9001:2015
+              <span className="inline-flex items-center gap-1.5 text-xs text-teal-800 bg-teal-50 px-3 py-1.5 rounded-full border border-teal-200 w-fit">
+                <Award className="w-3.5 h-3.5" /> {accreditation.iso.full}
               </span>
             </div>
           </div>
@@ -69,14 +59,15 @@ function Footer() {
           <div className="space-y-3">
             <h4 className="text-slate-900 font-semibold text-sm mb-3">Contact</h4>
             <a
-              href={`tel:${hospitalInfo.phone.replace(/\s/g, '')}`}
+              href={hospitalInfo.phoneTel}
               className="flex items-start gap-2.5 text-sm text-slate-600 hover:text-teal-700 transition-colors"
             >
               <Phone className="w-4 h-4 mt-0.5 text-teal-600 shrink-0" />
               {hospitalInfo.phone}
+              <span className="text-[10px] text-slate-500">(Casualty primary)</span>
             </a>
             <a
-              href={WHATSAPP_LINK}
+              href={WHATSAPP_OPD_INQUIRE}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-start gap-2.5 text-sm text-slate-600 hover:text-[#128C7E] transition-colors"
@@ -84,7 +75,7 @@ function Footer() {
               <WhatsAppIcon className="w-4 h-4 mt-0.5 text-[#25D366] shrink-0" />
               <span>
                 {hospitalInfo.appointmentLine}
-                <span className="text-[10px] text-slate-500 ml-1">(WhatsApp)</span>
+                <span className="text-[10px] text-slate-500 ml-1">(WhatsApp OPD)</span>
               </span>
             </a>
             <a
@@ -111,21 +102,27 @@ function Footer() {
 
           <div className="space-y-3">
             <h4 className="text-slate-900 font-semibold text-sm mb-3">Hours</h4>
-            <a
-              href="tel:1066"
-              className="block rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 hover:bg-red-100/80 transition-colors"
-            >
-              <div className="flex items-start gap-2.5 text-sm">
+            <div className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 space-y-2">
+              <a
+                href={hospitalInfo.phoneTel}
+                className="flex items-start gap-2.5 text-sm hover:opacity-90 transition-opacity"
+              >
                 <Clock className="w-4 h-4 mt-0.5 text-red-600 shrink-0" />
                 <div>
                   <div className="text-red-800 font-bold text-xs uppercase tracking-wide">
-                    Emergency Hours
+                    Casualty · Primary click-to-call
                   </div>
-                  <div className="text-red-700 font-bold text-base mt-0.5">1066 · 24/7/365</div>
-                  <div className="text-xs text-red-700/80 mt-0.5">{hospitalInfo.phone}</div>
+                  <div className="text-red-700 font-bold text-base mt-0.5">{hospitalInfo.phone}</div>
+                  <div className="text-xs text-red-700/80 mt-0.5">24/7 trauma & emergency desk</div>
+                </div>
+              </a>
+              <div className="pl-6 border-t border-red-200/80 pt-2">
+                <div className="text-red-800 font-semibold text-sm">1066</div>
+                <div className="text-[11px] text-red-700/90">
+                  {hospitalInfo.emergencyDispatchLabel}
                 </div>
               </div>
-            </a>
+            </div>
             <div className="flex items-start gap-2.5 text-sm text-slate-600">
               <Clock className="w-4 h-4 mt-0.5 text-teal-600 shrink-0" />
               <div>
@@ -148,11 +145,16 @@ function Footer() {
             © {new Date().getFullYear()} {hospitalInfo.name}. All rights reserved.
           </p>
           <p className="text-xs text-slate-500">
-            Emergency Helpline:{' '}
-            <span className="text-red-600 font-semibold">{hospitalInfo.emergencyPhone}</span>
+            Casualty:{' '}
+            <a href={hospitalInfo.phoneTel} className="text-red-600 font-semibold hover:underline">
+              {hospitalInfo.phone}
+            </a>
+            <span className="mx-1.5 text-slate-300">·</span>
+            1066 {hospitalInfo.emergencyDispatchLabel}
           </p>
         </div>
       </div>
+      <StatutoryFooter />
     </footer>
   );
 }
@@ -184,6 +186,9 @@ function App() {
       doctorCredentials: doctor.credentials,
       room: doctor.room,
       fee: doctor.fee,
+      campWaiverApplied: Boolean(doctor.campWaiverEligible) || doctor.fee === 0,
+      registrationNumber: doctor.registrationNumber,
+      reasonForVisit: 'Routine OPD',
     });
     setBookingOpen(true);
   };
@@ -231,10 +236,13 @@ function App() {
               date: today.date,
               dateLabel: today.dateLabel,
               time: today.time,
-              doctorName: 'Dr. R. Sharma',
-              doctorCredentials: 'MD, General Medicine',
-              room: 'Cabin 104',
-              fee: 400,
+              doctorName: 'Dr. A. Kondal Rao',
+              doctorCredentials: 'MBBS | Ex-DM&HO (Khammam)',
+              room: 'Cabin 101',
+              fee: 0,
+              campWaiverApplied: true,
+              registrationNumber: hospitalInfo.mdRegistration,
+              reasonForVisit: 'Routine OPD',
             });
             setBookingOpen(true);
           }}

@@ -1,20 +1,21 @@
 import WhatsAppIcon from '@/components/WhatsAppIcon';
-
-export const WHATSAPP_NUMBER = '919849057185';
-export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  'Hello AKR Hospital, I would like to inquire about OPD appointment and services.'
-)}`;
+import { WHATSAPP_OPD_INQUIRE } from '@/lib/whatsapp';
 
 interface WhatsAppButtonProps {
   variant?: 'floating' | 'inline';
   className?: string;
+  href?: string;
 }
 
-export default function WhatsAppButton({ variant = 'floating', className = '' }: WhatsAppButtonProps) {
+export default function WhatsAppButton({
+  variant = 'floating',
+  className = '',
+  href = WHATSAPP_OPD_INQUIRE,
+}: WhatsAppButtonProps) {
   if (variant === 'inline') {
     return (
       <a
-        href={WHATSAPP_LINK}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
         className={`inline-flex items-center gap-1.5 text-xs font-medium text-[#25D366] bg-[#25D366]/10 border border-[#25D366]/20 px-3 py-1.5 rounded-full hover:bg-[#25D366]/20 transition-colors ${className}`}

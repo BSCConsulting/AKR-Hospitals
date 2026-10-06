@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, Phone, Activity, Ambulance } from 'lucide-react';
 import { navItems, hospitalInfo } from '@/data/mockData';
+import { accreditation } from '@/data/compliance';
 import WhatsAppButton from '@/components/WhatsAppButton';
 
 export default function Navbar() {
@@ -15,16 +16,19 @@ export default function Navbar() {
 
   const emergencyPill = (
     <a
-      href="tel:1066"
-      className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors shrink-0 max-w-[min(100%,14rem)] sm:max-w-none"
-      aria-label="Call 24/7 casualty 1066"
+      href={hospitalInfo.phoneTel}
+      className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors shrink-0 max-w-[min(100%,16rem)] sm:max-w-none"
+      aria-label={`Call 24/7 casualty ${hospitalInfo.phone}`}
     >
       <Ambulance className="w-3.5 h-3.5 shrink-0" />
       <span className="truncate">
         <span className="hidden sm:inline">24/7 Casualty: </span>
         <span className="sm:hidden">Casualty </span>
-        1066
-        <span className="hidden md:inline text-red-600/80 font-semibold"> / {hospitalInfo.phone}</span>
+        {hospitalInfo.phone.replace('+91 ', '')}
+        <span className="hidden lg:inline text-red-600/80 font-semibold">
+          {' '}
+          · 1066 {hospitalInfo.emergencyDispatchLabel}
+        </span>
       </span>
     </a>
   );
@@ -42,7 +46,9 @@ export default function Navbar() {
             <span className="truncate max-w-md">{hospitalInfo.address}</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-teal-700 font-medium">NABH Accredited</span>
+            <span className="text-teal-700 font-medium truncate max-w-xs xl:max-w-md" title={accreditation.nabh.full}>
+              {accreditation.nabh.full}
+            </span>
             <WhatsAppButton variant="inline" />
           </div>
         </div>
@@ -111,12 +117,17 @@ export default function Navbar() {
           >
             <div className="px-4 py-4 space-y-1">
               <a
-                href="tel:1066"
+                href={hospitalInfo.phoneTel}
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 px-4 py-3 text-sm font-bold text-red-700 bg-red-50 border border-red-200 rounded-lg mb-2"
+                className="flex flex-col gap-0.5 px-4 py-3 text-sm font-bold text-red-700 bg-red-50 border border-red-200 rounded-lg mb-2"
               >
-                <Ambulance className="w-4 h-4" />
-                24/7 Casualty: 1066 / {hospitalInfo.phone}
+                <span className="inline-flex items-center gap-2">
+                  <Ambulance className="w-4 h-4" />
+                  24/7 Casualty: {hospitalInfo.phone}
+                </span>
+                <span className="text-[11px] font-semibold text-red-600/90 pl-6">
+                  1066 {hospitalInfo.emergencyDispatchLabel}
+                </span>
               </a>
               {navItems.map((item) => (
                 <a

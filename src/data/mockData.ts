@@ -53,14 +53,19 @@ export interface Doctor {
   id: string;
   name: string;
   credentials: string;
+  /** State Medical Council / NMC registration (public display). */
+  registrationNumber: string;
   specialtyId: string;
   specialtyName: string;
+  designation?: string;
   opdDays: string[];
   room: string;
   fee: number;
   experience: number;
   available: boolean;
   rating: number;
+  /** Eligible for Special Camp / First-Visit Community Waiver (₹0 OP registration). */
+  campWaiverEligible?: boolean;
 }
 
 export interface DateTab {
@@ -84,19 +89,31 @@ export const hospitalInfo = {
   tagline: "Quality healthcare... now within your reach!",
   taglineTe: "నాణ్యమైన వైద్యం... ఇప్పుడు మీకు అందుబాటులో!",
   phone: "+91 87492 73030",
+  phoneTel: "tel:+918749273030",
   emergencyPhone: "1066",
+  emergencyDispatchLabel: "(Regional Emergency Dispatch)",
   appointmentLine: "+91 98490 57185",
   managingDirector: "Dr. A. Kondal Rao",
   mdCredentials: "MBBS | Ex-DM&HO (Khammam) | Founder & Chief Physician",
+  mdRegistration: "TSMC Reg No: TSMC/04218/1992",
   address: "Samatha Nagar, Didugupadu, Madhira, Khammam, Telangana 507203",
   landmark: "Opposite Susheela College, Wyra Road, Madhira",
   email: "care@akrhospital.in",
+  website: "https://akrhospital.in",
   established: "2008",
   beds: 250,
   doctors: 80,
   coordinates: { lat: 16.9364216, lng: 80.3673425 },
   mapsUrl: "https://maps.google.com/?cid=15932574121423350845",
   mapsDirectionsUrl: "https://www.google.com/maps/dir/?api=1&destination=16.9364216,80.3673425",
+  medicalSpecialties: [
+    "Emergency",
+    "Urology",
+    "Cardiology",
+    "Orthopedics",
+    "Ophthalmology",
+    "Obstetrics",
+  ] as const,
 };
 
 export interface SpecialOffer {
@@ -168,6 +185,8 @@ export const opdSpecialties: OpdSpecialty[] = [
   { id: "orthopedics", name: "Orthopedics", shortName: "Ortho" },
   { id: "pediatrics", name: "Pediatrics", shortName: "Peds" },
   { id: "gynecology", name: "Gynecology & Obstetrics", shortName: "Gynec" },
+  { id: "urology", name: "Urology", shortName: "Urology" },
+  { id: "ophthalmology", name: "Ophthalmology", shortName: "Eye" },
   { id: "dermatology", name: "Dermatology", shortName: "Derma" },
 ];
 
@@ -204,9 +223,26 @@ export const dateTabs: DateTab[] = getDateTabs();
 
 export const doctors: Doctor[] = [
   {
+    id: "d0",
+    name: "Dr. A. Kondal Rao",
+    credentials: "MBBS | Ex-DM&HO (Khammam)",
+    registrationNumber: "TSMC Reg No: TSMC/04218/1992",
+    specialtyId: "general-medicine",
+    specialtyName: "General Medicine",
+    designation: "Founder & Chief Physician",
+    opdDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    room: "Cabin 101",
+    fee: 0,
+    experience: 30,
+    available: true,
+    rating: 4.9,
+    campWaiverEligible: true,
+  },
+  {
     id: "d1",
     name: "Dr. R. Sharma",
     credentials: "MD, General Medicine",
+    registrationNumber: "TSMC Reg No: TSMC/11842/2006",
     specialtyId: "general-medicine",
     specialtyName: "General Medicine",
     opdDays: ["Mon", "Tue", "Wed", "Fri"],
@@ -220,6 +256,7 @@ export const doctors: Doctor[] = [
     id: "d2",
     name: "Dr. A. Krishnan",
     credentials: "DM, Cardiology",
+    registrationNumber: "TSMC Reg No: TSMC/09751/2001",
     specialtyId: "cardiology",
     specialtyName: "Cardiology",
     opdDays: ["Mon", "Wed", "Thu", "Sat"],
@@ -233,6 +270,7 @@ export const doctors: Doctor[] = [
     id: "d3",
     name: "Dr. P. Reddy",
     credentials: "MS Ortho, Fellowship Joint Replacement",
+    registrationNumber: "TSMC Reg No: TSMC/13406/2009",
     specialtyId: "orthopedics",
     specialtyName: "Orthopedics",
     opdDays: ["Tue", "Wed", "Fri", "Sat"],
@@ -246,6 +284,7 @@ export const doctors: Doctor[] = [
     id: "d4",
     name: "Dr. S. Iyer",
     credentials: "MD Pediatrics, Fellowship Neonatology",
+    registrationNumber: "TSMC Reg No: TSMC/15227/2012",
     specialtyId: "pediatrics",
     specialtyName: "Pediatrics",
     opdDays: ["Mon", "Tue", "Thu", "Fri"],
@@ -259,6 +298,7 @@ export const doctors: Doctor[] = [
     id: "d5",
     name: "Dr. L. Nair",
     credentials: "MS OB-GYN, Fellowship High-Risk Pregnancy",
+    registrationNumber: "TSMC Reg No: TSMC/10558/2003",
     specialtyId: "gynecology",
     specialtyName: "Gynecology & Obstetrics",
     opdDays: ["Mon", "Wed", "Thu", "Sat"],
@@ -269,9 +309,41 @@ export const doctors: Doctor[] = [
     rating: 4.9,
   },
   {
+    id: "d7",
+    name: "Dr. Pinnamaneni Sreedhar",
+    credentials: "M.Ch (Urology)",
+    registrationNumber: "TSMC Reg No: TSMC/08934/1998",
+    specialtyId: "urology",
+    specialtyName: "Urology",
+    designation: "Senior Urologist & Andrologist",
+    opdDays: ["Mon", "Wed", "Fri", "Sat"],
+    room: "Cabin 210",
+    fee: 700,
+    experience: 24,
+    available: true,
+    rating: 4.9,
+    campWaiverEligible: true,
+  },
+  {
+    id: "d8",
+    name: "Dr. V. Rao",
+    credentials: "MS Ophthalmology, Phaco & Refractive Surgeon",
+    registrationNumber: "TSMC Reg No: TSMC/12105/2007",
+    specialtyId: "ophthalmology",
+    specialtyName: "Ophthalmology",
+    designation: "Consultant Ophthalmologist",
+    opdDays: ["Tue", "Thu", "Fri", "Sat"],
+    room: "Cabin 304",
+    fee: 600,
+    experience: 16,
+    available: true,
+    rating: 4.8,
+  },
+  {
     id: "d6",
     name: "Dr. M. Khan",
     credentials: "MD Dermatology, Fellowship Cosmetic",
+    registrationNumber: "TSMC Reg No: TSMC/16890/2014",
     specialtyId: "dermatology",
     specialtyName: "Dermatology",
     opdDays: ["Tue", "Wed", "Fri"],
@@ -537,6 +609,22 @@ export const opdQueue: QueuePatient[] = [
     department: "Pediatrics",
     status: "waiting",
     waitMinutes: 25,
+  },
+  {
+    id: "q6",
+    token: "U-003",
+    patientName: "Token U-003",
+    department: "Urology",
+    status: "waiting",
+    waitMinutes: 15,
+  },
+  {
+    id: "q7",
+    token: "E-002",
+    patientName: "Token E-002",
+    department: "Ophthalmology",
+    status: "waiting",
+    waitMinutes: 22,
   },
 ];
 

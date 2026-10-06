@@ -73,6 +73,10 @@ function DoctorCard({
           <div>
             <h3 className="text-slate-900 font-semibold text-sm">{doctor.name}</h3>
             <p className="text-[11px] text-slate-500 mt-0.5">{doctor.credentials}</p>
+            {doctor.designation && (
+              <p className="text-[11px] text-teal-800 font-medium mt-0.5">{doctor.designation}</p>
+            )}
+            <p className="text-[10px] text-slate-500 mt-1">{doctor.registrationNumber}</p>
           </div>
         </div>
         {doctor.available ? (
@@ -103,7 +107,9 @@ function DoctorCard({
         </div>
         <div className="flex items-center gap-2 text-xs text-slate-600">
           <CircleDollarSign className="w-3.5 h-3.5 text-slate-400" />
-          Rs. {doctor.fee} consultation
+          {doctor.campWaiverEligible || doctor.fee === 0
+            ? '₹0 OP Registration (Community Waiver)'
+            : `Standard consultation ₹${doctor.fee}`}
         </div>
         <div className="flex items-center gap-2 text-xs text-slate-600">
           <BadgeCheck className="w-3.5 h-3.5 text-slate-400" />

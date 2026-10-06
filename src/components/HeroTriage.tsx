@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Activity,
   Clock,
   Stethoscope,
   Calendar,
@@ -17,6 +16,8 @@ import {
   User,
   Phone,
   Ticket,
+  ClipboardList,
+  Filter,
 } from 'lucide-react';
 import {
   opdQueue,
@@ -30,9 +31,17 @@ import {
   type Doctor,
 } from '@/data/mockData';
 import { hasFreeOpConsultation } from '@/data/promotions';
+import { accreditation } from '@/data/compliance';
 import HeroCampCallout from '@/components/HeroCampCallout';
 import CarePathway from '@/components/CarePathway';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import {
+  VISIT_REASONS,
+  isValidIndianMobile,
+  normalizeMobile,
+  type VisitReasonId,
+} from '@/lib/validation';
+import type { BookingDetails } from '@/components/BookingModal';
 
 const statusConfig = {
   'in-consult': {
@@ -74,18 +83,7 @@ const itemVariants = {
 
 interface HeroTriageProps {
   onGenerateToken: () => void;
-  onConfirmBooking: (details: {
-    department: string;
-    date: string;
-    dateLabel: string;
-    time: string;
-    doctorName: string;
-    doctorCredentials: string;
-    room: string;
-    fee: number;
-    patientName?: string;
-    mobile?: string;
-  }) => void;
+  onConfirmBooking: (details: BookingDetails) => void;
 }
 
 function privacyQueueLabel(token: string, department: string, status: keyof typeof statusConfig) {
@@ -101,9 +99,15 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [patientName, setPatientName] = useState('');
   const [mobile, setMobile] = useState('');
-  const [formErrors, setFormErrors] = useState<{ name?: string; mobile?: string }>({});
+  const [visitReason, setVisitReason] = useState<VisitReasonId | ''>('');
+  const [formErrors, setFormErrors] = useState<{
+    name?: string;
+    mobile?: string;
+    reason?: string;
+  }>({});
   const [slotPeriod, setSlotPeriod] = useState<'morning' | 'evening'>('morning');
   const [queueTime, setQueueTime] = useState(0);
+  const [queueDeptFilter, setQueueDeptFilter] = useState('all');
   const dateTabs = useMemo(() => getDateTabs(), []);
   const freeOpActive = hasFreeOpConsultation();
 
@@ -116,6 +120,28 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
     []
   );
   const visibleSlots = slotPeriod === 'morning' ? morningSlots : eveningSlots;
+
+  const queueDepartments = useMemo(() => {
+    const set = new Set(opdQueue.map((q) => q.department));
+    return ['all', ...Array.from(set)];
+  }, []);
+
+  const filteredQueue = useMemo(
+    () =>
+      queueDeptFilter === 'all'
+        ? opdQueue
+        : opdQueue.filter((q) => q.department === queueDeptFilter),
+    [queueDeptFilter]
+  );
+
+  const estimatedWait = useMemo(() => {
+    const waiting = filteredQueue.filter((q) => q.status === 'waiting' || q.status === 'next');
+    if (waiting.length === 0) {
+      const inConsult = filteredQueue.find((q) => q.status === 'in-consult');
+      return inConsult ? 5 : 0;
+    }
+    return Math.max(...waiting.map((q) => q.waitMinutes));
+  }, [filteredQueue]);
 
   useEffect(() => {
     const interval = setInterval(() => setQueueTime((t) => t + 1), 1000);
@@ -151,15 +177,25 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
 
   const handleConfirm = () => {
     if (!selectedSlot || !selectedDoctor) return;
-    const errors: { name?: string; mobile?: string } = {};
+    const errors: { name?: string; mobile?: string; reason?: string } = {};
     if (!patientName.trim()) errors.name = 'Enter patient name';
-    if (!/^[0-9]{10}$/.test(mobile.replace(/\s/g, ''))) errors.mobile = 'Enter a valid 10-digit mobile';
+    if (!isValidIndianMobile(mobile)) {
+      errors.mobile = 'Enter a valid 10-digit Indian mobile (starts with 6–9)';
+    }
+    if (!visitReason) errors.reason = 'Select reason for visit / triage';
     setFormErrors(errors);
     if (Object.keys(errors).length > 0) return;
 
     const dateTab = dateTabs.find((d) => d.id === selectedDate);
     const slot = timeSlots.find((s) => s.id === selectedSlot);
-    if (!dateTab || !slot) return;
+    const reasonLabel = VISIT_REASONS.find((r) => r.id === visitReason)?.label;
+    if (!dateTab || !slot || !reasonLabel) return;
+
+    const waiver =
+      Boolean(selectedDoctor.campWaiverEligible) ||
+      selectedDoctor.fee === 0 ||
+      visitReason === 'camp-checkup';
+
     onConfirmBooking({
       department: opdSpecialties.find((s) => s.id === selectedDept)?.name ?? '',
       date: dateTab.date,
@@ -170,7 +206,10 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
       room: selectedDoctor.room,
       fee: selectedDoctor.fee,
       patientName: patientName.trim(),
-      mobile: mobile.replace(/\s/g, ''),
+      mobile: normalizeMobile(mobile),
+      reasonForVisit: reasonLabel,
+      campWaiverApplied: waiver,
+      registrationNumber: selectedDoctor.registrationNumber,
     });
   };
 
@@ -178,7 +217,6 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
 
   return (
     <section id="home" className="relative overflow-hidden pb-2">
-      {/* Soft floating orbs for first-impression depth */}
       <div className="pointer-events-none absolute top-16 right-[8%] w-40 h-40 rounded-full bg-teal-300/20 blur-3xl animate-float-slow hidden lg:block" />
       <div className="pointer-events-none absolute top-40 left-[4%] w-28 h-28 rounded-full bg-sky-300/20 blur-2xl animate-float-slow [animation-delay:1.2s] hidden lg:block" />
 
@@ -192,14 +230,14 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
           <div className="lg:col-span-7 space-y-3.5">
             <motion.div
               variants={itemVariants}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium max-w-full"
             >
-              <span className="relative flex h-2 w-2">
+              <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <Shield className="w-3.5 h-3.5" />
-              NABH Accredited • Est. {hospitalInfo.established}
+              <Shield className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">{accreditation.nabh.full}</span>
             </motion.div>
 
             <motion.div variants={itemVariants} className="space-y-2">
@@ -256,7 +294,6 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
               <HeroCampCallout />
             </motion.div>
 
-            {/* Single primary booking flow */}
             <motion.div
               id="appointments"
               variants={itemVariants}
@@ -268,12 +305,16 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                   <h3 className="text-slate-900 font-semibold text-sm">Book an OPD Slot</h3>
                 </div>
                 {freeOpActive && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Free OP Consultation Active
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 max-w-full text-left">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                    Special Camp / First-Visit Community Waiver: ₹0 OP Registration (Select Doctors)
                   </span>
                 )}
               </div>
+              <p className="text-[11px] text-slate-500 -mt-2">
+                Standard consultant fees (₹400–₹800) apply unless the selected doctor is under the
+                community waiver. Fee is confirmed on your appointment summary.
+              </p>
 
               <div className="grid sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
@@ -302,15 +343,40 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                     <input
                       id="hero-mobile"
                       type="tel"
+                      inputMode="numeric"
                       value={mobile}
-                      onChange={(e) => setMobile(e.target.value)}
-                      placeholder="10-digit mobile"
+                      onChange={(e) => setMobile(normalizeMobile(e.target.value))}
+                      placeholder="10-digit Indian mobile"
                       maxLength={10}
                       className="w-full bg-white/90 text-slate-900 text-sm rounded-lg pl-10 pr-3 py-2.5 border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 focus:outline-none placeholder:text-slate-400"
                     />
                   </div>
                   {formErrors.mobile && <p className="text-xs text-red-600">{formErrors.mobile}</p>}
                 </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label htmlFor="hero-visit-reason" className="text-xs font-medium text-slate-600">
+                  Reason for Visit / Triage
+                </label>
+                <div className="relative">
+                  <ClipboardList className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  <select
+                    id="hero-visit-reason"
+                    required
+                    value={visitReason}
+                    onChange={(e) => setVisitReason(e.target.value as VisitReasonId | '')}
+                    className="w-full bg-white/90 text-slate-800 text-sm rounded-lg pl-10 pr-3 py-2.5 border border-slate-200 focus:border-teal-500 focus:outline-none cursor-pointer"
+                  >
+                    <option value="">Select reason…</option>
+                    {VISIT_REASONS.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {formErrors.reason && <p className="text-xs text-red-600">{formErrors.reason}</p>}
               </div>
 
               <div className="space-y-1.5">
@@ -422,6 +488,14 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                     <div>
                       <div className="text-sm font-semibold text-slate-900">{selectedDoctor.name}</div>
                       <div className="text-[11px] text-slate-500">{selectedDoctor.credentials}</div>
+                      {selectedDoctor.designation && (
+                        <div className="text-[11px] text-teal-800 font-medium mt-0.5">
+                          {selectedDoctor.designation}
+                        </div>
+                      )}
+                      <div className="text-[10px] text-slate-500 mt-1">
+                        {selectedDoctor.registrationNumber}
+                      </div>
                       <div className="flex items-center gap-3 mt-1.5 text-[11px] text-slate-600">
                         <span className="flex items-center gap-1">
                           <MapPin className="w-3 h-3 text-teal-600" />
@@ -429,7 +503,9 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                         </span>
                         <span className="flex items-center gap-1">
                           <CircleDollarSign className="w-3 h-3 text-teal-600" />
-                          Rs. {selectedDoctor.fee}
+                          {selectedDoctor.campWaiverEligible || selectedDoctor.fee === 0
+                            ? '₹0 OP Registration (Waiver)'
+                            : `Standard fee ₹${selectedDoctor.fee}`}
                         </span>
                       </div>
                     </div>
@@ -482,11 +558,10 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
             </motion.div>
           </div>
 
-          {/* Live queue — privacy compliant + animated wait bars */}
           <motion.div variants={itemVariants} className="lg:col-span-5 lg:sticky lg:top-24 self-start">
             <div className="glass-surface p-4 sm:p-5 overflow-hidden relative">
               <div className="absolute inset-x-0 top-0 h-1 shimmer-bar" aria-hidden />
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-3 gap-2">
                 <div className="flex items-center gap-2">
                   <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
@@ -499,14 +574,62 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 </span>
               </div>
 
+              <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50/80 px-3 py-2.5 flex items-center justify-between gap-2">
+                <div>
+                  <div className="text-[10px] uppercase tracking-wide font-semibold text-amber-800">
+                    Estimated Wait Time
+                  </div>
+                  <div className="text-lg font-bold text-slate-900 tabular-nums">
+                    {estimatedWait > 0 ? `~${estimatedWait} mins` : 'No wait'}
+                  </div>
+                </div>
+                <Clock className="w-5 h-5 text-amber-600" />
+              </div>
+
+              <div className="mb-3 space-y-1.5">
+                <label
+                  htmlFor="queue-dept-filter"
+                  className="text-[11px] font-medium text-slate-600 flex items-center gap-1"
+                >
+                  <Filter className="w-3 h-3" />
+                  Department filter
+                </label>
+                <select
+                  id="queue-dept-filter"
+                  value={queueDeptFilter}
+                  onChange={(e) => setQueueDeptFilter(e.target.value)}
+                  className="w-full bg-white/90 text-slate-800 text-xs rounded-lg px-3 py-2 border border-slate-200 focus:border-teal-500 focus:outline-none cursor-pointer"
+                >
+                  {queueDepartments.map((d) => (
+                    <option key={d} value={d}>
+                      {d === 'all' ? 'All departments' : d}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="grid grid-cols-3 gap-2 mb-3">
                 {[
-                  { label: 'Serving', value: opdQueue.find((q) => q.status === 'in-consult')?.token ?? '—' },
-                  { label: 'Next', value: opdQueue.find((q) => q.status === 'next')?.token ?? '—' },
-                  { label: 'Waiting', value: String(opdQueue.filter((q) => q.status === 'waiting').length) },
+                  {
+                    label: 'Serving',
+                    value: filteredQueue.find((q) => q.status === 'in-consult')?.token ?? '—',
+                  },
+                  {
+                    label: 'Next',
+                    value: filteredQueue.find((q) => q.status === 'next')?.token ?? '—',
+                  },
+                  {
+                    label: 'Waiting',
+                    value: String(filteredQueue.filter((q) => q.status === 'waiting').length),
+                  },
                 ].map((cell) => (
-                  <div key={cell.label} className="rounded-xl bg-white/80 border border-slate-200 px-2 py-2 text-center">
-                    <div className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">{cell.label}</div>
+                  <div
+                    key={cell.label}
+                    className="rounded-xl bg-white/80 border border-slate-200 px-2 py-2 text-center"
+                  >
+                    <div className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">
+                      {cell.label}
+                    </div>
                     <div className="text-sm font-bold text-slate-900 mt-0.5">{cell.value}</div>
                   </div>
                 ))}
@@ -516,7 +639,12 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 Privacy-safe view — token & department only.
               </p>
               <div className="space-y-2">
-                {opdQueue.map((q, qi) => {
+                {filteredQueue.length === 0 && (
+                  <div className="rounded-xl border border-dashed border-slate-200 px-3 py-4 text-center text-xs text-slate-500">
+                    No tokens in this department right now.
+                  </div>
+                )}
+                {filteredQueue.map((q, qi) => {
                   const cfg = statusConfig[q.status];
                   const Icon = cfg.icon;
                   const progress =

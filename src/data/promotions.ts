@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = '919849057185';
+import { WHATSAPP_CAMP_RSVP, WHATSAPP_OPD_INQUIRE } from '@/lib/whatsapp';
 
 export type PromotionType = 'camp' | 'discount' | 'general';
 
@@ -27,10 +27,6 @@ export interface Promotion {
   timeWindow?: string;
   /** Card status badge */
   statusLabel?: 'LIMITED TIME CAMP' | 'UPCOMING EVENT' | 'ALWAYS ON';
-}
-
-function waLink(message: string): string {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 /** Toggle `isActive` here to show/hide campaigns site-wide. */
@@ -72,19 +68,18 @@ export const promotions: Promotion[] = [
       'Frequent night urination',
       'Blood in urine',
     ],
-    whatsappCTA: waLink(
-      'Hello AKR Hospital, I want to RSVP / claim a free token for the Free Mega Urology Medical Camp.'
-    ),
+    whatsappCTA: WHATSAPP_CAMP_RSVP,
   },
   {
     id: 'free-op-kondal-rao',
     type: 'discount',
     isActive: true,
-    title: 'Free OP Consultation',
-    highlightBadge: 'Free OP with Dr. Kondal Rao',
-    date: 'Daily during OPD hours (9 AM – 8 PM)',
+    title: 'Special Camp / First-Visit Community Waiver',
+    highlightBadge: '₹0 OP Registration (Select Doctors)',
+    date: 'Daily during OPD hours (9 AM – 8 PM) · Select consultants',
     statusLabel: 'ALWAYS ON',
-    announcementText: 'Free OP Consultation active with Dr. A. Kondal Rao',
+    announcementText:
+      'Community Waiver: ₹0 OP Registration with select doctors (Dr. Kondal Rao & camp clinicians)',
     doctors: [
       {
         name: 'Dr. A. Kondal Rao',
@@ -92,11 +87,12 @@ export const promotions: Promotion[] = [
         qualification: 'MBBS | Ex-DM&HO (Khammam)',
       },
     ],
-    benefits: ['Free OP Consultation', 'Community healthcare initiative'],
+    benefits: [
+      '₹0 OP registration for first-visit / community waiver doctors',
+      'Standard consultant fees (₹400–₹800) apply to other specialists',
+    ],
     symptoms: [],
-    whatsappCTA: waLink(
-      'Hello AKR Hospital, I would like to book a Free OP Consultation with Dr. A. Kondal Rao.'
-    ),
+    whatsappCTA: WHATSAPP_OPD_INQUIRE,
   },
   {
     id: 'lab-30',
@@ -109,9 +105,7 @@ export const promotions: Promotion[] = [
     doctors: [],
     benefits: ['30% flat discount on laboratory tests', 'Computerized diagnostics'],
     symptoms: [],
-    whatsappCTA: waLink(
-      'Hello AKR Hospital, I am interested in the 30% off laboratory test offer.'
-    ),
+    whatsappCTA: WHATSAPP_OPD_INQUIRE,
   },
   {
     id: 'pharmacy-20',
@@ -124,9 +118,7 @@ export const promotions: Promotion[] = [
     doctors: [],
     benefits: ['20% discount on medicines', '24/7 pharmacy availability'],
     symptoms: [],
-    whatsappCTA: waLink(
-      'Hello AKR Hospital, I would like details on the 20% pharmacy discount.'
-    ),
+    whatsappCTA: WHATSAPP_OPD_INQUIRE,
   },
   {
     id: 'ultrasound-50',
@@ -137,11 +129,12 @@ export const promotions: Promotion[] = [
     date: 'During active camp hours & selected OPD windows',
     statusLabel: 'ALWAYS ON',
     doctors: [],
-    benefits: ['Ultrasound scan at 50% off', 'Same-day reporting where available'],
+    benefits: [
+      'Ultrasound 50% off during Mega Urology Camp hours (Oct 11, 10 AM–2 PM) and notified OPD windows',
+      'Same-day reporting where available',
+    ],
     symptoms: [],
-    whatsappCTA: waLink(
-      'Hello AKR Hospital, I want to avail 50% off on ultrasound scan.'
-    ),
+    whatsappCTA: WHATSAPP_OPD_INQUIRE,
   },
 ];
 

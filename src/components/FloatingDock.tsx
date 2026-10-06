@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
-import { WHATSAPP_LINK } from '@/components/WhatsAppButton';
+import { WHATSAPP_OPD_INQUIRE } from '@/lib/whatsapp';
 
 interface FloatingDockProps {
   onOpenCareBot: () => void;
@@ -66,7 +66,7 @@ export default function FloatingDock({ onOpenCareBot, careBotOpen }: FloatingDoc
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.9 }}
               transition={{ duration: 0.15 }}
-              href={WHATSAPP_LINK}
+              href={WHATSAPP_OPD_INQUIRE}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 pl-3 pr-4 h-12 rounded-full bg-[#25D366] text-white text-sm font-semibold shadow-lg shadow-[#25D366]/25 hover:bg-[#20bd5a]"

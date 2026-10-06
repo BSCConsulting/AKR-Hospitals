@@ -19,6 +19,7 @@ import {
   SUPPORT_PHONE_TEL,
   type Promotion,
 } from '@/data/promotions';
+import { WHATSAPP_OPD_INQUIRE } from '@/lib/whatsapp';
 
 function CampFeatureCard({ camp }: { camp: Promotion }) {
   return (
@@ -133,6 +134,12 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
           </div>
         )}
 
+        <p className="text-[11px] text-slate-600 leading-relaxed rounded-lg border border-sky-200 bg-sky-50/80 px-3 py-2">
+          <strong className="text-slate-800">Ultrasound subsidy condition:</strong> 50% off ultrasound
+          is valid only during camp hours ({camp.timeWindow ?? 'see schedule'}) on the camp date, or
+          other windows notified by the hospital. Bring your WhatsApp RSVP / camp token to diagnostics.
+        </p>
+
         <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
           <a
             href={camp.whatsappCTA}
@@ -236,9 +243,7 @@ function PreventativePackagesFallback() {
         ))}
       </ul>
       <a
-        href={`https://wa.me/919849057185?text=${encodeURIComponent(
-          'Hello AKR Hospital, I want details on preventative health packages.'
-        )}`}
+        href={WHATSAPP_OPD_INQUIRE}
         target="_blank"
         rel="noopener noreferrer"
         className="mt-5 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors"
