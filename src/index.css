@@ -53,6 +53,11 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
+  /** Mobile sticky CTA bar height (buttons + padding; safe-area added separately). */
+  :root {
+    --mobile-sticky-h: 4.25rem;
+  }
+
   /** Institutional vertical rhythm for major sections. */
   .section-pad {
     @apply py-12 md:py-16;

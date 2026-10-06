@@ -27,7 +27,7 @@ import { getTodayBookingDefaults } from '@/lib/dates';
 
 function Footer() {
   return (
-    <footer id="contact" className="relative bg-white/70 border-t border-slate-200 pb-28 md:pb-10">
+    <footer id="contact" className="relative bg-white/70 border-t border-slate-200 pb-24 md:pb-10">
       <div className="section-shell py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Col 1 — Brand */}

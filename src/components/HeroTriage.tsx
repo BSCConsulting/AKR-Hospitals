@@ -312,15 +312,15 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
               variants={itemVariants}
               className="glass-surface p-4 sm:p-6 space-y-3.5 sm:space-y-4 scroll-mt-24 sm:scroll-mt-28 order-4 sm:order-6"
             >
-              <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-teal-600" />
+                  <Calendar className="w-4 h-4 text-teal-600 shrink-0" />
                   <h2 className="text-slate-900 font-semibold text-sm">Book an OPD Slot</h2>
                 </div>
                 {freeOpActive && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 max-w-full text-left">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 w-fit max-w-full">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                    <span className="sm:hidden">₹0 OP waiver — select doctors</span>
+                    <span className="sm:hidden">₹0 OP waiver (select doctors)</span>
                     <span className="hidden sm:inline">
                       Special Camp / First-Visit Community Waiver: ₹0 OP Registration (Select
                       Doctors)
