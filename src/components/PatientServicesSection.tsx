@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ShieldCheck, Clock, FileText, CheckCircle2, Phone } from 'lucide-react';
 import { hospitalInfo, insuranceProviders } from '@/data/mockData';
+import AnimatedCounter from '@/components/AnimatedCounter';
 
 interface PatientServicesSectionProps {
   onCheckEligibility: () => void;
@@ -45,7 +46,9 @@ export default function PatientServicesSection({ onCheckEligibility }: PatientSe
                 </p>
               </div>
               <div className="text-right shrink-0">
-                <div className="text-2xl font-bold text-teal-700">{insuranceProviders.length}+</div>
+                <div className="text-2xl font-bold text-teal-700">
+                  <AnimatedCounter value={insuranceProviders.length} suffix="+" />
+                </div>
                 <div className="text-[11px] text-slate-500 uppercase tracking-wide">Insurers</div>
               </div>
             </div>

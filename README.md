@@ -4,6 +4,8 @@ Patient-facing website for **Dr. AKR's Multispeciality Hospital** (Madhira, Tela
 
 Built with Vite, React, TypeScript, Tailwind CSS, Framer Motion, and optional Supabase realtime for the OPD queue.
 
+The homepage first fold is motion-led: animated counters, a 4-step care pathway, trust ticker, impact stats, campus capacity bars, and a live OPD queue with progress — denser spacing so the page feels rich on first look.
+
 ## Quick start
 
 ```bash
