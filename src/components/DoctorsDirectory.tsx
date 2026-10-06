@@ -12,7 +12,7 @@ import { doctors, type Doctor } from '@/data/mockData';
 import DoctorAvatar from '@/components/DoctorAvatar';
 
 interface DoctorsDirectoryProps {
-  onBookDoctor: (doctor: Doctor) => void;
+  onBookDoctor: (doctor: Doctor, preferNextDay?: boolean) => void;
 }
 
 export default function DoctorsDirectory({ onBookDoctor }: DoctorsDirectoryProps) {
@@ -56,7 +56,7 @@ function DoctorCard({
 }: {
   doctor: Doctor;
   index: number;
-  onBook: (d: Doctor) => void;
+  onBook: (d: Doctor, preferNextDay?: boolean) => void;
 }) {
   return (
     <motion.div
@@ -117,12 +117,11 @@ function DoctorCard({
 
       <button
         type="button"
-        onClick={() => onBook(doctor)}
-        disabled={!doctor.available}
+        onClick={() => onBook(doctor, !doctor.available)}
         className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
           doctor.available
             ? 'bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-600/15'
-            : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+            : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200'
         }`}
       >
         {doctor.available ? (
@@ -131,7 +130,10 @@ function DoctorCard({
             <ArrowRight className="w-4 h-4" />
           </>
         ) : (
-          'Not Available Today'
+          <>
+            Book Next Available: Tomorrow
+            <ArrowRight className="w-4 h-4" />
+          </>
         )}
       </button>
     </motion.div>

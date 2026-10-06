@@ -30,6 +30,7 @@ import {
   type Doctor,
 } from '@/data/mockData';
 import { hasFreeOpConsultation } from '@/data/promotions';
+import HeroCampCallout from '@/components/HeroCampCallout';
 
 const statusConfig = {
   'in-consult': {
@@ -99,9 +100,20 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
   const [patientName, setPatientName] = useState('');
   const [mobile, setMobile] = useState('');
   const [formErrors, setFormErrors] = useState<{ name?: string; mobile?: string }>({});
+  const [slotPeriod, setSlotPeriod] = useState<'morning' | 'evening'>('morning');
   const [queueTime, setQueueTime] = useState(0);
   const dateTabs = useMemo(() => getDateTabs(), []);
   const freeOpActive = hasFreeOpConsultation();
+
+  const morningSlots = useMemo(
+    () => timeSlots.filter((s) => Number(s.time.split(':')[0]) < 14),
+    []
+  );
+  const eveningSlots = useMemo(
+    () => timeSlots.filter((s) => Number(s.time.split(':')[0]) >= 14),
+    []
+  );
+  const visibleSlots = slotPeriod === 'morning' ? morningSlots : eveningSlots;
 
   useEffect(() => {
     const interval = setInterval(() => setQueueTime((t) => t + 1), 1000);
@@ -221,6 +233,10 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
               </div>
             </motion.div>
 
+            <motion.div variants={itemVariants}>
+              <HeroCampCallout />
+            </motion.div>
+
             {/* Single primary booking flow */}
             <motion.div
               id="appointments"
@@ -318,8 +334,35 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 ))}
               </div>
 
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                {timeSlots.map((slot: TimeSlot) => {
+              <div className="inline-flex p-1 bg-slate-100/90 border border-slate-200 rounded-xl w-full sm:w-auto">
+                {(
+                  [
+                    { id: 'morning' as const, label: 'Morning', hint: '09:00 – 13:00' },
+                    { id: 'evening' as const, label: 'Evening', hint: '14:00 – 19:00' },
+                  ] as const
+                ).map((period) => (
+                  <button
+                    key={period.id}
+                    type="button"
+                    onClick={() => {
+                      setSlotPeriod(period.id);
+                      setSelectedSlot(null);
+                      setSelectedDoctor(null);
+                    }}
+                    className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-left transition-all ${
+                      slotPeriod === period.id
+                        ? 'bg-white text-teal-800 shadow-sm border border-teal-200'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <div className="text-xs font-semibold">{period.label}</div>
+                    <div className="text-[10px] text-slate-500">{period.hint}</div>
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                {visibleSlots.map((slot: TimeSlot) => {
                   const isSelected = selectedSlot === slot.id;
                   return (
                     <motion.button

@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import AnnouncementBar from '@/components/AnnouncementBar';
 import Navbar from '@/components/Navbar';
+import { getDateTabs } from '@/data/mockData';
 import HeroTriage from '@/components/HeroTriage';
 import CampsAndOffersSection from '@/components/CampsAndOffersSection';
 import BentoGrid from '@/components/BentoGrid';
 import PatientServicesSection from '@/components/PatientServicesSection';
-import EmergencyBar from '@/components/EmergencyBar';
 import FloatingDock from '@/components/FloatingDock';
 import LiveTokenDrawer from '@/components/LiveTokenDrawer';
 import BookingModal from '@/components/BookingModal';
@@ -109,13 +108,21 @@ function Footer() {
 
           <div className="space-y-3">
             <h4 className="text-slate-900 font-semibold text-sm mb-3">Hours</h4>
-            <div className="flex items-start gap-2.5 text-sm text-slate-600">
-              <Clock className="w-4 h-4 mt-0.5 text-red-500 shrink-0" />
-              <div>
-                <div className="text-slate-900 font-medium text-xs">Emergency</div>
-                <div className="text-xs text-slate-500">24 / 7 / 365</div>
+            <a
+              href="tel:1066"
+              className="block rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 hover:bg-red-100/80 transition-colors"
+            >
+              <div className="flex items-start gap-2.5 text-sm">
+                <Clock className="w-4 h-4 mt-0.5 text-red-600 shrink-0" />
+                <div>
+                  <div className="text-red-800 font-bold text-xs uppercase tracking-wide">
+                    Emergency Hours
+                  </div>
+                  <div className="text-red-700 font-bold text-base mt-0.5">1066 · 24/7/365</div>
+                  <div className="text-xs text-red-700/80 mt-0.5">{hospitalInfo.phone}</div>
+                </div>
               </div>
-            </div>
+            </a>
             <div className="flex items-start gap-2.5 text-sm text-slate-600">
               <Clock className="w-4 h-4 mt-0.5 text-teal-600 shrink-0" />
               <div>
@@ -159,13 +166,17 @@ function App() {
     setBookingOpen(true);
   };
 
-  const handleBookDoctor = (doctor: Doctor) => {
-    const today = getTodayBookingDefaults();
+  const handleBookDoctor = (doctor: Doctor, preferNextDay = false) => {
+    const tabs = getDateTabs();
+    const tab = preferNextDay
+      ? tabs.find((t) => t.id === 'tomorrow') ?? tabs[1] ?? tabs[0]
+      : tabs[0];
+    const defaults = getTodayBookingDefaults();
     setBookingDetails({
       department: doctor.specialtyName,
-      date: today.date,
-      dateLabel: today.dateLabel,
-      time: today.time,
+      date: tab.date,
+      dateLabel: `${tab.label}, ${tab.subLabel}`,
+      time: defaults.time,
       doctorName: doctor.name,
       doctorCredentials: doctor.credentials,
       room: doctor.room,
@@ -177,7 +188,6 @@ function App() {
   return (
     <div className="page-canvas text-slate-700">
       <div className="relative z-[1]">
-        <AnnouncementBar />
         <Navbar />
         <main>
           <HeroTriage
@@ -192,7 +202,6 @@ function App() {
           <LocationSection />
         </main>
         <Footer />
-        <EmergencyBar />
         <FloatingDock onOpenCareBot={() => setCareBotOpen(true)} careBotOpen={careBotOpen} />
         <LiveTokenDrawer open={tokenOpen} onClose={() => setTokenOpen(false)} />
         <BookingModal

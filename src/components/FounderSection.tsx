@@ -1,73 +1,103 @@
 import { motion } from 'framer-motion';
-import { Award, Stethoscope } from 'lucide-react';
+import { Award, Building2, HeartPulse, Landmark, Quote } from 'lucide-react';
+
+const highlights = [
+  {
+    icon: Landmark,
+    title: 'Public Health Governance',
+    body: 'Served as District Medical & Health Officer (DM&HO), Khammam.',
+  },
+  {
+    icon: HeartPulse,
+    title: 'Clinical Stewardship',
+    body: '30+ years institutional medicine & acute care management.',
+  },
+  {
+    icon: Building2,
+    title: 'Institutional Trust',
+    body: 'Founded in 2008; scaled to 250 beds with NABH accreditation.',
+  },
+];
 
 export default function FounderSection() {
   return (
     <section id="founder" className="relative py-20 lg:py-28 overflow-hidden">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="max-w-2xl mx-auto text-center mb-10 sm:mb-12"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium mb-4">
-            <Stethoscope className="w-3.5 h-3.5" />
-            Leadership
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-            Meet Our Founder
-          </h2>
-          <p className="text-slate-600 mt-3 text-lg leading-relaxed">
-            A dedicated and experienced professional committed to your health.
-          </p>
-        </motion.div>
-
-        <motion.article
-          initial={{ opacity: 0, y: 28 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto max-w-2xl glass-surface p-6 sm:p-10"
+          transition={{ duration: 0.5 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-stretch"
         >
-          <div className="flex flex-col items-center text-center">
-            <div className="relative mb-6">
-              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-teal-300 via-emerald-400 to-teal-600 opacity-70 blur-[2px]" />
-              <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full p-[3px] bg-gradient-to-br from-teal-400 to-emerald-600 shadow-lg shadow-teal-600/15">
+          {/* Left — visual anchor */}
+          <div className="relative glass-surface p-4 sm:p-6 flex flex-col items-center justify-center">
+            <div className="relative w-full max-w-md mx-auto">
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-teal-300/50 via-emerald-200/40 to-sky-200/40 blur-sm" />
+              <div className="relative rounded-2xl overflow-hidden border border-white shadow-lg shadow-slate-900/10 bg-slate-100 aspect-[3/4] max-h-[28rem] mx-auto">
                 <img
                   src="/founder-dr-kondal-rao.png"
                   alt="Dr. A. Kondal Rao, Founder & Chief Physician"
-                  className="w-full h-full rounded-full object-cover object-[center_18%] bg-slate-100 ring-4 ring-white"
+                  className="w-full h-full object-cover object-[center_15%]"
                   loading="lazy"
                 />
               </div>
+              <div className="absolute bottom-4 left-4 right-4">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/95 backdrop-blur-md border border-teal-200 px-3.5 py-2 shadow-md text-xs sm:text-sm font-semibold text-teal-900">
+                  <Award className="w-4 h-4 text-teal-600 shrink-0" />
+                  Ex-DM&amp;HO, Khammam • 30+ Years Clinical Leadership
+                </div>
+              </div>
             </div>
+          </div>
 
-            <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-              Dr. A. Kondal Rao
-            </h3>
-            <p className="mt-1.5 text-sm sm:text-base font-medium text-teal-700">
+          {/* Right — structured authority card */}
+          <div className="glass-surface p-6 sm:p-8 flex flex-col">
+            <p className="text-[11px] font-bold tracking-[0.14em] uppercase text-teal-700 mb-3">
               Founder & Chief Physician
             </p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+              Dr. A. Kondal Rao
+            </h2>
+            <p className="mt-1 text-base font-medium text-slate-600">MBBS</p>
 
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3.5 py-1.5 text-xs sm:text-sm font-medium text-teal-800">
-              <Award className="w-3.5 h-3.5 text-teal-700 shrink-0" />
-              <span>MBBS | Ex-DM&amp;HO (Khammam)</span>
+            <blockquote className="mt-6 relative rounded-xl border border-teal-100 bg-teal-50/70 px-4 py-4">
+              <Quote className="absolute top-3 right-3 w-5 h-5 text-teal-300" />
+              <p className="text-sm sm:text-base text-slate-700 leading-relaxed italic pr-6">
+                Bringing tertiary-grade trauma and diagnostic infrastructure directly to rural
+                and semi-urban communities across Khammam.
+              </p>
+            </blockquote>
+
+            <ul className="mt-6 space-y-4 flex-1">
+              {highlights.map((item) => (
+                <li key={item.title} className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0">
+                    <item.icon className="w-5 h-5 text-teal-700" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-slate-900">{item.title}</div>
+                    <div className="text-sm text-slate-600 mt-0.5 leading-relaxed">{item.body}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 pt-5 border-t border-slate-200 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-teal-600/20">
+                AKR
+              </div>
+              <div>
+                <div className="text-xs font-bold tracking-wide text-slate-900 uppercase">
+                  Institutional Seal
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Dr. AKR&apos;s Multispeciality Hospital · Est. 2008
+                </div>
+              </div>
             </div>
-
-            <p className="mt-6 text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
-              With over three decades of distinguished clinical and public healthcare
-              leadership, Dr. A. Kondal Rao serves as the Founder and Chief Physician of
-              AKR Super Speciality Hospital. Formerly the District Medical &amp; Health
-              Officer (DM&amp;HO) for Khammam, Dr. Rao brings seasoned clinical acumen
-              and strategic healthcare governance to the institution. Under his
-              stewardship, the hospital delivers patient-centered, compassionate care
-              guided by multidisciplinary clinical excellence and rigorous medical
-              standards.
-            </p>
           </div>
-        </motion.article>
+        </motion.div>
       </div>
     </section>
   );
