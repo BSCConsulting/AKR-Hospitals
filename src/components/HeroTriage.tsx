@@ -302,7 +302,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-slate-900 font-semibold text-sm">Book an OPD Slot</h3>
+                  <h2 className="text-slate-900 font-semibold text-sm">Book an OPD Slot</h2>
                 </div>
                 {freeOpActive && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 max-w-full text-left">
@@ -573,7 +573,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
                   </span>
-                  <h3 className="text-slate-900 font-semibold text-sm">Live OPD Queue</h3>
+                  <h2 className="text-slate-900 font-semibold text-sm">Live OPD Queue</h2>
                 </div>
                 <span className="text-[11px] font-mono text-teal-700 bg-teal-50 border border-teal-100 px-2 py-0.5 rounded-md tabular-nums">
                   {formatClock(queueTime)}

@@ -18,14 +18,14 @@ export default function Navbar() {
     <a
       href={hospitalInfo.phoneTel}
       className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors shrink-0 max-w-[min(100%,16rem)] sm:max-w-none"
-      aria-label={`Call 24/7 casualty ${hospitalInfo.phone}`}
+      aria-label={`24/7 Casualty: ${hospitalInfo.phone.replace('+91 ', '')}`}
     >
-      <Ambulance className="w-3.5 h-3.5 shrink-0" />
+      <Ambulance className="w-3.5 h-3.5 shrink-0" aria-hidden />
       <span className="truncate">
         <span className="hidden sm:inline">24/7 Casualty: </span>
         <span className="sm:hidden">Casualty </span>
         {hospitalInfo.phone.replace('+91 ', '')}
-        <span className="hidden lg:inline text-red-600/80 font-semibold">
+        <span className="hidden lg:inline text-red-700/90 font-semibold">
           {' '}
           · 1066 {hospitalInfo.emergencyDispatchLabel}
         </span>
@@ -67,7 +67,7 @@ export default function Navbar() {
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-slate-900 font-bold text-base tracking-tight">
-                  AKR <span className="text-teal-600">Hospital</span>
+                  AKR <span className="text-teal-700">Hospital</span>
                 </span>
                 <span className="text-[10px] text-slate-500 font-medium tracking-wide uppercase mt-0.5">
                   Multi-Speciality
