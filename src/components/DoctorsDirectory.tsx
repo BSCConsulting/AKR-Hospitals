@@ -72,8 +72,8 @@ function DoctorCard({
       whileHover={{ y: -4 }}
       className="group glass-surface p-5"
     >
-      <div className="flex items-start justify-between mb-4 gap-2">
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="flex flex-wrap items-start justify-between mb-4 gap-2">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
           <DoctorAvatar name={doctor.name} size="md" />
           <div className="min-w-0">
             <h3 className="text-slate-900 font-semibold text-sm">{doctor.name}</h3>
@@ -84,13 +84,13 @@ function DoctorCard({
           </div>
         </div>
         {doctor.available ? (
-          <span className="shrink-0 flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+          <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Available Today
+            Available
           </span>
         ) : (
           <span className="shrink-0 text-[10px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-            Next Available: Tomorrow
+            Tomorrow
           </span>
         )}
       </div>
@@ -140,7 +140,7 @@ function DoctorCard({
       <button
         type="button"
         onClick={() => onBook(doctor, !doctor.available)}
-        className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all active:scale-95 ${
+        className={`w-full flex items-center justify-center gap-2 px-4 py-3 min-h-12 rounded-xl text-sm font-semibold transition-all active:scale-[0.98] ${
           doctor.available
             ? 'bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-600/15'
             : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200'
@@ -153,7 +153,8 @@ function DoctorCard({
           </>
         ) : (
           <>
-            Book Next Available: Tomorrow
+            <span className="sm:hidden">Book Tomorrow</span>
+            <span className="hidden sm:inline">Book Next Available: Tomorrow</span>
             <ArrowRight className="w-4 h-4" />
           </>
         )}

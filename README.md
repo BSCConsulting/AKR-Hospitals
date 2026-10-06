@@ -6,6 +6,8 @@ Built with Vite, React, TypeScript, Tailwind CSS, Framer Motion, and optional Su
 
 The homepage first fold is motion-led: animated counters, a 4-step care pathway, trust ticker, impact stats, campus capacity bars, and a live OPD queue with progress — denser spacing so the page feels rich on first look.
 
+**Mobile-first:** ~phone layouts prioritize Book OPD above pathway/camp blocks, use 44px+ touch targets, a sticky Casualty/Book bar, and a contact FAB cleared above that bar. Nav casualty CTA dials `1066`.
+
 Production readiness includes TSMC/NMC registration numbers on consultant cards, NABH/ISO certificate seals, DPDP 2023 / telemedicine / BMW statutory modals, OPD triage + Indian mobile validation, `AKR-OPD-XXX` booking references, WhatsApp deep links, casualty primary click-to-call (`+91 87492 73030`), and Schema.org Hospital JSON-LD targeting `https://akrhospital.in`.
 
 ## Quick start

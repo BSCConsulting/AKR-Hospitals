@@ -41,7 +41,7 @@ export default function FloatingDock({ onOpenCareBot, careBotOpen }: FloatingDoc
   return (
     <div
       ref={rootRef}
-      className="fixed z-40 right-4 md:right-6 bottom-[5.75rem] md:bottom-6 flex flex-col-reverse items-center gap-3"
+      className="fixed z-40 right-3 sm:right-4 md:right-6 bottom-[calc(6.75rem+env(safe-area-inset-bottom))] md:bottom-6 flex flex-col-reverse items-end gap-3"
       aria-label="Quick contact menu"
     >
       <button
@@ -49,7 +49,7 @@ export default function FloatingDock({ onOpenCareBot, careBotOpen }: FloatingDoc
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
         aria-label={expanded ? 'Close contact menu' : 'Open contact menu'}
-        className="relative w-14 h-14 rounded-full bg-teal-700 text-white shadow-lg shadow-teal-700/30 flex items-center justify-center hover:bg-teal-600 transition-colors"
+        className="relative w-14 h-14 min-w-14 min-h-14 rounded-full bg-teal-700 text-white shadow-lg shadow-teal-700/30 flex items-center justify-center hover:bg-teal-600 active:scale-95 transition-transform"
       >
         {expanded ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
         {!expanded && (

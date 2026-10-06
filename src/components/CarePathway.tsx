@@ -62,19 +62,23 @@ export default function CarePathway() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.08, duration: 0.4 }}
               whileHover={{ y: -3 }}
-              className="flex flex-col items-center text-center rounded-xl border border-slate-200/80 bg-white/80 px-2 py-3 hover:border-teal-300 hover:shadow-md hover:shadow-teal-600/10 transition-all"
+              className="flex flex-col items-center text-center rounded-xl border border-slate-200/80 bg-white/80 px-1.5 sm:px-2 py-2.5 sm:py-3 min-h-[6.5rem] sm:min-h-0 hover:border-teal-300 hover:shadow-md hover:shadow-teal-600/10 active:scale-[0.98] transition-all"
             >
-              <span className="relative mb-2">
+              <span className="relative mb-1.5 sm:mb-2">
                 <span className="absolute inset-0 rounded-full bg-teal-400/20 animate-pulse-ring" />
-                <span className="relative w-11 h-11 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center shadow-md shadow-teal-600/20">
-                  <step.icon className="w-5 h-5" />
+                <span className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center shadow-md shadow-teal-600/20">
+                  <step.icon className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
                 </span>
                 <span className="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center">
                   {i + 1}
                 </span>
               </span>
-              <span className="text-xs font-bold text-slate-900">{step.title}</span>
-              <span className="text-[10px] text-slate-500 mt-0.5 leading-snug">{step.desc}</span>
+              <span className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight">
+                {step.title}
+              </span>
+              <span className="text-[9px] sm:text-[10px] text-slate-500 mt-0.5 leading-snug px-0.5">
+                {step.desc}
+              </span>
             </motion.a>
           </motion.li>
         ))}

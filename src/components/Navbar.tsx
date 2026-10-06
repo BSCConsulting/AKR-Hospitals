@@ -163,16 +163,16 @@ export default function Navbar() {
               </a>
             </nav>
 
-            {/* Mobile / tablet */}
+            {/* Mobile / tablet — dial 1066 (primary emergency); full desk number in menu */}
             <div className="flex lg:hidden items-center gap-2 ml-auto shrink-0">
               <a
-                href={hospitalInfo.phoneTel}
-                className="inline-flex items-center gap-1.5 px-2.5 h-9 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-200"
-                aria-label={`24/7 Casualty: ${hospitalInfo.phone.replace('+91 ', '')}`}
+                href="tel:1066"
+                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 min-h-11 h-11 rounded-full text-[11px] sm:text-xs font-bold bg-red-50 text-red-700 border border-red-200 active:bg-red-100"
+                aria-label="Call casualty 1066"
+                title={`24/7 Casualty · 1066 · Desk ${hospitalInfo.phone}`}
               >
                 <Ambulance className="w-3.5 h-3.5 shrink-0" aria-hidden />
-                <span className="hidden sm:inline">Casualty</span>
-                <span>{hospitalInfo.phone.replace('+91 ', '').slice(0, 5)}…</span>
+                <span>Casualty: 1066</span>
               </a>
               <button
                 type="button"
@@ -212,7 +212,7 @@ export default function Navbar() {
                   key={item.label}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block px-4 py-3 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
+                  className="flex items-center min-h-12 px-4 py-3 text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
                 >
                   {item.label}
                 </a>
@@ -220,7 +220,7 @@ export default function Navbar() {
               <a
                 href="#appointments"
                 onClick={() => setMobileOpen(false)}
-                className="block mt-2 px-4 py-3 text-sm font-semibold text-center text-white bg-teal-700 rounded-lg"
+                className="flex items-center justify-center mt-2 min-h-12 px-4 py-3 text-base font-semibold text-center text-white bg-teal-700 rounded-xl"
               >
                 Book Appointment
               </a>

@@ -38,7 +38,7 @@ export default function LocationSection() {
             transition={{ duration: 0.5 }}
             className="lg:col-span-3"
           >
-            <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-lg shadow-slate-900/5 h-[360px] lg:h-full min-h-[360px] bg-white">
+            <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-lg shadow-slate-900/5 h-[240px] sm:h-[320px] lg:h-full min-h-[240px] sm:min-h-[320px] lg:min-h-[360px] bg-white">
               <iframe
                 src={embedSrc}
                 title="Hospital Location Map"

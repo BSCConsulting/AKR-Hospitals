@@ -220,17 +220,17 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
       <div className="pointer-events-none absolute top-16 right-[8%] w-40 h-40 rounded-full bg-teal-300/20 blur-3xl animate-float-slow hidden lg:block" />
       <div className="pointer-events-none absolute top-40 left-[4%] w-28 h-28 rounded-full bg-sky-300/20 blur-2xl animate-float-slow [animation-delay:1.2s] hidden lg:block" />
 
-      <div className="relative section-shell pt-6 pb-8 md:pt-8 md:pb-10">
+      <div className="relative section-shell pt-4 pb-6 sm:pt-6 sm:pb-8 md:pt-8 md:pb-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid lg:grid-cols-12 gap-5 lg:gap-7"
+          className="grid lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-7"
         >
-          <div className="lg:col-span-7 space-y-3.5">
+          <div className="lg:col-span-7 flex flex-col gap-3 sm:gap-3.5">
             <motion.div
               variants={itemVariants}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium max-w-full"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium max-w-full order-1"
             >
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
@@ -246,21 +246,27 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
               </span>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="space-y-2">
-              <h1 className="text-3xl sm:text-5xl lg:text-[3.25rem] font-bold text-slate-900 tracking-tight leading-[1.08]">
+            <motion.div variants={itemVariants} className="space-y-1.5 sm:space-y-2 order-2">
+              <h1 className="text-[1.75rem] leading-[1.12] sm:text-5xl lg:text-[3.25rem] font-bold text-slate-900 tracking-tight sm:leading-[1.08]">
                 Advanced care,{' '}
                 <span className="bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
                   closer to you
                 </span>
               </h1>
-              <p className="text-slate-600 text-base sm:text-lg max-w-xl leading-relaxed">
-                {hospitalInfo.tagline} A {hospitalInfo.beds}-bed multi-speciality hospital
-                serving Madhira and the Khammam region with 24/7 trauma care, maternity,
-                diagnostics, and cashless insurance — all under one roof.
+              <p className="text-slate-600 text-sm sm:text-lg max-w-xl leading-relaxed">
+                <span className="sm:hidden">
+                  {hospitalInfo.beds}-bed multi-speciality care in Madhira — 24/7 casualty,
+                  OPD booking, diagnostics &amp; cashless TPA.
+                </span>
+                <span className="hidden sm:inline">
+                  {hospitalInfo.tagline} A {hospitalInfo.beds}-bed multi-speciality hospital
+                  serving Madhira and the Khammam region with 24/7 trauma care, maternity,
+                  diagnostics, and cashless insurance — all under one roof.
+                </span>
               </p>
             </motion.div>
 
-            <motion.div variants={itemVariants}>
+            <motion.div variants={itemVariants} className="order-3">
               <div className="inline-flex flex-wrap items-center gap-3 sm:gap-5 px-3.5 py-2 glass-surface !rounded-2xl sm:!rounded-full">
                 <div className="flex items-center gap-1.5">
                   <HeartPulse className="w-3.5 h-3.5 text-rose-500" />
@@ -292,18 +298,19 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants}>
+            {/* Mobile: book first. Desktop: pathway → camp → book. */}
+            <motion.div variants={itemVariants} className="order-5 sm:order-4">
               <CarePathway />
             </motion.div>
 
-            <motion.div variants={itemVariants}>
+            <motion.div variants={itemVariants} className="order-6 sm:order-5">
               <HeroCampCallout />
             </motion.div>
 
             <motion.div
               id="appointments"
               variants={itemVariants}
-              className="glass-surface p-5 sm:p-6 space-y-4 scroll-mt-28"
+              className="glass-surface p-4 sm:p-6 space-y-3.5 sm:space-y-4 scroll-mt-24 sm:scroll-mt-28 order-4 sm:order-6"
             >
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
@@ -313,13 +320,20 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 {freeOpActive && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 max-w-full text-left">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                    Special Camp / First-Visit Community Waiver: ₹0 OP Registration (Select Doctors)
+                    <span className="sm:hidden">₹0 OP waiver — select doctors</span>
+                    <span className="hidden sm:inline">
+                      Special Camp / First-Visit Community Waiver: ₹0 OP Registration (Select
+                      Doctors)
+                    </span>
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-500 -mt-2">
-                Standard consultant fees (₹400–₹800) apply unless the selected doctor is under the
-                community waiver. Fee is confirmed on your appointment summary.
+              <p className="text-[11px] text-slate-500 -mt-1 sm:-mt-2 leading-snug">
+                <span className="sm:hidden">Fees ₹400–₹800 unless under community waiver.</span>
+                <span className="hidden sm:inline">
+                  Standard consultant fees (₹400–₹800) apply unless the selected doctor is under
+                  the community waiver. Fee is confirmed on your appointment summary.
+                </span>
               </p>
 
               <div className="grid sm:grid-cols-2 gap-3">
@@ -335,7 +349,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                       value={patientName}
                       onChange={(e) => setPatientName(e.target.value)}
                       placeholder="Full name"
-                      className="w-full bg-white/90 text-slate-900 text-sm rounded-lg pl-10 pr-3 py-2.5 border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 focus:outline-none placeholder:text-slate-400"
+                      className="w-full bg-white/90 text-slate-900 text-base sm:text-sm rounded-lg pl-10 pr-3 py-3 sm:py-2.5 min-h-12 sm:min-h-0 border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 focus:outline-none placeholder:text-slate-400"
                     />
                   </div>
                   {formErrors.name && <p className="text-xs text-red-600">{formErrors.name}</p>}
@@ -350,11 +364,12 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                       id="hero-mobile"
                       type="tel"
                       inputMode="numeric"
+                      autoComplete="tel"
                       value={mobile}
                       onChange={(e) => setMobile(normalizeMobile(e.target.value))}
                       placeholder="10-digit Indian mobile"
                       maxLength={10}
-                      className="w-full bg-white/90 text-slate-900 text-sm rounded-lg pl-10 pr-3 py-2.5 border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 focus:outline-none placeholder:text-slate-400"
+                      className="w-full bg-white/90 text-slate-900 text-base sm:text-sm rounded-lg pl-10 pr-3 py-3 sm:py-2.5 min-h-12 sm:min-h-0 border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 focus:outline-none placeholder:text-slate-400"
                     />
                   </div>
                   {formErrors.mobile && <p className="text-xs text-red-600">{formErrors.mobile}</p>}
@@ -377,7 +392,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                     required
                     value={visitReason}
                     onChange={(e) => setVisitReason(e.target.value as VisitReasonId | '')}
-                    className="w-full bg-white/90 text-slate-800 text-sm rounded-lg pl-10 pr-3 py-2.5 border border-slate-200 focus:border-teal-500 focus:outline-none cursor-pointer"
+                    className="w-full bg-white/90 text-slate-800 text-base sm:text-sm rounded-lg pl-10 pr-3 py-3 sm:py-2.5 min-h-12 sm:min-h-0 border border-slate-200 focus:border-teal-500 focus:outline-none cursor-pointer"
                   >
                     <option value="">Select reason…</option>
                     {VISIT_REASONS.map((r) => (
@@ -398,7 +413,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                   id="hero-department"
                   value={selectedDept}
                   onChange={(e) => handleDeptChange(e.target.value)}
-                  className="w-full bg-white/90 text-slate-800 text-sm rounded-lg px-3 py-2.5 border border-slate-200 focus:border-teal-500 focus:outline-none cursor-pointer"
+                  className="w-full bg-white/90 text-slate-800 text-base sm:text-sm rounded-lg px-3 py-3 sm:py-2.5 min-h-12 sm:min-h-0 border border-slate-200 focus:border-teal-500 focus:outline-none cursor-pointer"
                 >
                   {opdSpecialties.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -408,7 +423,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 </select>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-1.5 sm:gap-2">
                 {dateTabs.map((tab) => (
                   <button
                     key={tab.id}
@@ -418,14 +433,18 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                       setSelectedSlot(null);
                       setSelectedDoctor(null);
                     }}
-                    className={`flex-1 px-3 py-2 rounded-lg text-center transition-all border ${
+                    className={`flex-1 min-h-12 sm:min-h-0 px-2 sm:px-3 py-2 rounded-lg text-center transition-all border ${
                       selectedDate === tab.id
                         ? 'bg-teal-50 border-teal-300 text-teal-800'
                         : 'bg-white/90 border-slate-200 text-slate-600 hover:border-slate-300'
                     }`}
                   >
-                    <div className="text-xs font-semibold">{tab.label}</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{tab.subLabel}</div>
+                    <div className="text-[11px] sm:text-xs font-semibold leading-tight">
+                      {tab.label}
+                    </div>
+                    <div className="text-[9px] sm:text-[10px] text-slate-500 mt-0.5 leading-tight">
+                      {tab.subLabel}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -457,7 +476,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 ))}
               </div>
 
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2">
                 {visibleSlots.map((slot: TimeSlot) => {
                   const isSelected = selectedSlot === slot.id;
                   return (
@@ -469,7 +488,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                       whileHover={slot.available ? { scale: 1.04 } : undefined}
                       whileTap={slot.available ? { scale: 0.95 } : undefined}
                       transition={{ type: 'spring', stiffness: 420, damping: 22 }}
-                      className={`relative px-2 py-2.5 rounded-lg text-center text-xs font-medium border transition-colors ${
+                      className={`relative px-1.5 sm:px-2 py-2.5 min-h-12 rounded-lg text-center text-xs font-medium border transition-colors ${
                         isSelected
                           ? 'bg-[#0D9488] text-white border-[#0D9488] shadow-md shadow-teal-600/25 font-bold ring-2 ring-teal-300/60'
                           : slot.available
@@ -526,10 +545,10 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 </motion.div>
               )}
 
-              <div className="flex items-center justify-between gap-3 flex-wrap pt-1">
-                <div className="text-xs text-slate-500">
+              <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 pt-1">
+                <div className="text-xs text-slate-500 text-center sm:text-left">
                   {selectedSlot ? (
-                    <span className="flex items-center gap-1.5 text-teal-700 font-medium">
+                    <span className="inline-flex items-center gap-1.5 text-teal-700 font-medium">
                       <CheckCircle2 className="w-4 h-4" />
                       {selectedSlotObj?.time} —{' '}
                       {selectedDate === 'today'
@@ -537,7 +556,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                         : dateTabs.find((d) => d.id === selectedDate)?.label}
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1.5">
                       <CircleDot className="w-4 h-4 text-slate-400" />
                       {availableSlots.length} slots available
                     </span>
@@ -548,7 +567,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                   onClick={handleConfirm}
                   disabled={!selectedSlot || !selectedDoctor}
                   whileHover={selectedSlot && selectedDoctor ? { scale: 1.02 } : undefined}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                  className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 min-h-12 rounded-xl sm:rounded-lg text-sm font-semibold transition-colors ${
                     selectedSlot && selectedDoctor
                       ? 'bg-teal-700 text-white shadow-md shadow-teal-700/20'
                       : 'bg-slate-100 text-slate-400 cursor-not-allowed'
@@ -570,32 +589,35 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
             </motion.div>
           </div>
 
-          <motion.div variants={itemVariants} className="lg:col-span-5 lg:sticky lg:top-24 self-start">
-            <div className="glass-surface p-4 sm:p-5 overflow-hidden relative">
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-5 lg:sticky lg:top-24 self-start order-last lg:order-none"
+          >
+            <div className="glass-surface p-3.5 sm:p-5 overflow-hidden relative">
               <div className="absolute inset-x-0 top-0 h-1 shimmer-bar" aria-hidden />
-              <div className="flex items-center justify-between mb-3 gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="relative flex h-2.5 w-2.5">
+              <div className="flex items-center justify-between mb-2.5 sm:mb-3 gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="relative flex h-2.5 w-2.5 shrink-0">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
                   </span>
-                  <h2 className="text-slate-900 font-semibold text-sm">Live OPD Queue</h2>
+                  <h2 className="text-slate-900 font-semibold text-sm truncate">Live OPD Queue</h2>
                 </div>
-                <span className="text-[11px] font-mono text-teal-700 bg-teal-50 border border-teal-100 px-2 py-0.5 rounded-md tabular-nums">
+                <span className="text-[11px] font-mono text-teal-700 bg-teal-50 border border-teal-100 px-2 py-0.5 rounded-md tabular-nums shrink-0">
                   {formatClock(queueTime)}
                 </span>
               </div>
 
-              <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50/80 px-3 py-2.5 flex items-center justify-between gap-2">
-                <div>
+              <div className="mb-2.5 sm:mb-3 rounded-xl border border-amber-200 bg-amber-50/80 px-3 py-2 sm:py-2.5 flex items-center justify-between gap-2">
+                <div className="min-w-0">
                   <div className="text-[10px] uppercase tracking-wide font-semibold text-amber-800">
-                    Estimated Wait Time
+                    Est. wait
                   </div>
-                  <div className="text-lg font-bold text-slate-900 tabular-nums">
+                  <div className="text-base sm:text-lg font-bold text-slate-900 tabular-nums">
                     {estimatedWait > 0 ? `~${estimatedWait} mins` : 'No wait'}
                   </div>
                 </div>
-                <Clock className="w-5 h-5 text-amber-600" />
+                <Clock className="w-5 h-5 text-amber-600 shrink-0" />
               </div>
 
               <div className="mb-3 space-y-1.5">
@@ -610,7 +632,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                   id="queue-dept-filter"
                   value={queueDeptFilter}
                   onChange={(e) => setQueueDeptFilter(e.target.value)}
-                  className="w-full bg-white/90 text-slate-800 text-xs rounded-lg px-3 py-2 border border-slate-200 focus:border-teal-500 focus:outline-none cursor-pointer"
+                  className="w-full bg-white/90 text-slate-800 text-sm sm:text-xs rounded-lg px-3 py-2.5 sm:py-2 min-h-11 sm:min-h-0 border border-slate-200 focus:border-teal-500 focus:outline-none cursor-pointer"
                 >
                   {queueDepartments.map((d) => (
                     <option key={d} value={d}>
@@ -620,7 +642,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 </select>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 mb-3">
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-2.5 sm:mb-3">
                 {[
                   {
                     label: 'Serving',
@@ -637,20 +659,22 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                 ].map((cell) => (
                   <div
                     key={cell.label}
-                    className="rounded-xl bg-white/80 border border-slate-200 px-2 py-2 text-center"
+                    className="rounded-xl bg-white/80 border border-slate-200 px-1.5 sm:px-2 py-2 text-center min-w-0"
                   >
-                    <div className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">
+                    <div className="text-[9px] sm:text-[10px] uppercase tracking-wide text-slate-500 font-semibold">
                       {cell.label}
                     </div>
-                    <div className="text-sm font-bold text-slate-900 mt-0.5">{cell.value}</div>
+                    <div className="text-xs sm:text-sm font-bold text-slate-900 mt-0.5 truncate">
+                      {cell.value}
+                    </div>
                   </div>
                 ))}
               </div>
 
-              <p className="text-[11px] text-slate-500 mb-3">
-                Privacy-safe view — token & clinical wing only. Patient names are never shown.
+              <p className="text-[10px] sm:text-[11px] text-slate-500 mb-2 sm:mb-3 leading-snug">
+                Privacy-safe — token &amp; wing only. Names never shown.
               </p>
-              <div className="space-y-2 max-h-[480px] overflow-y-auto pr-0.5 overscroll-contain">
+              <div className="space-y-2 max-h-[220px] sm:max-h-[320px] lg:max-h-[480px] overflow-y-auto pr-0.5 overscroll-contain">
                 {filteredQueue.length === 0 && (
                   <div className="rounded-xl border border-dashed border-slate-200 px-3 py-4 text-center text-xs text-slate-500">
                     No tokens in this department right now.

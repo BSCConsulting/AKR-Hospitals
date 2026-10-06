@@ -687,7 +687,7 @@ export default function CareBot({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed bottom-0 md:bottom-6 right-0 md:right-6 z-50 w-full md:w-[400px] h-[100vh] md:h-[600px] md:max-h-[80vh] bg-white/95 backdrop-blur-2xl border border-slate-200 md:rounded-2xl shadow-2xl shadow-slate-900/15 flex flex-col overflow-hidden"
+            className="fixed inset-0 md:inset-auto md:bottom-6 md:right-6 z-[60] w-full md:w-[400px] h-[100dvh] md:h-[600px] md:max-h-[80vh] bg-white/95 backdrop-blur-2xl border-0 md:border border-slate-200 md:rounded-2xl shadow-2xl shadow-slate-900/15 flex flex-col overflow-hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] md:pt-0 md:pb-0"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-white/90 shrink-0">

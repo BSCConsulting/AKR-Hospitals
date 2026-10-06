@@ -110,7 +110,7 @@ function Footer() {
               rel="noopener noreferrer"
               className="flex items-start gap-2.5 text-sm text-slate-600 hover:text-[#0B6E62] transition-colors"
             >
-              <WhatsAppIcon className="w-4 h-4 mt-0.5 text-[#25D366] shrink-0" />
+              <WhatsAppIcon className="w-4 h-4 mt-0.5 text-[#0B6E62] shrink-0" />
               {hospitalInfo.appointmentLine} (WhatsApp)
             </a>
             <a
