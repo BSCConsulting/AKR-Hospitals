@@ -19,11 +19,7 @@ const iconMap: Record<string, LucideIcon> = {
   activity: Activity,
 };
 
-interface BentoGridProps {
-  onCheckEligibility?: () => void;
-}
-
-export default function BentoGrid(_props: BentoGridProps) {
+export default function BentoGrid() {
   return (
     <section id="departments" className="relative py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
