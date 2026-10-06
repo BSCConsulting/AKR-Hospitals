@@ -86,8 +86,8 @@ export const hospitalInfo = {
   phone: "+91 87492 73030",
   emergencyPhone: "1066",
   appointmentLine: "+91 9849057185",
-  managingDirector: "Dr. Kondal Rao",
-  mdCredentials: "MD / Chief Consultant",
+  managingDirector: "Dr. A. Kondal Rao",
+  mdCredentials: "MBBS | Ex-DM&HO (Khammam) | Founder & Chief Physician",
   address: "Samatha Nagar, Didugupadu, Madhira, Khammam, Telangana 507203",
   landmark: "Opposite Susheela College, Wyra Road, Madhira",
   email: "care@akrhospital.in",
@@ -154,6 +154,7 @@ export const specialOffers: SpecialOffer[] = [
 export const navItems: NavItem[] = [
   { label: "Home", href: "#home" },
   { label: "Departments", href: "#departments" },
+  { label: "Founder", href: "#founder" },
   { label: "Specialists", href: "#specialists" },
   { label: "Cashless", href: "#cashless" },
   { label: "Contact", href: "#contact" },

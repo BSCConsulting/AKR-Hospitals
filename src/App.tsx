@@ -8,6 +8,7 @@ import BookingModal from '@/components/BookingModal';
 import EligibilityChecker from '@/components/EligibilityChecker';
 import DoctorsDirectory from '@/components/DoctorsDirectory';
 import CareBot from '@/components/CareBot';
+import FounderSection from '@/components/FounderSection';
 import LocationSection from '@/components/LocationSection';
 import WhatsAppButton, { WHATSAPP_LINK } from '@/components/WhatsAppButton';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
@@ -172,6 +173,7 @@ function App() {
           onConfirmBooking={handleConfirmBooking}
         />
         <BentoGrid onCheckEligibility={() => setEligibilityOpen(true)} />
+        <FounderSection />
         <DoctorsDirectory onBookDoctor={handleBookDoctor} />
       </main>
       <LocationSection />
