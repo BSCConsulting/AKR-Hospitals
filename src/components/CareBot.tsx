@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -225,8 +225,9 @@ const emergencyKeywordsTe = [
 ];
 
 const traumaKeywordsEn = [
-  'broken', 'fracture', 'arm', 'leg', 'injury', 'wound', 'cut', 'bleeding',
-  'accident', 'fall', 'sprain', 'dislocation', 'trauma', 'c-arm',
+  'broken arm', 'broken leg', 'fracture', 'fractured', 'bone injury',
+  'open wound', 'deep cut', 'bleeding heavily', 'accident', 'sprain',
+  'dislocation', 'trauma', 'c-arm', 'polytrauma',
 ];
 
 const traumaKeywordsTe = [
@@ -279,7 +280,32 @@ const offersKeywordsEn = ['discounts', 'offers', 'packages', 'concessions', 'hea
 const offersKeywordsTe = ['ఆఫర్లు', 'తగ్గింపులు', 'ప్యాకేజీలు', 'రాయితీ'];
 
 function matchesAny(text: string, keywords: string[]): boolean {
-  return keywords.some((kw) => text.includes(kw));
+  return keywords.some((kw) => {
+    const normalized = kw.toLowerCase().trim();
+    // Prefer word-boundary match so short tokens like "cut" don't hit "acute"
+    if (/^[a-z0-9+\-/]+$/i.test(normalized) && !normalized.includes(' ')) {
+      try {
+        return new RegExp(`(?:^|\\W)${normalized.replace(/[+/\\-]/g, '\\$&')}(?:$|\\W)`, 'i').test(text);
+      } catch {
+        return text.includes(normalized);
+      }
+    }
+    return text.includes(normalized);
+  });
+}
+
+function formatInlineBold(text: string): ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={i} className="font-semibold text-white">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    return <span key={i}>{part}</span>;
+  });
 }
 
 // ─── Message factory ───────────────────────────────────────────
@@ -824,8 +850,8 @@ function MessageBubble({
     );
   }
 
-  // Use the message's stored text if it's a user message, otherwise re-translate
-  const displayText = message.text;
+  // Render simple **bold** markers as <strong> (QA strings use markdown-lite)
+  const displayText = formatInlineBold(message.text);
 
   return (
     <div className="flex items-start gap-2">

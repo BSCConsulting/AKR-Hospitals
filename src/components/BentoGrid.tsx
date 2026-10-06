@@ -109,7 +109,8 @@ function BentoCard({
         y: -6,
         transition: { duration: 0.25, ease: 'easeOut' },
       }}
-      className={`group relative overflow-hidden rounded-2xl border transition-colors duration-300 ${
+      id={isCashless ? 'cashless' : undefined}
+      className={`group relative overflow-hidden rounded-2xl border transition-colors duration-300 scroll-mt-24 ${
         dept.bentoSpan
       } ${
         isHighlighted

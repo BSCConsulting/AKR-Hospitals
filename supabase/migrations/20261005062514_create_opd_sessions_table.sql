@@ -12,9 +12,9 @@
 
 2. Security
 - Enable RLS on `opd_sessions`.
-- This is a single-tenant public-facing hospital portal with no sign-in screen.
-- All CRUD policies are scoped to `anon, authenticated` with `USING (true)` / `WITH CHECK (true)`
-  because the OPD queue status is intentionally public — any visitor can see the current token.
+- Public visitors may SELECT the live queue status.
+- INSERT / UPDATE / DELETE are not granted to anon/authenticated — staff updates must use
+  the service role (dashboard, Edge Function, or trusted backend).
 
 3. Realtime
 - The table is subscribed to from the frontend for UPDATE events so the Live Token drawer
@@ -46,20 +46,10 @@ CREATE POLICY "anon_select_opd_sessions"
   ON opd_sessions FOR SELECT
   TO anon, authenticated USING (true);
 
+-- Remove overly permissive write policies if a previous revision applied them
 DROP POLICY IF EXISTS "anon_insert_opd_sessions" ON opd_sessions;
-CREATE POLICY "anon_insert_opd_sessions"
-  ON opd_sessions FOR INSERT
-  TO anon, authenticated WITH CHECK (true);
-
 DROP POLICY IF EXISTS "anon_update_opd_sessions" ON opd_sessions;
-CREATE POLICY "anon_update_opd_sessions"
-  ON opd_sessions FOR UPDATE
-  TO anon, authenticated USING (true) WITH CHECK (true);
-
 DROP POLICY IF EXISTS "anon_delete_opd_sessions" ON opd_sessions;
-CREATE POLICY "anon_delete_opd_sessions"
-  ON opd_sessions FOR DELETE
-  TO anon, authenticated USING (true);
 
 -- Seed today's session (idempotent via ON CONFLICT)
 INSERT INTO opd_sessions (session_date, current_token_served, is_paused)

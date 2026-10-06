@@ -90,6 +90,8 @@ export default function Navbar() {
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden p-2 text-slate-300 hover:text-white"
               aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-nav-menu"
             >
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -98,7 +100,10 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="md:hidden bg-slate-950/98 backdrop-blur-xl border-t border-slate-800/50 animate-slide-up">
+          <div
+            id="mobile-nav-menu"
+            className="md:hidden bg-slate-950/98 backdrop-blur-xl border-t border-slate-800/50 animate-slide-up"
+          >
             <div className="px-4 py-4 space-y-1">
               {navItems.map((item) => (
                 <a

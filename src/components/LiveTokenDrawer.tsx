@@ -40,11 +40,15 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
   useEffect(() => {
     if (!open) return;
     setWaitSeconds(totalWaitSeconds);
+  }, [open, totalWaitSeconds]);
+
+  useEffect(() => {
+    if (!open || isPaused) return;
     const interval = setInterval(() => {
       setWaitSeconds((s) => (s > 0 ? s - 1 : 0));
     }, 1000);
     return () => clearInterval(interval);
-  }, [open, totalWaitSeconds]);
+  }, [open, isPaused]);
 
   const triggerAnnouncement = () => {
     const msg = `Now calling Token ${assignedToken} to Room 3`;
@@ -141,6 +145,10 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
 
             {/* Body */}
             <div className="px-5 py-6 space-y-5">
+              <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2.5 text-xs text-amber-200">
+                Demo walk-in token for preview. Collect your real OPD token at the reception desk.
+              </div>
+
               {/* Token number card */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
@@ -150,14 +158,14 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
               >
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-400 to-transparent opacity-50" />
                 <div className="text-xs text-teal-300 font-medium uppercase tracking-wider mb-2">
-                  Your Token Number
+                  Sample Token Number
                 </div>
                 <div className="text-5xl font-bold text-white tracking-tight mb-3">
                   {assignedToken}
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-xs font-medium">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/25 text-amber-200 text-xs font-medium">
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  Token Confirmed
+                  Demo Preview
                 </div>
               </motion.div>
 
@@ -277,7 +285,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                       WhatsApp Alert {whatsappNotify && '— On'}
                     </div>
                     <div className="text-[11px] text-slate-300 mt-0.5">
-                      Notify me when 2 patients remain
+                      Coming soon — WhatsApp queue alerts
                     </div>
                   </div>
                   <div className={`w-11 h-6 rounded-full transition-colors relative shrink-0 ${
@@ -294,10 +302,10 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className="flex items-center gap-1.5 text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-2"
+                    className="flex items-center gap-1.5 text-xs text-amber-200 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2"
                   >
                     <Bell className="w-3.5 h-3.5" />
-                    You'll receive a WhatsApp message when your token is 2 patients away.
+                    Interest noted. Live WhatsApp alerts are not connected yet — ask reception for queue updates.
                   </motion.div>
                 )}
               </motion.div>

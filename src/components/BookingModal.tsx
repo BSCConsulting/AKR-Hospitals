@@ -12,8 +12,10 @@ import {
   Download,
   CalendarPlus,
   Share2,
+  Info,
 } from 'lucide-react';
 import { hospitalInfo } from '@/data/mockData';
+import { toGoogleCalendarDateTime } from '@/lib/dates';
 
 interface BookingModalProps {
   open: boolean;
@@ -35,6 +37,7 @@ function generateToken(): string {
   return `AKR-${num}`;
 }
 
+/** QR encodes only public slot metadata — never patient name or mobile. */
 function generateQrDataUrl(data: string): string {
   const encoded = encodeURIComponent(data);
   return `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encoded}`;
@@ -46,6 +49,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
   const [mobile, setMobile] = useState('');
   const [token, setToken] = useState('');
   const [errors, setErrors] = useState<{ name?: string; mobile?: string }>({});
+  const [shareHint, setShareHint] = useState<string | null>(null);
 
   const handleConfirm = () => {
     const newErrors: { name?: string; mobile?: string } = {};
@@ -64,19 +68,21 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
     setMobile('');
     setToken('');
     setErrors({});
+    setShareHint(null);
     onClose();
   };
 
+  // Public pass data only — no patient PII in third-party QR requests
   const qrData = bookingDetails
     ? JSON.stringify({
         hospital: hospitalInfo.name,
         token,
-        patient: patientName,
         dept: bookingDetails.department,
-        date: bookingDetails.dateLabel,
+        date: bookingDetails.date,
         time: bookingDetails.time,
         doctor: bookingDetails.doctorName,
         room: bookingDetails.room,
+        demo: true,
       })
     : '';
 
@@ -84,9 +90,39 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
     ? `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
         `AKR Hospital Appointment - ${bookingDetails.department}`
       )}&details=${encodeURIComponent(
-        `Token: ${token}\nPatient: ${patientName}\nDoctor: ${bookingDetails.doctorName}\nRoom: ${bookingDetails.room}\nFee: Rs. ${bookingDetails.fee}`
-      )}&location=${encodeURIComponent(hospitalInfo.name + ', ' + hospitalInfo.address)}&dates=20261005T090000/20261005T093000`
+        `Token: ${token}\nDoctor: ${bookingDetails.doctorName}\nRoom: ${bookingDetails.room}\nFee: Rs. ${bookingDetails.fee}\n\nNote: Demo booking pass — confirm at reception.`
+      )}&location=${encodeURIComponent(hospitalInfo.name + ', ' + hospitalInfo.address)}&dates=${toGoogleCalendarDateTime(
+        bookingDetails.date,
+        bookingDetails.time
+      )}`
     : '';
+
+  const shareText = bookingDetails
+    ? `Token: ${token}\n${bookingDetails.department}\n${bookingDetails.dateLabel} at ${bookingDetails.time}\n${bookingDetails.doctorName}\n(Demo pass — confirm at AKR Hospital reception)`
+    : '';
+
+  const handleShare = async () => {
+    if (!bookingDetails) return;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'AKR Hospital Appointment',
+          text: shareText,
+        });
+        return;
+      }
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareText);
+        setShareHint('Copied to clipboard');
+        setTimeout(() => setShareHint(null), 2500);
+        return;
+      }
+      setShareHint('Sharing is not supported on this device');
+      setTimeout(() => setShareHint(null), 2500);
+    } catch {
+      // User cancelled share sheet — ignore
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -99,6 +135,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
             transition={{ duration: 0.25 }}
             onClick={handleClose}
             className="fixed inset-0 z-[80] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4"
+            role="presentation"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -106,6 +143,9 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="booking-modal-title"
               className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
             >
               {/* Header */}
@@ -115,11 +155,11 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                     <Calendar className="w-4.5 h-4.5 text-teal-400" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold text-sm">
-                      {step === 'form' ? 'Confirm Your Appointment' : 'Appointment Confirmed'}
+                    <h3 id="booking-modal-title" className="text-white font-semibold text-sm">
+                      {step === 'form' ? 'Confirm Your Appointment' : 'Demo Appointment Pass'}
                     </h3>
                     <p className="text-[11px] text-slate-400">
-                      {step === 'form' ? 'Enter patient details' : 'Save your pass below'}
+                      {step === 'form' ? 'Enter patient details' : 'Confirm this slot at reception'}
                     </p>
                   </div>
                 </div>
@@ -134,6 +174,14 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
 
               {/* Body */}
               <div className="p-5 space-y-4">
+                <div className="flex items-start gap-2 rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2.5 text-xs text-amber-200">
+                  <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                  <span>
+                    This is a <strong>demo pass</strong> for preview. It is not saved to the hospital
+                    system — please confirm your appointment at the reception desk or by phone.
+                  </span>
+                </div>
+
                 {/* Booking summary */}
                 <div className="bg-slate-800/50 border border-slate-800 rounded-xl p-4 space-y-2.5">
                   <div className="flex items-center justify-between text-sm">
@@ -161,33 +209,39 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
 
                 {step === 'form' ? (
                   <>
-                    {/* Patient name */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-slate-300">Patient Name</label>
+                      <label htmlFor="patient-name" className="text-xs font-medium text-slate-300">
+                        Patient Name
+                      </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                         <input
+                          id="patient-name"
                           type="text"
                           value={patientName}
                           onChange={(e) => setPatientName(e.target.value)}
                           placeholder="Enter full name"
+                          aria-invalid={Boolean(errors.name)}
                           className="w-full bg-slate-800 text-slate-100 text-sm rounded-lg pl-10 pr-4 py-2.5 border border-slate-700 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-slate-500"
                         />
                       </div>
                       {errors.name && <p className="text-xs text-rose-400">{errors.name}</p>}
                     </div>
 
-                    {/* Mobile */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-slate-300">Mobile Number</label>
+                      <label htmlFor="patient-mobile" className="text-xs font-medium text-slate-300">
+                        Mobile Number
+                      </label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                         <input
+                          id="patient-mobile"
                           type="tel"
                           value={mobile}
                           onChange={(e) => setMobile(e.target.value)}
                           placeholder="10-digit mobile number"
                           maxLength={10}
+                          aria-invalid={Boolean(errors.mobile)}
                           className="w-full bg-slate-800 text-slate-100 text-sm rounded-lg pl-10 pr-4 py-2.5 border border-slate-700 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-slate-500"
                         />
                       </div>
@@ -199,23 +253,24 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                       className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold bg-gradient-to-r from-teal-600 to-emerald-600 text-white hover:shadow-lg hover:shadow-teal-500/30 transition-all"
                     >
                       <CheckCircle2 className="w-4 h-4" />
-                      Generate Appointment Pass
+                      Generate Demo Pass
                     </button>
                   </>
                 ) : (
                   <>
-                    {/* Confirmed pass */}
                     <motion.div
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="bg-gradient-to-br from-teal-600/20 to-emerald-600/10 border border-teal-500/30 rounded-xl p-5 text-center space-y-3"
                     >
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-xs font-medium">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Appointment Confirmed
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/25 text-amber-200 text-xs font-medium">
+                        <Info className="w-3.5 h-3.5" />
+                        Demo Pass Ready
                       </div>
                       <div className="text-3xl font-bold text-white tracking-tight">{token}</div>
-                      <p className="text-xs text-slate-300">Present this token at the reception desk</p>
+                      <p className="text-xs text-slate-300">
+                        Show this reference at reception to complete booking
+                      </p>
                       <div className="flex justify-center pt-1">
                         <img
                           src={generateQrDataUrl(qrData)}
@@ -223,10 +278,11 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                           className="w-32 h-32 rounded-lg bg-white p-1.5"
                         />
                       </div>
-                      <p className="text-[10px] text-slate-400">Scan QR for full appointment details</p>
+                      <p className="text-[10px] text-slate-400">
+                        QR contains slot details only (no patient phone or name)
+                      </p>
                     </motion.div>
 
-                    {/* Action buttons */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       <a
                         href={calendarUrl}
@@ -238,14 +294,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                         Calendar
                       </a>
                       <button
-                        onClick={() => {
-                          if (navigator.share) {
-                            navigator.share({
-                              title: 'AKR Hospital Appointment',
-                              text: `Token: ${token}\n${bookingDetails.department}\n${bookingDetails.dateLabel} at ${bookingDetails.time}\n${bookingDetails.doctorName}`,
-                            });
-                          }
-                        }}
+                        onClick={handleShare}
                         className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-teal-500/40 transition-all"
                       >
                         <Share2 className="w-4 h-4 text-teal-400" />
@@ -259,6 +308,7 @@ export default function BookingModal({ open, onClose, bookingDetails }: BookingM
                         Save
                       </button>
                     </div>
+                    {shareHint && <p className="text-center text-xs text-teal-300">{shareHint}</p>}
 
                     <button
                       onClick={handleClose}

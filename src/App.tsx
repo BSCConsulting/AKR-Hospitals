@@ -13,6 +13,7 @@ import WhatsAppButton, { WHATSAPP_LINK } from '@/components/WhatsAppButton';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
 import { Phone, Mail, MapPin, Activity, Shield, Award, Clock } from 'lucide-react';
 import { hospitalInfo, type Doctor } from '@/data/mockData';
+import { getTodayBookingDefaults } from '@/lib/dates';
 
 interface BookingDetails {
   department: string;
@@ -148,11 +149,12 @@ function App() {
   };
 
   const handleBookDoctor = (doctor: Doctor) => {
+    const today = getTodayBookingDefaults();
     setBookingDetails({
       department: doctor.specialtyName,
-      date: '2026-10-05',
-      dateLabel: 'Today, Oct 5',
-      time: '09:00',
+      date: today.date,
+      dateLabel: today.dateLabel,
+      time: today.time,
       doctorName: doctor.name,
       doctorCredentials: doctor.credentials,
       room: doctor.room,
@@ -189,11 +191,12 @@ function App() {
       <CareBot
         onGenerateToken={() => setTokenOpen(true)}
         onBookAppointment={() => {
+          const today = getTodayBookingDefaults();
           setBookingDetails({
             department: 'General Medicine',
-            date: '2026-10-05',
-            dateLabel: 'Today, Oct 5',
-            time: '09:00',
+            date: today.date,
+            dateLabel: today.dateLabel,
+            time: today.time,
             doctorName: 'Dr. R. Sharma',
             doctorCredentials: 'MD, General Medicine',
             room: 'Cabin 104',

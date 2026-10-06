@@ -21,9 +21,10 @@ import {
   opdQueue,
   timeSlots,
   opdSpecialties,
-  dateTabs,
+  getDateTabs,
   doctors,
   hospitalInfo,
+  insuranceProviders,
   type TimeSlot,
   type Doctor,
 } from '@/data/mockData';
@@ -92,6 +93,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [queueTime, setQueueTime] = useState(0);
+  const dateTabs = useMemo(() => getDateTabs(), []);
 
   useEffect(() => {
     const interval = setInterval(() => setQueueTime((t) => t + 1), 1000);
@@ -201,7 +203,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                   { divider: true },
                   { icon: Stethoscope, value: hospitalInfo.doctors, label: 'Doctors', color: 'text-teal-400' },
                   { divider: true },
-                  { icon: Shield, value: '40+', label: 'Insurers', color: 'text-emerald-400' },
+                  { icon: Shield, value: `${insuranceProviders.length}+`, label: 'Insurers', color: 'text-emerald-400' },
                 ].map((stat, i) =>
                   'divider' in stat ? (
                     <div key={`d${i}`} className="w-px h-5 bg-slate-700" />
@@ -247,8 +249,9 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
             {/* Booking widget or Walk-in panel */}
             {mode === 'book' ? (
               <motion.div
+                id="appointments"
                 variants={itemVariants}
-                className="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm space-y-4"
+                className="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm space-y-4 scroll-mt-24"
               >
                 {/* Department selector + date tabs */}
                 <div className="flex items-center justify-between flex-wrap gap-2">
@@ -259,6 +262,7 @@ export default function HeroTriage({ onGenerateToken, onConfirmBooking }: HeroTr
                   <select
                     value={selectedDept}
                     onChange={(e) => handleDeptChange(e.target.value)}
+                    aria-label="Department"
                     className="bg-slate-800 text-slate-200 text-xs rounded-lg px-3 py-1.5 border border-slate-700 focus:border-teal-500 focus:outline-none cursor-pointer"
                   >
                     {opdSpecialties.map((s) => (

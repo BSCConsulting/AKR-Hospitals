@@ -1,3 +1,10 @@
+import {
+  addLocalDays,
+  formatMonthDay,
+  formatWeekday,
+  toLocalDateString,
+} from '@/lib/dates';
+
 export interface Department {
   id: string;
   name: string;
@@ -161,11 +168,36 @@ export const opdSpecialties: OpdSpecialty[] = [
   { id: "dermatology", name: "Dermatology", shortName: "Derma" },
 ];
 
-export const dateTabs: DateTab[] = [
-  { id: "today", label: "Today", subLabel: "Oct 5", date: "2026-10-05" },
-  { id: "tomorrow", label: "Tomorrow", subLabel: "Oct 6", date: "2026-10-06" },
-  { id: "wednesday", label: "Wednesday", subLabel: "Oct 7", date: "2026-10-07" },
-];
+/** Rolling 3-day OPD tabs based on the visitor's local calendar. */
+export function getDateTabs(from: Date = new Date()): DateTab[] {
+  const today = from;
+  const tomorrow = addLocalDays(today, 1);
+  const dayAfter = addLocalDays(today, 2);
+
+  return [
+    {
+      id: 'today',
+      label: 'Today',
+      subLabel: formatMonthDay(today),
+      date: toLocalDateString(today),
+    },
+    {
+      id: 'tomorrow',
+      label: 'Tomorrow',
+      subLabel: formatMonthDay(tomorrow),
+      date: toLocalDateString(tomorrow),
+    },
+    {
+      id: 'day-after',
+      label: formatWeekday(dayAfter),
+      subLabel: formatMonthDay(dayAfter),
+      date: toLocalDateString(dayAfter),
+    },
+  ];
+}
+
+/** @deprecated Prefer getDateTabs() — kept for any static imports during migration. */
+export const dateTabs: DateTab[] = getDateTabs();
 
 export const doctors: Doctor[] = [
   {

@@ -1,0 +1,48 @@
+# AKR Hospitals
+
+Patient-facing website for **Dr. AKR's Multispeciality Hospital** (Madhira, Telangana): OPD booking UI, live token drawer, cashless eligibility checker, CareBot, and location/contact.
+
+Built with Vite, React, TypeScript, Tailwind CSS, Framer Motion, and optional Supabase realtime for the OPD queue.
+
+## Quick start
+
+```bash
+npm install
+cp .env.example .env   # optional — site runs in demo mode without Supabase
+npm run dev
+```
+
+Open the URL Vite prints (default `http://localhost:5173`).
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Production build |
+| `npm run preview` | Preview production build |
+| `npm run typecheck` | TypeScript check |
+| `npm run lint` | ESLint |
+
+## Environment
+
+| Variable | Required | Notes |
+|----------|----------|-------|
+| `VITE_SUPABASE_URL` | No | Without it, queue falls back to demo numbers |
+| `VITE_SUPABASE_ANON_KEY` | No | Must be the **anon** key only |
+
+## Supabase (optional)
+
+1. Create a Supabase project.
+2. Apply migrations in `supabase/migrations/` (SQL editor or Supabase CLI).
+3. Ensure Realtime is enabled for `opd_sessions`.
+4. Seed/update a row per calendar day for the live queue.
+5. **RLS:** public clients may `SELECT` only. Staff updates must use the service role / dashboard — do not reopen anon write policies.
+
+## Demo vs production
+
+Booking passes and walk-in tokens in the UI are **demo previews** until a real booking/token API is wired. Confirm appointments and OPD tokens at reception or by phone (`+91 87492 73030` / WhatsApp `+91 9849057185`).
+
+## License
+
+Private project for BSC Consulting / AKR Hospitals.

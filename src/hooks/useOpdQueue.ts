@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { toLocalDateString } from '@/lib/dates';
 
 interface OpdSession {
   id: string;
@@ -21,15 +22,24 @@ export function useOpdQueue(): UseOpdQueueResult {
   const [currentTokenServed, setCurrentTokenServed] = useState<number>(FALLBACK_TOKEN);
   const [isPaused, setIsPaused] = useState<boolean>(FALLBACK_PAUSED);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const channelRef = useRef<{ unsubscribe: () => void } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
 
+    if (!isSupabaseConfigured || !supabase) {
+      setCurrentTokenServed(FALLBACK_TOKEN);
+      setIsPaused(FALLBACK_PAUSED);
+      setIsLoading(false);
+      return;
+    }
+
+    const client = supabase;
+    const today = toLocalDateString();
+
     const fetchInitial = async () => {
       try {
-        const today = new Date().toISOString().split('T')[0];
-        const { data, error } = await supabase
+        const { data, error } = await client
           .from('opd_sessions')
           .select('id, session_date, current_token_served, is_paused')
           .eq('session_date', today)
@@ -38,7 +48,6 @@ export function useOpdQueue(): UseOpdQueueResult {
         if (cancelled) return;
 
         if (error || !data) {
-          // Fallback to mock state — Supabase unreachable or no row for today
           setCurrentTokenServed(FALLBACK_TOKEN);
           setIsPaused(FALLBACK_PAUSED);
         } else {
@@ -57,28 +66,30 @@ export function useOpdQueue(): UseOpdQueueResult {
 
     fetchInitial();
 
-    // Subscribe to realtime UPDATE events on opd_sessions
-    const channel = supabase
+    const channel = client
       .channel('opd-sessions-changes')
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'opd_sessions' },
         (payload) => {
           const updated = payload.new as OpdSession;
+          if (updated.session_date !== today) return;
           setCurrentTokenServed(updated.current_token_served);
           setIsPaused(updated.is_paused);
         }
       )
       .subscribe();
 
-    channelRef.current = channel;
+    channelRef.current = {
+      unsubscribe: () => {
+        client.removeChannel(channel);
+      },
+    };
 
     return () => {
       cancelled = true;
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
+      channelRef.current?.unsubscribe();
+      channelRef.current = null;
     };
   }, []);
 
