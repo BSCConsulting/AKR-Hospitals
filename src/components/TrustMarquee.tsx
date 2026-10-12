@@ -1,15 +1,14 @@
-import { ShieldCheck, Award, Ambulance, Building2, Clock, BadgeCheck } from 'lucide-react';
+import { ShieldCheck, Award, Ambulance, Clock, BadgeCheck, TestTube } from 'lucide-react';
 import { accreditation } from '@/data/compliance';
 
 const items = [
-  { icon: ShieldCheck, label: accreditation.nabh.full },
+  { icon: ShieldCheck, label: accreditation.nabh.short },
   { icon: Award, label: accreditation.iso.short },
   { icon: Ambulance, label: '24/7 Trauma & Casualty' },
-  { icon: Building2, label: '250-Bed Campus' },
   { icon: Clock, label: 'OPD 9 AM – 8 PM' },
   { icon: BadgeCheck, label: 'Cashless TPA Desk' },
+  { icon: TestTube, label: '30% off lab tests' },
   { icon: ShieldCheck, label: 'Est. 2008 · Madhira' },
-  { icon: Award, label: '5+ Insurance Partners' },
 ];
 
 /** Continuous trust ticker — adds motion without cluttering the hero. */
@@ -23,6 +22,7 @@ export default function TrustMarquee() {
         {loop.map((item, i) => (
           <div
             key={`${item.label}-${i}`}
+            aria-hidden={i >= items.length || undefined}
             className="flex items-center gap-2 text-xs font-semibold text-slate-700 whitespace-nowrap"
           >
             <item.icon className="w-3.5 h-3.5 text-teal-600" />

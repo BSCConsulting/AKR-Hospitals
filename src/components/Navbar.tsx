@@ -50,12 +50,8 @@ export default function Navbar() {
             </span>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <span
-              className="text-teal-800 font-medium truncate max-w-[14rem] xl:max-w-[22rem] 2xl:max-w-none"
-              title={accreditation.nabh.full}
-            >
-              <span className="xl:hidden">NABH · {accreditation.nabh.certNo}</span>
-              <span className="hidden xl:inline">{accreditation.nabh.full}</span>
+            <span className="text-teal-800 font-medium whitespace-nowrap">
+              {accreditation.nabh.short}
             </span>
             <WhatsAppButton variant="inline" />
           </div>
@@ -143,14 +139,14 @@ export default function Navbar() {
 
               <a
                 href={hospitalInfo.phoneTel}
-                title={`24/7 Casualty ${hospitalInfo.phone} · 1066 ${hospitalInfo.emergencyDispatchLabel}`}
+                title={`24/7 Casualty ${hospitalInfo.phone} · ${hospitalInfo.ambulanceLabel}`}
                 aria-label={`24/7 Casualty: ${hospitalInfo.phone.replace('+91 ', '')}`}
                 className="ml-1 inline-flex items-center gap-1.5 px-2.5 xl:px-3 h-9 rounded-full text-[11px] xl:text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors shrink-0 whitespace-nowrap"
               >
                 <Ambulance className="w-3.5 h-3.5 shrink-0" aria-hidden />
                 <span className="2xl:hidden">Casualty · {hospitalInfo.phone.replace('+91 ', '')}</span>
                 <span className="hidden 2xl:inline">
-                  24/7 Casualty · {hospitalInfo.phone.replace('+91 ', '')} · 1066
+                  24/7 Casualty · {hospitalInfo.phone.replace('+91 ', '')}
                 </span>
               </a>
 
@@ -163,16 +159,15 @@ export default function Navbar() {
               </a>
             </nav>
 
-            {/* Mobile / tablet — dial 1066 (primary emergency); full desk number in menu */}
             <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 ml-auto shrink-0 relative z-10">
               <a
-                href="tel:1066"
+                href={hospitalInfo.phoneTel}
                 className="inline-flex items-center gap-1 px-2 sm:px-2.5 min-h-11 h-11 rounded-full text-[11px] sm:text-xs font-bold bg-red-50 text-red-700 border border-red-200 active:bg-red-100"
-                aria-label="Call casualty 1066"
-                title={`24/7 Casualty · 1066 · Desk ${hospitalInfo.phone}`}
+                aria-label={`Call 24/7 casualty ${hospitalInfo.phone}`}
+                title={`24/7 Casualty · ${hospitalInfo.phone}`}
               >
                 <Ambulance className="w-3.5 h-3.5 shrink-0" aria-hidden />
-                <span className="whitespace-nowrap">Casualty: 1066</span>
+                <span className="whitespace-nowrap">Casualty</span>
               </a>
               <button
                 type="button"
@@ -197,15 +192,17 @@ export default function Navbar() {
               <a
                 href={hospitalInfo.phoneTel}
                 onClick={() => setMobileOpen(false)}
-                className="flex flex-col gap-0.5 px-4 py-3 text-sm font-bold text-red-700 bg-red-50 border border-red-200 rounded-lg mb-2"
+                className="flex items-center gap-2 px-4 py-3 text-sm font-bold text-red-700 bg-red-50 border border-red-200 rounded-lg"
               >
-                <span className="inline-flex items-center gap-2">
-                  <Ambulance className="w-4 h-4" aria-hidden />
-                  24/7 Casualty: {hospitalInfo.phone}
-                </span>
-                <span className="text-[11px] font-semibold text-red-800 pl-6">
-                  1066 {hospitalInfo.emergencyDispatchLabel}
-                </span>
+                <Ambulance className="w-4 h-4" aria-hidden />
+                24/7 Casualty: {hospitalInfo.phone}
+              </a>
+              <a
+                href={hospitalInfo.ambulanceTel}
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center min-h-11 px-4 py-2 text-sm font-semibold text-red-800 mb-2"
+              >
+                {hospitalInfo.ambulanceLabel}
               </a>
               {navItems.map((item) => (
                 <a

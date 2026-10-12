@@ -1,29 +1,29 @@
-import { useState } from 'react';
+import { Suspense, lazy, useCallback, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import Navbar from '@/components/Navbar';
-import { getDateTabs } from '@/data/mockData';
-import HeroTriage from '@/components/HeroTriage';
+import HeroTriage, { type BookingPrefill } from '@/components/HeroTriage';
 import TrustMarquee from '@/components/TrustMarquee';
 import ImpactStats from '@/components/ImpactStats';
-import FacilityPulse from '@/components/FacilityPulse';
 import CampsAndOffersSection from '@/components/CampsAndOffersSection';
 import BentoGrid from '@/components/BentoGrid';
 import PatientServicesSection from '@/components/PatientServicesSection';
 import FloatingDock from '@/components/FloatingDock';
 import MobileStickyBar from '@/components/MobileStickyBar';
-import LiveTokenDrawer from '@/components/LiveTokenDrawer';
-import BookingModal, { type BookingDetails } from '@/components/BookingModal';
-import EligibilityChecker from '@/components/EligibilityChecker';
+import type { BookingResult } from '@/components/BookingModal';
 import DoctorsDirectory from '@/components/DoctorsDirectory';
-import CareBot from '@/components/CareBot';
 import FounderSection from '@/components/FounderSection';
 import LocationSection from '@/components/LocationSection';
 import StatutoryFooter from '@/components/StatutoryFooter';
 import { WHATSAPP_OPD_INQUIRE } from '@/lib/whatsapp';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
-import { Phone, Mail, MapPin, Activity, Shield, Award, Clock } from 'lucide-react';
+import { Phone, MapPin, Activity, Shield, Award, Clock } from 'lucide-react';
 import { hospitalInfo, type Doctor } from '@/data/mockData';
 import { accreditation } from '@/data/compliance';
-import { getTodayBookingDefaults } from '@/lib/dates';
+
+const LiveTokenDrawer = lazy(() => import('@/components/LiveTokenDrawer'));
+const BookingModal = lazy(() => import('@/components/BookingModal'));
+const EligibilityChecker = lazy(() => import('@/components/EligibilityChecker'));
+const CareBot = lazy(() => import('@/components/CareBot'));
 
 function Footer() {
   return (
@@ -48,9 +48,8 @@ function Footer() {
               compassion and clinical excellence.
             </p>
             <div className="flex flex-col gap-2">
-              <span className="inline-flex items-start gap-1.5 text-[11px] text-emerald-800 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200">
-                <Shield className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                <span>{accreditation.nabh.full}</span>
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 w-fit">
+                <Shield className="w-3.5 h-3.5" /> {accreditation.nabh.short}
               </span>
               <span className="inline-flex items-center gap-1.5 text-[11px] text-teal-800 bg-teal-50 px-3 py-1.5 rounded-full border border-teal-200 w-fit">
                 <Award className="w-3.5 h-3.5" /> {accreditation.iso.short}
@@ -61,19 +60,19 @@ function Footer() {
           {/* Col 2 — Quick Links */}
           <div className="space-y-3">
             <h2 className="text-slate-900 font-semibold text-sm">Quick Links</h2>
-            <nav className="flex flex-col gap-2 text-sm">
+            <nav className="flex flex-col text-sm">
               {[
                 { href: '#departments', label: 'Specialties / Clinical Wings' },
                 { href: '#camps', label: 'Health Camps & Offers' },
                 { href: '#cashless', label: 'TPA / Cashless Desk' },
-                { href: '#specialists', label: 'Doctor Schedules' },
-                { href: '#appointments', label: 'Book OPD Slot' },
+                { href: '#specialists', label: 'Our Consultants' },
+                { href: '#appointments', label: 'Request an Appointment' },
                 { href: '#founder', label: 'Meet Our Founder' },
               ].map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-slate-600 hover:text-teal-700 transition-colors"
+                  className="py-2 md:py-1 text-slate-600 hover:text-teal-700 transition-colors"
                 >
                   {link.label}
                 </a>
@@ -113,13 +112,6 @@ function Footer() {
               <WhatsAppIcon className="w-4 h-4 mt-0.5 text-[#0B6E62] shrink-0" />
               {hospitalInfo.appointmentLine} (WhatsApp)
             </a>
-            <a
-              href={`mailto:${hospitalInfo.email}`}
-              className="flex items-start gap-2.5 text-sm text-slate-600 hover:text-teal-700 transition-colors"
-            >
-              <Mail className="w-4 h-4 mt-0.5 text-teal-600 shrink-0" />
-              {hospitalInfo.email}
-            </a>
           </div>
 
           {/* Col 4 — Emergency */}
@@ -140,12 +132,9 @@ function Footer() {
                 </div>
               </a>
               <div className="pl-6 border-t border-red-200/80 pt-2">
-                <a href="tel:1066" className="text-red-800 font-bold text-base hover:underline">
-                  1066
+                <a href={hospitalInfo.ambulanceTel} className="text-red-800 font-bold text-sm hover:underline">
+                  {hospitalInfo.ambulanceLabel}
                 </a>
-                <div className="text-[11px] text-red-700/90">
-                  {hospitalInfo.emergencyDispatchLabel}
-                </div>
               </div>
             </div>
             <div className="text-xs text-slate-600 space-y-1">
@@ -169,7 +158,7 @@ function Footer() {
               {hospitalInfo.phone}
             </a>
             <span className="mx-1.5 text-slate-300">·</span>
-            1066 {hospitalInfo.emergencyDispatchLabel}
+            {hospitalInfo.ambulanceLabel}
           </p>
         </div>
       </div>
@@ -180,102 +169,70 @@ function Footer() {
 
 function App() {
   const [tokenOpen, setTokenOpen] = useState(false);
-  const [bookingOpen, setBookingOpen] = useState(false);
-  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
+  const [bookingResult, setBookingResult] = useState<BookingResult | null>(null);
   const [eligibilityOpen, setEligibilityOpen] = useState(false);
   const [careBotOpen, setCareBotOpen] = useState(false);
+  const [prefill, setPrefill] = useState<BookingPrefill | null>(null);
 
-  const handleConfirmBooking = (details: BookingDetails) => {
-    setBookingDetails(details);
-    setBookingOpen(true);
-  };
+  const requestBooking = (specialtyId: string, doctorId?: string) =>
+    setPrefill({ specialtyId, doctorId, nonce: Date.now() });
 
-  const handleBookDoctor = (doctor: Doctor, preferNextDay = false) => {
-    const tabs = getDateTabs();
-    const tab = preferNextDay
-      ? tabs.find((t) => t.id === 'tomorrow') ?? tabs[1] ?? tabs[0]
-      : tabs[0];
-    const defaults = getTodayBookingDefaults();
-    setBookingDetails({
-      department: doctor.specialtyName,
-      date: tab.date,
-      dateLabel: `${tab.label}, ${tab.subLabel}`,
-      time: defaults.time,
-      doctorName: doctor.name,
-      doctorCredentials: doctor.credentials,
-      room: doctor.room,
-      fee: doctor.fee,
-      campWaiverApplied: Boolean(doctor.campWaiverEligible) || doctor.fee === 0,
-      registrationNumber: doctor.registrationNumber,
-      reasonForVisit: 'Routine OPD',
-    });
-    setBookingOpen(true);
-  };
+  const closeToken = useCallback(() => setTokenOpen(false), []);
+  const closeBooking = useCallback(() => setBookingResult(null), []);
+  const closeEligibility = useCallback(() => setEligibilityOpen(false), []);
 
   return (
-    <div className="page-canvas text-slate-700">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[300] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-teal-600 focus:text-white focus:text-sm focus:font-semibold"
-      >
-        Skip to main content
-      </a>
-      <div className="relative z-[1]">
-        <Navbar />
-        <main id="main-content">
-          <HeroTriage
-            onGenerateToken={() => setTokenOpen(true)}
-            onConfirmBooking={handleConfirmBooking}
-          />
-          <TrustMarquee />
-          <ImpactStats />
-          <FacilityPulse />
-          <CampsAndOffersSection />
-          <BentoGrid />
-          <PatientServicesSection onCheckEligibility={() => setEligibilityOpen(true)} />
-          <FounderSection />
-          <DoctorsDirectory onBookDoctor={handleBookDoctor} />
-          <LocationSection />
-        </main>
-        <Footer />
-        <MobileStickyBar />
-        <FloatingDock onOpenCareBot={() => setCareBotOpen(true)} careBotOpen={careBotOpen} />
-        <LiveTokenDrawer open={tokenOpen} onClose={() => setTokenOpen(false)} />
-        <BookingModal
-          open={bookingOpen}
-          onClose={() => setBookingOpen(false)}
-          bookingDetails={bookingDetails}
-        />
-        <EligibilityChecker
-          open={eligibilityOpen}
-          onClose={() => setEligibilityOpen(false)}
-        />
-        <CareBot
-          hideLauncher
-          open={careBotOpen}
-          onOpenChange={setCareBotOpen}
-          onGenerateToken={() => setTokenOpen(true)}
-          onBookAppointment={() => {
-            const today = getTodayBookingDefaults();
-            setBookingDetails({
-              department: 'General Medicine',
-              date: today.date,
-              dateLabel: today.dateLabel,
-              time: today.time,
-              doctorName: 'Dr. A. Kondal Rao',
-              doctorCredentials: 'MBBS | Ex-DM&HO (Khammam)',
-              room: 'Cabin 101',
-              fee: 0,
-              campWaiverApplied: true,
-              registrationNumber: hospitalInfo.mdRegistration,
-              reasonForVisit: 'Routine OPD',
-            });
-            setBookingOpen(true);
-          }}
-          onCheckEligibility={() => setEligibilityOpen(true)}
-        />
+    <MotionConfig reducedMotion="user">
+      <div className="page-canvas text-slate-700">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[300] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-teal-600 focus:text-white focus:text-sm focus:font-semibold"
+        >
+          Skip to main content
+        </a>
+        <div className="relative z-[1]">
+          <Navbar />
+          <main id="main-content">
+            <HeroTriage
+              onGenerateToken={() => setTokenOpen(true)}
+              onBookingResult={setBookingResult}
+              prefill={prefill}
+            />
+            <TrustMarquee />
+            <ImpactStats />
+            <CampsAndOffersSection />
+            <BentoGrid />
+            <PatientServicesSection onCheckEligibility={() => setEligibilityOpen(true)} />
+            <FounderSection />
+            <DoctorsDirectory
+              onBookDoctor={(doctor: Doctor) => requestBooking(doctor.specialtyId, doctor.id)}
+            />
+            <LocationSection />
+          </main>
+          <Footer />
+          <MobileStickyBar onOpenCareBot={() => setCareBotOpen(true)} />
+          <FloatingDock onOpenCareBot={() => setCareBotOpen(true)} careBotOpen={careBotOpen} />
+          <Suspense fallback={null}>
+            {tokenOpen && <LiveTokenDrawer open onClose={closeToken} />}
+            {bookingResult && <BookingModal result={bookingResult} onClose={closeBooking} />}
+            {eligibilityOpen && <EligibilityChecker open onClose={closeEligibility} />}
+            {careBotOpen && (
+              <CareBot
+                hideLauncher
+                open
+                onOpenChange={setCareBotOpen}
+                onGenerateToken={() => setTokenOpen(true)}
+                onBookAppointment={(specialtyId = 'general-medicine') => {
+                  setCareBotOpen(false);
+                  requestBooking(specialtyId);
+                }}
+                onCheckEligibility={() => setEligibilityOpen(true)}
+              />
+            )}
+          </Suspense>
+        </div>
       </div>
-    </div>
+    </MotionConfig>
   );
 }
 

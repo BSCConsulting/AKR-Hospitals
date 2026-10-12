@@ -67,7 +67,7 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
               {camp.date}
             </p>
           </div>
-          <CampCountdown />
+          {camp.startsAt && <CampCountdown startsAt={camp.startsAt} endsAt={camp.endsAt} />}
         </div>
 
         {camp.timeWindow && (
@@ -88,7 +88,7 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
               <Users className="w-3.5 h-3.5 text-teal-600" />
               Featured clinicians
             </div>
-            <div className="grid gap-2">
+            <div className="grid grid-cols-1 gap-2">
               {camp.doctors.map((doc) => (
                 <div
                   key={doc.name}
@@ -231,21 +231,13 @@ function PreventativePackagesFallback() {
     >
       <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase bg-sky-50 border border-sky-200 text-sky-800 mb-4">
         <HeartPulse className="w-3 h-3" />
-        Preventative Care
+        Everyday Savings
       </div>
-      <h3 className="text-xl font-bold text-slate-900 tracking-tight">Preventative Health Packages</h3>
+      <h3 className="text-xl font-bold text-slate-900 tracking-tight">No camp scheduled right now</h3>
       <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-        No camp is scheduled right now. Explore our preventative packages — basic health
-        checkups, diabetes screening, and senior wellness panels with community pricing.
+        Message us on WhatsApp to hear about the next free camp. Our everyday community
+        subsidies still apply.
       </p>
-      <ul className="mt-4 space-y-2">
-        {['Basic Health Checkup', 'Diabetes & Sugar Panel', 'Senior Wellness Screen'].map((pkg) => (
-          <li key={pkg} className="flex items-center gap-2 text-sm text-slate-700">
-            <CheckCircle2 className="w-4 h-4 text-teal-600" />
-            {pkg}
-          </li>
-        ))}
-      </ul>
       <a
         href={WHATSAPP_OPD_INQUIRE}
         target="_blank"

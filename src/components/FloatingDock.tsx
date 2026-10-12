@@ -9,7 +9,7 @@ interface FloatingDockProps {
   careBotOpen: boolean;
 }
 
-/** Single expandable FAB menu — WhatsApp + CareBot. */
+/** Single expandable FAB menu — WhatsApp + CareBot. Desktop only; phones use MobileStickyBar. */
 export default function FloatingDock({ onOpenCareBot, careBotOpen }: FloatingDockProps) {
   const [expanded, setExpanded] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -41,7 +41,7 @@ export default function FloatingDock({ onOpenCareBot, careBotOpen }: FloatingDoc
   return (
     <div
       ref={rootRef}
-      className="fixed z-40 left-3 right-auto md:left-auto md:right-6 bottom-[calc(var(--mobile-sticky-h)+1rem+env(safe-area-inset-bottom,0px))] md:bottom-6 flex flex-col-reverse items-start md:items-end gap-3"
+      className="fixed z-40 right-6 bottom-6 hidden md:flex flex-col-reverse items-end gap-3"
       aria-label="Quick contact menu"
     >
       <button

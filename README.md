@@ -1,29 +1,27 @@
 # AKR Hospitals
 
-Patient-facing website for **Dr. AKR's Multispeciality Hospital** (Madhira, Telangana): OPD booking UI, live token drawer, cashless eligibility checker, CareBot, and location/contact.
+Patient-facing website for **Dr. AKR's Multispeciality Hospital** (Madhira, Telangana): OPD appointment requests, optional live OPD queue, cashless eligibility checker, CareBot, and location/contact.
 
-Built with Vite, React, TypeScript, Tailwind CSS, Framer Motion, and optional Supabase realtime for the OPD queue.
+Built with Vite, React, TypeScript, Tailwind CSS, Framer Motion, and optional Supabase (appointment requests + realtime OPD queue).
 
-The homepage first fold is motion-led: animated counters, a 4-step care pathway, trust ticker, impact stats, campus capacity bars, and a live OPD queue with progress — denser spacing so the page feels rich on first look.
+**Mobile-first:** phone layouts put the appointment form above the pathway/camp blocks, use 44px+ touch targets, a sticky Casualty/Book bar, and a contact FAB cleared above that bar. Casualty CTAs dial the hospital casualty line (`+91 87492 73030`); 108 (govt. ambulance) is the secondary option.
 
-**Mobile-first:** ~phone layouts prioritize Book OPD above pathway/camp blocks, use 44px+ touch targets, a sticky Casualty/Book bar, and a contact FAB cleared above that bar. Nav casualty CTA dials `1066`.
+**Content rule:** only facts confirmed by the hospital go on the site. Unconfirmed items are left out and tracked as `TODO(hospital)` in `src/data/`.
 
 ## Live URLs
 
 | URL | Status |
 |-----|--------|
-| https://akr-hospitals.vercel.app | **Production** (use this until custom DNS is live) |
+| https://akr-hospitals.vercel.app | **Production** — canonical URL, sitemap and JSON-LD point here for now |
 | https://akrhospital.in | Attached in Vercel — set DNS `A` → `76.76.21.21` (or Vercel nameservers) |
 
-Hard-refresh on phone after deploys (`pull to refresh` or clear site data) so the new JS/CSS bundle loads.
-
-Production readiness includes TSMC/NMC registration numbers on consultant cards, NABH/ISO certificate seals, DPDP 2023 / telemedicine / BMW statutory modals, OPD triage + Indian mobile validation, `AKR-OPD-XXX` booking references, WhatsApp deep links, casualty primary click-to-call (`+91 87492 73030`), and Schema.org Hospital JSON-LD targeting `https://akrhospital.in`.
+When `akrhospital.in` resolves to Vercel, replace `https://akr-hospitals.vercel.app` with `https://akrhospital.in` in `index.html`, `public/robots.txt` and `public/sitemap.xml`.
 
 ## Quick start
 
 ```bash
 npm install
-cp .env.example .env   # optional — site runs in demo mode without Supabase
+cp .env.example .env   # optional — without Supabase, requests fall back to WhatsApp/call
 npm run dev
 ```
 
@@ -38,25 +36,48 @@ Open the URL Vite prints (default `http://localhost:5173`).
 | `npm run preview` | Preview production build |
 | `npm run typecheck` | TypeScript check |
 | `npm run lint` | ESLint |
+| `npm run check` | Assert-based self-checks (camp expiry, booking reference, mobile validation) |
 
 ## Environment
 
 | Variable | Required | Notes |
 |----------|----------|-------|
-| `VITE_SUPABASE_URL` | No | Without it, queue falls back to demo numbers |
-| `VITE_SUPABASE_ANON_KEY` | No | Must be the **anon** key only |
+| `VITE_SUPABASE_URL` | No | Without it, the form shows "Couldn't submit online" with WhatsApp/call, and the live queue is hidden |
+| `VITE_SUPABASE_ANON_KEY` | No | The **anon / publishable** key only — never the service_role / secret key |
 
-## Supabase (optional)
+## How appointments work
 
-1. Create a Supabase project.
-2. Apply migrations in `supabase/migrations/` (SQL editor or Supabase CLI).
-3. Ensure Realtime is enabled for `opd_sessions`.
-4. Seed/update a row per calendar day for the live queue.
-5. **RLS:** public clients may `SELECT` only. Staff updates must use the service role / dashboard — do not reopen anon write policies.
+1. The patient fills the form (name, mobile, reason, department, optional doctor, preferred day/time).
+2. The request is inserted into `appointment_requests` (insert-only for the public; rate-limited per mobile and globally).
+3. The patient sees **Request received** + a reference like `AKR-7KQ2MX`, with an optional WhatsApp copy.
+4. Reception opens Supabase → Table Editor → `appointment_requests`, filters `status = new`, calls the patient, then sets `status` to `confirmed`, `cancelled` or `no_answer`.
 
-## Demo vs production
+If Supabase is missing or the insert fails, the patient is told so and offered a prefilled WhatsApp message or a call — nothing is silently lost.
 
-Booking passes and walk-in tokens in the UI are **demo previews** until a real booking/token API is wired. Confirm appointments and OPD tokens at reception or by phone (`+91 87492 73030` / WhatsApp `+91 9849057185`).
+## Live OPD queue (optional)
+
+The queue is shown **only** when reception publishes today's row; otherwise the site never shows token numbers.
+
+- Each OPD morning, in Table Editor → `opd_sessions`, insert a row with `session_date` = today.
+- Update `current_token_served` as tokens are called; set `is_paused` during breaks.
+- Patients enter the number from their reception slip to see how many are ahead (no time estimates).
+
+## Supabase setup (free tier, ~10 minutes)
+
+1. Sign up at [supabase.com](https://supabase.com) → **New project**. Region: **Mumbai (ap-south-1)**. Save the database password somewhere safe.
+2. **SQL Editor** → run each file in `supabase/migrations/` **in filename order** (paste → Run).
+3. **Database → Publications → `supabase_realtime`**: confirm `opd_sessions` is listed (the first migration adds it).
+4. **Project Settings → API**: copy the **Project URL** and the **anon / publishable** key.
+5. **Vercel → Project → Settings → Environment Variables**: add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` for Production (and Preview if wanted), then **Redeploy**.
+6. Test: submit a request on the live site → it appears in `appointment_requests`.
+7. Optional: **Database → Webhooks** on `appointment_requests` INSERT → n8n / email / Telegram so reception is alerted instantly instead of checking the table.
+
+**RLS:** public clients may `SELECT` `opd_sessions` and `INSERT` `appointment_requests` — nothing else. Staff use the dashboard (service role). Do not add anon read/update policies.
+
+## Analytics & security
+
+- Vercel Web Analytics script is included (`/_vercel/insights/script.js`); enable it in Vercel → Project → **Analytics**.
+- Security headers (CSP, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy) live in `vercel.json`. If you add a new third-party script, image host or iframe, update the CSP there.
 
 ## License
 

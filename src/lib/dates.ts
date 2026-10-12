@@ -46,43 +46,22 @@ export function formatWeekday(date: Date): string {
   return WEEKDAYS[date.getDay()];
 }
 
-export function formatDateLabel(date: Date, relative: 'today' | 'tomorrow' | 'weekday'): string {
-  const sub = formatMonthDay(date);
-  if (relative === 'today') return `Today, ${sub}`;
-  if (relative === 'tomorrow') return `Tomorrow, ${sub}`;
-  return `${formatWeekday(date)}, ${sub}`;
+export type CampPhase = 'upcoming' | 'live' | 'ended';
+
+/** startsAt / endsAt are ISO strings with offset, e.g. 2026-10-11T10:00:00+05:30. */
+export function campPhase(now: number, startsAt?: string, endsAt?: string): CampPhase {
+  if (endsAt && now >= Date.parse(endsAt)) return 'ended';
+  if (startsAt && now < Date.parse(startsAt)) return 'upcoming';
+  return 'live';
 }
 
-export interface BookingDateDefaults {
-  date: string;
-  dateLabel: string;
-  time: string;
-}
-
-export function getTodayBookingDefaults(time = '09:00'): BookingDateDefaults {
-  const today = new Date();
-  return {
-    date: toLocalDateString(today),
-    dateLabel: formatDateLabel(today, 'today'),
-    time,
-  };
-}
-
-/** Google Calendar compact datetime: YYYYMMDDTHHMMSS (local, no Z). */
-export function toGoogleCalendarDateTime(date: string, time: string, durationMinutes = 30): string {
-  const [hours, minutes] = time.split(':').map(Number);
-  const start = new Date(`${date}T00:00:00`);
-  start.setHours(hours || 0, minutes || 0, 0, 0);
-  const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
-
-  const fmt = (d: Date) => {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const h = String(d.getHours()).padStart(2, '0');
-    const min = String(d.getMinutes()).padStart(2, '0');
-    return `${y}${m}${day}T${h}${min}00`;
-  };
-
-  return `${fmt(start)}/${fmt(end)}`;
+/** "Sunday, 11 Oct 2026" in IST regardless of the visitor's timezone. */
+export function formatCampDate(iso: string): string {
+  return new Intl.DateTimeFormat('en-IN', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'Asia/Kolkata',
+  }).format(Date.parse(iso));
 }

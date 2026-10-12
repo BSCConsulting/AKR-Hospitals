@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Phone, Stethoscope } from 'lucide-react';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
 import { getFeaturedCamp, SUPPORT_PHONE, SUPPORT_PHONE_TEL } from '@/data/promotions';
-import { WHATSAPP_CAMP_RSVP } from '@/lib/whatsapp';
+import { campPhase, formatCampDate } from '@/lib/dates';
 import CampCountdown from '@/components/CampCountdown';
 
 const FALLBACK_PERKS = [
@@ -22,6 +22,8 @@ export default function HeroCampCallout() {
   const clinicians = camp.doctors
     .map((d) => `${d.name} (${d.qualification})`)
     .join(' & ');
+  const campDate = camp.startsAt ? formatCampDate(camp.startsAt) : camp.date;
+  const isLive = campPhase(Date.now(), camp.startsAt, camp.endsAt) === 'live';
 
   return (
     <motion.aside
@@ -39,19 +41,19 @@ export default function HeroCampCallout() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
           </span>
-          Upcoming Community Camp • Sunday, Oct 11, 2026
+          {isLive ? 'Community Camp Today' : 'Upcoming Community Camp'} • {campDate}
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
             <p className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-              Free Mega Urology Medical Camp
+              {camp.title}
             </p>
-            <p className="text-sm font-semibold text-teal-800 mt-0.5">
-              {camp.timeWindow ?? '10:00 AM – 2:00 PM'}
-            </p>
+            {camp.timeWindow && (
+              <p className="text-sm font-semibold text-teal-800 mt-0.5">{camp.timeWindow}</p>
+            )}
           </div>
-          <CampCountdown />
+          {camp.startsAt && <CampCountdown startsAt={camp.startsAt} endsAt={camp.endsAt} />}
         </div>
 
         <div className="flex flex-wrap gap-1.5">
@@ -76,14 +78,14 @@ export default function HeroCampCallout() {
 
         <p className="text-[11px] text-slate-600 leading-relaxed rounded-lg border border-sky-200 bg-sky-50/80 px-3 py-2">
           <strong className="text-slate-800">Ultrasound subsidy:</strong> 50% off ultrasound applies
-          during camp hours (Sunday, Oct 11, 2026 · 10:00 AM – 2:00 PM) and notified OPD windows —
+          during camp hours ({campDate}{camp.timeWindow ? ` · ${camp.timeWindow}` : ''}) and notified OPD windows —
           present camp token / RSVP confirmation at the diagnostics desk. Routine scans outside these
           windows follow standard tariffs unless a separate subsidy is announced.
         </p>
 
         <div className="flex flex-col xs:flex-row sm:flex-row gap-2 pt-0.5">
           <a
-            href={WHATSAPP_CAMP_RSVP}
+            href={camp.whatsappCTA}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-[#0B6E62] text-white hover:bg-[#095c52] transition-colors shadow-sm"

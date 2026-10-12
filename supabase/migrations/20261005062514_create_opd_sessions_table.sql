@@ -5,7 +5,7 @@
 - `opd_sessions`
   - `id` (uuid, primary key, default gen_random_uuid())
   - `session_date` (date, not null) — the calendar day this OPD session belongs to
-  - `current_token_served` (integer, not null, default 14) — the token number currently being served at the reception desk
+  - `current_token_served` (integer, not null, default 0) — the token number currently being served at the reception desk
   - `is_paused` (boolean, not null, default false) — whether the OPD queue is temporarily paused (lunch break, system issue, etc.)
   - `created_at` (timestamptz, default now())
   - `updated_at` (timestamptz, default now()) — updated whenever current_token_served or is_paused changes
@@ -21,7 +21,7 @@
   reflects the current serving token in real time.
 
 4. Seed Data
-- Inserts one row for today's date with current_token_served = 14 and is_paused = false.
+- None. Reception inserts a row for each OPD day; the site shows the queue only when today's row exists.
 
 5. Indexes
 - Unique index on `session_date` so only one active session per day can exist.
@@ -30,7 +30,7 @@
 CREATE TABLE IF NOT EXISTS opd_sessions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   session_date date NOT NULL,
-  current_token_served integer NOT NULL DEFAULT 14,
+  current_token_served integer NOT NULL DEFAULT 0,
   is_paused boolean NOT NULL DEFAULT false,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
@@ -50,11 +50,6 @@ CREATE POLICY "anon_select_opd_sessions"
 DROP POLICY IF EXISTS "anon_insert_opd_sessions" ON opd_sessions;
 DROP POLICY IF EXISTS "anon_update_opd_sessions" ON opd_sessions;
 DROP POLICY IF EXISTS "anon_delete_opd_sessions" ON opd_sessions;
-
--- Seed today's session (idempotent via ON CONFLICT)
-INSERT INTO opd_sessions (session_date, current_token_served, is_paused)
-VALUES (CURRENT_DATE, 14, false)
-ON CONFLICT (session_date) DO NOTHING;
 
 -- Enable realtime publication for this table
 ALTER PUBLICATION supabase_realtime ADD TABLE opd_sessions;

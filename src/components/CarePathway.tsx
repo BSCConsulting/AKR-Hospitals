@@ -10,15 +10,15 @@ const steps = [
   },
   {
     icon: CalendarCheck2,
-    title: 'Book OPD Slot',
-    desc: 'Pick date & doctor online',
+    title: 'Request OPD',
+    desc: 'We call to confirm your time',
     href: '#appointments',
   },
   {
     icon: MapPinned,
     title: 'Arrive & Token',
-    desc: 'Track live queue privately',
-    href: '#appointments',
+    desc: 'Collect your token at reception',
+    href: '#contact',
   },
   {
     icon: HeartPulse,

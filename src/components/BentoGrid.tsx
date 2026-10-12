@@ -5,7 +5,6 @@ import {
   Eye,
   ScanLine,
   Activity,
-  MapPin,
   CheckCircle2,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -44,11 +43,11 @@ export default function BentoGrid() {
             Clinical Wings
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-            Five centers of excellence
+            Our clinical departments
           </h2>
           <p className="text-slate-600 mt-3 text-lg">
-            Strictly clinical departments — trauma, maternity, urology & surgery, eye care,
-            and diagnostics — each purpose-built with dedicated specialists.
+            Trauma, maternity, urology & surgery, eye care, and diagnostics — under one roof in
+            Madhira. Call reception for specialist OPD days.
           </p>
         </motion.div>
 
@@ -123,32 +122,16 @@ function BentoCard({
           {dept.description}
         </p>
 
-        <div className="mt-auto pt-4 space-y-3">
-          <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-            <MapPin className="w-3 h-3 text-teal-600" />
-            {dept.wing} · {dept.floor}
-          </div>
-          {isHighlighted && (
-            <div className="flex flex-wrap gap-1.5">
-              {dept.features.slice(0, 3).map((f) => (
-                <span
-                  key={f}
-                  className="inline-flex items-center gap-1 text-[10px] font-medium text-slate-600 bg-white/80 border border-slate-200 px-2 py-0.5 rounded-full"
-                >
-                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                  {f}
-                </span>
-              ))}
-            </div>
-          )}
-          <div className="grid grid-cols-3 gap-2">
-            {dept.stats.map((s) => (
-              <div key={s.label} className="rounded-lg bg-white/70 border border-slate-100 px-2 py-1.5">
-                <div className="text-sm font-bold text-slate-900">{s.value}</div>
-                <div className="text-[9px] text-slate-500 leading-tight">{s.label}</div>
-              </div>
-            ))}
-          </div>
+        <div className="mt-auto pt-4 flex flex-wrap gap-1.5">
+          {dept.features.map((f) => (
+            <span
+              key={f}
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-white/80 border border-slate-200 px-2 py-0.5 rounded-full"
+            >
+              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+              {f}
+            </span>
+          ))}
         </div>
       </div>
     </motion.div>

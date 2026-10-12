@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Award, Building2, HeartPulse, Landmark, Quote } from 'lucide-react';
+import { Award, Building2, HeartPulse, Landmark } from 'lucide-react';
 
 const highlights = [
   {
@@ -10,12 +10,12 @@ const highlights = [
   {
     icon: HeartPulse,
     title: 'Clinical Stewardship',
-    body: '30+ years institutional medicine & acute care management.',
+    body: 'Long-standing experience in institutional medicine and acute care.',
   },
   {
     icon: Building2,
     title: 'Institutional Trust',
-    body: 'Founded in 2008; scaled to 250 beds with NABH accreditation.',
+    body: 'Founded the hospital in Madhira in 2008.',
   },
 ];
 
@@ -48,7 +48,7 @@ export default function FounderSection() {
               <div className="absolute bottom-4 left-4 right-4">
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/95 backdrop-blur-md border border-teal-200 px-3.5 py-2 shadow-md text-xs sm:text-sm font-semibold text-teal-900">
                   <Award className="w-4 h-4 text-teal-600 shrink-0" />
-                  Ex-DM&amp;HO, Khammam • 30+ Years Clinical Leadership
+                  Ex-DM&amp;HO, Khammam • Founder since 2008
                 </div>
               </div>
             </div>
@@ -63,15 +63,14 @@ export default function FounderSection() {
               Dr. A. Kondal Rao
             </h2>
             <p className="mt-1 text-base font-medium text-slate-600">MBBS</p>
-            <p className="mt-1 text-xs font-semibold text-teal-800">TSMC Reg No: TSMC/04218/1992</p>
 
-            <blockquote className="mt-6 relative rounded-xl border border-teal-100 bg-teal-50/70 px-4 py-4">
-              <Quote className="absolute top-3 right-3 w-5 h-5 text-teal-300" />
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed italic pr-6">
-                Bringing tertiary-grade trauma and diagnostic infrastructure directly to rural
-                and semi-urban communities across Khammam.
+            <div className="mt-6 rounded-xl border border-teal-100 bg-teal-50/70 px-4 py-4">
+              <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+                <strong className="text-slate-900">Our mission:</strong> quality trauma, maternity
+                and diagnostic care close to home for rural and semi-urban communities across
+                Khammam.
               </p>
-            </blockquote>
+            </div>
 
             <ul className="mt-6 space-y-4 flex-1">
               {highlights.map((item) => (

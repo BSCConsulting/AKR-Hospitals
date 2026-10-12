@@ -1,20 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  X,
-  Ticket,
-  Navigation,
-  Phone,
-  Clock,
-  CheckCircle2,
-  Activity,
-  MapPin,
-  Stethoscope,
-  PauseCircle,
-  Volume2,
-  Bell,
-  MessageCircle,
-} from 'lucide-react';
+import { X, Ticket, Navigation, Phone, Stethoscope, PauseCircle, MapPin } from 'lucide-react';
 import { hospitalInfo } from '@/data/mockData';
 import { useOpdQueue } from '@/hooks/useOpdQueue';
 
@@ -23,74 +9,23 @@ interface LiveTokenDrawerProps {
   onClose: () => void;
 }
 
-const assignedTokenNumber = 19;
-const assignedToken = 'A-019';
-const MINUTES_PER_TOKEN = 8;
-
 export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps) {
-  const { currentTokenServed, isPaused, isLoading } = useOpdQueue();
-
-  const tokensAhead = Math.max(assignedTokenNumber - currentTokenServed, 0);
-  const totalWaitSeconds = tokensAhead * MINUTES_PER_TOKEN * 60;
-  const [waitSeconds, setWaitSeconds] = useState(totalWaitSeconds);
-  const [announcement, setAnnouncement] = useState<string | null>(null);
-  const [whatsappNotify, setWhatsappNotify] = useState(false);
-  const announcementTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { isLive, currentTokenServed, isPaused, isLoading } = useOpdQueue();
+  const [token, setToken] = useState('');
+  const myToken = Number.parseInt(token, 10);
+  const ahead = Number.isFinite(myToken) ? myToken - currentTokenServed : null;
 
   useEffect(() => {
     if (!open) return;
-    setWaitSeconds(totalWaitSeconds);
-  }, [open, totalWaitSeconds]);
-
-  useEffect(() => {
-    if (!open || isPaused) return;
-    const interval = setInterval(() => {
-      setWaitSeconds((s) => (s > 0 ? s - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [open, isPaused]);
-
-  const triggerAnnouncement = () => {
-    const msg = `Now calling Token ${assignedToken} to Room 3`;
-    setAnnouncement(msg);
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(
-        `Now calling token A-019 to Room 3. Please proceed to the consultation room.`
-      );
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      window.speechSynthesis.speak(utterance);
-    }
-    if (announcementTimer.current) clearTimeout(announcementTimer.current);
-    announcementTimer.current = setTimeout(() => setAnnouncement(null), 5000);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (announcementTimer.current) clearTimeout(announcementTimer.current);
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, []);
-
-  const formatWait = (s: number) => {
-    const m = Math.floor(s / 60);
-    const sec = s % 60;
-    return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
-  };
-
-  const waitProgress = totalWaitSeconds > 0 ? ((totalWaitSeconds - waitSeconds) / totalWaitSeconds) * 100 : 0;
-  const servingDisplay = `#${currentTokenServed}`;
-  const mapsUrl = hospitalInfo.mapsDirectionsUrl;
-  const receptionPhone = hospitalInfo.phone.replace(/\s/g, '');
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
 
   return (
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -100,274 +35,117 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
             className="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm"
           />
 
-          {/* Announcement banner */}
-          <AnimatePresence>
-            {announcement && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="fixed top-4 left-1/2 -translate-x-1/2 z-[75] bg-teal-600 text-white px-5 py-3 rounded-xl shadow-2xl shadow-teal-600/40 flex items-center gap-2.5"
-              >
-                <Volume2 className="w-5 h-5 animate-pulse" />
-                <span className="text-sm font-semibold">{announcement}</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Drawer */}
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="token-drawer-title"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 280 }}
             className="fixed top-0 right-0 bottom-0 z-[70] w-full sm:w-[440px] max-h-screen bg-white border-l border-slate-200 overflow-y-auto overscroll-contain shadow-2xl"
           >
-            {/* Header */}
             <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-xl border-b border-slate-200 px-5 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-lg bg-teal-500/15 border border-teal-500/30 flex items-center justify-center">
-                  <Ticket className="w-4.5 h-4.5 text-teal-400" />
+                <div className="w-9 h-9 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center">
+                  <Ticket className="w-4.5 h-4.5 text-teal-700" />
                 </div>
                 <div>
-                  <h3 className="text-slate-900 font-semibold text-sm">Your Live Token</h3>
-                  <p className="text-[11px] text-slate-600">OPD Queue Status</p>
+                  <h3 id="token-drawer-title" className="text-slate-900 font-semibold text-sm">
+                    OPD Queue
+                  </h3>
+                  <p className="text-[11px] text-slate-600">Check your turn</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 text-slate-600 hover:text-white hover:bg-slate-100 rounded-lg transition-colors"
-                aria-label="Close drawer"
+                className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                aria-label="Close"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Body */}
-            <div className="px-5 py-6 space-y-5 max-h-[calc(100vh-4.5rem)] overflow-y-auto">
-              <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-900">
-                Demo walk-in token for preview. Collect your real OPD token at the reception desk.
-                Live board shows token numbers & clinical wings only — patient names stay masked.
-              </div>
-
-              {/* Token number card */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15, duration: 0.4 }}
-                className="relative bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-200 rounded-2xl p-6 text-center overflow-hidden"
-              >
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-400 to-transparent opacity-50" />
-                <div className="text-xs text-teal-700 font-medium uppercase tracking-wider mb-2">
-                  Sample Token Number
+            <div className="px-5 py-6 space-y-5">
+              {isLoading ? (
+                <p className="text-sm text-slate-600">Loading today's queue…</p>
+              ) : !isLive ? (
+                <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700">
+                  The live queue isn't published right now. Please call reception for your turn.
                 </div>
-                <div className="text-5xl font-bold text-slate-900 tracking-tight mb-3">
-                  {assignedToken}
-                </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-medium">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  Demo Preview
-                </div>
-              </motion.div>
-
-              {/* Currently serving */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25, duration: 0.4 }}
-                className="bg-slate-50 border border-slate-200 rounded-xl p-4"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-500/15 flex items-center justify-center">
-                      <Stethoscope className="w-5 h-5 text-emerald-400" />
+              ) : (
+                <>
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+                      <Stethoscope className="w-5 h-5 text-emerald-700" />
                     </div>
                     <div>
-                      <div className="text-[11px] text-slate-600 uppercase tracking-wide">
-                        Now Serving
-                      </div>
-                      <div className="text-lg font-bold text-white">
-                        {isLoading ? '—' : servingDisplay}
+                      <div className="text-[11px] text-slate-600 uppercase tracking-wide">Now serving</div>
+                      <div className="text-2xl font-bold text-slate-900 tabular-nums" aria-live="polite">
+                        {currentTokenServed > 0 ? `#${currentTokenServed}` : 'Not started'}
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-[11px] text-slate-600 uppercase tracking-wide">
-                      You are
-                    </div>
-                    <div className="text-lg font-bold text-amber-400">
-                      {isLoading ? '—' : `${tokensAhead} ahead`}
-                    </div>
-                  </div>
-                </div>
-                {isPaused && (
-                  <div className="mt-3 flex items-center gap-1.5 text-xs text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
-                    <PauseCircle className="w-3.5 h-3.5" />
-                    Queue is temporarily paused. Please wait for it to resume.
-                  </div>
-                )}
-              </motion.div>
 
-              {/* Wait-time countdown */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35, duration: 0.4 }}
-                className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-slate-700">
-                    <Clock className="w-4 h-4 text-teal-400" />
-                    Estimated Wait
-                  </div>
-                  <div className="text-2xl font-bold text-white font-mono tabular-nums">
-                    {formatWait(waitSeconds)}
-                  </div>
-                </div>
-                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${waitProgress}%` }}
-                    transition={{ duration: 0.5, ease: 'linear' }}
-                  />
-                </div>
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-600">
-                  <Activity className="w-3 h-3 text-teal-400 animate-pulse" />
-                  {isPaused
-                    ? 'Queue is paused. Wait time is estimated and may change.'
-                    : 'Queue is moving in real-time. Please be in the waiting area 10 min before your turn.'}
-                </div>
-              </motion.div>
-
-              {/* Audio announcement + WhatsApp toggle */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.4 }}
-                className="space-y-2.5"
-              >
-                <div className="text-xs text-slate-600 font-medium uppercase tracking-wide">
-                  Notifications
-                </div>
-
-                {/* Audio announcement sim */}
-                <button
-                  onClick={triggerAnnouncement}
-                  className="group flex items-center gap-3 w-full px-4 py-3.5 bg-slate-100 hover:bg-slate-50 border border-slate-200 hover:border-teal-500/40 rounded-xl transition-all"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-teal-500/15 flex items-center justify-center shrink-0 group-hover:bg-teal-500/25 transition-colors">
-                    <Volume2 className="w-5 h-5 text-teal-400" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <div className="text-sm font-semibold text-white">Simulate Audio Announcement</div>
-                    <div className="text-[11px] text-slate-600 mt-0.5">
-                      Hear "Now calling Token A-019 to Room 3"
+                  {isPaused && (
+                    <div className="flex items-center gap-1.5 text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                      <PauseCircle className="w-3.5 h-3.5" />
+                      The queue is paused for a short while. It will resume shortly.
                     </div>
-                  </div>
-                </button>
+                  )}
 
-                {/* WhatsApp notify toggle */}
-                <button
-                  onClick={() => setWhatsappNotify(!whatsappNotify)}
-                  className={`group flex items-center gap-3 w-full px-4 py-3.5 rounded-xl border transition-all ${
-                    whatsappNotify
-                      ? 'bg-emerald-500/10 border-emerald-500/30'
-                      : 'bg-slate-100 border-slate-200 hover:border-slate-600'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    whatsappNotify ? 'bg-emerald-500/25' : 'bg-slate-700'
-                  }`}>
-                    <MessageCircle className={`w-5 h-5 ${whatsappNotify ? 'text-emerald-400' : 'text-slate-500'}`} />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <div className="text-sm font-semibold text-white">
-                      WhatsApp Alert {whatsappNotify && '— On'}
-                    </div>
-                    <div className="text-[11px] text-slate-600 mt-0.5">
-                      Coming soon — WhatsApp queue alerts
-                    </div>
-                  </div>
-                  <div className={`w-11 h-6 rounded-full transition-colors relative shrink-0 ${
-                    whatsappNotify ? 'bg-emerald-500' : 'bg-slate-600'
-                  }`}>
-                    <motion.div
-                      className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md"
-                      animate={{ left: whatsappNotify ? 22 : 2 }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  <div className="space-y-2">
+                    <label htmlFor="my-token" className="text-sm font-semibold text-slate-800">
+                      Your token number (from the reception slip)
+                    </label>
+                    <input
+                      id="my-token"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={4}
+                      value={token}
+                      onChange={(e) => setToken(e.target.value.replace(/\D/g, ''))}
+                      className="w-full px-4 py-3 min-h-12 rounded-xl border border-slate-300 bg-white text-slate-900 text-lg tabular-nums focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      placeholder="e.g. 23"
                     />
+                    {ahead !== null && (
+                      <p className="text-sm text-slate-700" aria-live="polite">
+                        {ahead > 0
+                          ? `${ahead} ${ahead === 1 ? 'patient is' : 'patients are'} ahead of you.`
+                          : "It's your turn or your token has been called — please check with reception."}
+                      </p>
+                    )}
                   </div>
-                </button>
-                {whatsappNotify && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="flex items-center gap-1.5 text-xs text-amber-200 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2"
-                  >
-                    <Bell className="w-3.5 h-3.5" />
-                    Interest noted. Live WhatsApp alerts are not connected yet — ask reception for queue updates.
-                  </motion.div>
-                )}
-              </motion.div>
+                </>
+              )}
 
-              {/* Action buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.45, duration: 0.4 }}
-                className="space-y-2.5"
-              >
-                <div className="text-xs text-slate-600 font-medium uppercase tracking-wide mb-1">
-                  Quick Actions
-                </div>
-
-                {/* Google Maps navigation */}
+              <div className="space-y-2.5">
                 <a
-                  href={mapsUrl}
+                  href={hospitalInfo.mapsDirectionsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-3 w-full px-4 py-3.5 bg-slate-100 hover:bg-slate-50 border border-slate-200 hover:border-teal-500/40 rounded-xl transition-all"
+                  className="flex items-center gap-3 w-full px-4 py-3.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-colors"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-teal-500/15 flex items-center justify-center shrink-0 group-hover:bg-teal-500/25 transition-colors">
-                    <Navigation className="w-5 h-5 text-teal-400" />
-                  </div>
+                  <Navigation className="w-5 h-5 text-teal-700 shrink-0" />
                   <div className="flex-1 text-left">
-                    <div className="text-sm font-semibold text-white">Navigate to Hospital</div>
+                    <div className="text-sm font-semibold text-slate-900">Directions to hospital</div>
                     <div className="text-[11px] text-slate-600 flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3 h-3" />
                       {hospitalInfo.address}
                     </div>
                   </div>
-                  <Navigation className="w-4 h-4 text-slate-500 group-hover:text-teal-400 transition-colors" />
                 </a>
-
-                {/* Reception dialer */}
                 <a
-                  href={`tel:${receptionPhone}`}
-                  className="group flex items-center gap-3 w-full px-4 py-3.5 bg-slate-100 hover:bg-slate-50 border border-slate-200 hover:border-emerald-500/40 rounded-xl transition-all"
+                  href={hospitalInfo.phoneTel}
+                  className="flex items-center gap-3 w-full px-4 py-3.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-colors"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0 group-hover:bg-emerald-500/25 transition-colors">
-                    <Phone className="w-5 h-5 text-emerald-400" />
-                  </div>
+                  <Phone className="w-5 h-5 text-emerald-700 shrink-0" />
                   <div className="flex-1 text-left">
-                    <div className="text-sm font-semibold text-white">Call Reception</div>
+                    <div className="text-sm font-semibold text-slate-900">Call reception</div>
                     <div className="text-[11px] text-slate-600 mt-0.5">{hospitalInfo.phone}</div>
                   </div>
-                  <Phone className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors" />
                 </a>
-              </motion.div>
-
-              {/* Info note */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.55, duration: 0.4 }}
-                className="text-[11px] text-slate-500 text-center pt-2"
-              >
-                Show this token at the reception desk. Your slot will be held for 15 minutes
-                after your token is called.
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         </>

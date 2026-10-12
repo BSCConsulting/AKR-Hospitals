@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://akrhospital.in/sitemap.xml
+Sitemap: https://akr-hospitals.vercel.app/sitemap.xml

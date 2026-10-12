@@ -56,16 +56,14 @@ function LegalBody({ id }: { id: Exclude<LegalDoc, null> }) {
         <p>
           <strong className="text-slate-800">Consent & rights:</strong> By submitting a booking or
           WhatsApp inquiry you consent to processing for the stated purpose. You may request access,
-          correction, or erasure of non-retention-mandated data by writing to{' '}
-          <a className="text-teal-700 underline" href={`mailto:${hospitalInfo.email}`}>
-            {hospitalInfo.email}
-          </a>{' '}
-          or calling {hospitalInfo.phone}. Clinical records may be retained as required by law.
+          correction, or erasure of non-retention-mandated data by calling {hospitalInfo.phone} or
+          messaging {hospitalInfo.appointmentLine} on WhatsApp. Clinical records may be retained as
+          required by law.
         </p>
         <p>
-          <strong className="text-slate-800">Security:</strong> Demo online booking passes are
-          temporary references and are not stored as full electronic medical records. Live clinical
-          systems are access-controlled at the hospital.
+          <strong className="text-slate-800">Security:</strong> Online appointment requests (name,
+          mobile, preferred slot, reason) are stored in an access-controlled database readable only
+          by hospital staff, and are not part of the electronic medical record.
         </p>
       </div>
     );
@@ -81,8 +79,8 @@ function LegalBody({ id }: { id: Exclude<LegalDoc, null> }) {
           consult under the Telemedicine Practice Guidelines (Board of Governors / NMC).
         </p>
         <ul className="list-disc pl-5 space-y-1.5">
-          <li>Online slot confirmation generates a temporary reference only until verified at reception.</li>
-          <li>Emergency symptoms require immediate presentation to Casualty or calling {hospitalInfo.phone} / 1066.</li>
+          <li>Online appointment requests are confirmed by hospital staff by phone before the visit.</li>
+          <li>Emergency symptoms require immediate presentation to Casualty or calling {hospitalInfo.phone} / {hospitalInfo.ambulancePhone}.</li>
           <li>Prescriptions, diagnostics orders, and certificates are issued only after appropriate clinical assessment.</li>
           <li>Patients must provide accurate identity and contact details; misuse of booking channels may be refused.</li>
         </ul>
@@ -98,13 +96,13 @@ function LegalBody({ id }: { id: Exclude<LegalDoc, null> }) {
     <div className="space-y-3 text-sm text-slate-600 leading-relaxed">
       <p>
         <strong className="text-slate-800">Clinical Establishments Registration:</strong>{' '}
-        {hospitalInfo.name} is registered under the {clinicalEstablishment.act}. Registration No:{' '}
-        <span className="font-semibold text-slate-800">{clinicalEstablishment.registrationNo}</span>.
+        {hospitalInfo.name} is registered under the {clinicalEstablishment.act}. The registration
+        certificate is displayed at the hospital.
       </p>
       <p>
         <strong className="text-slate-800">Bio-Medical Waste (BMW):</strong>{' '}
-        {clinicalEstablishment.bmwReturnsNote} Authorization / tracking reference:{' '}
-        <span className="font-semibold text-slate-800">{clinicalEstablishment.bmwAuthorization}</span>.
+        {clinicalEstablishment.bmwReturnsNote} The BMW authorisation is available at the
+        administration desk.
       </p>
       <p>
         BMW annual returns and category-wise waste manifests are maintained at the facility and

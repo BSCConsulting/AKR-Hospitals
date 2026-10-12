@@ -1,23 +1,11 @@
 import { motion } from 'framer-motion';
-import {
-  Stethoscope,
-  MapPin,
-  Star,
-  Calendar,
-  ArrowRight,
-  BadgeCheck,
-  CircleDollarSign,
-  IdCard,
-} from 'lucide-react';
-import { doctors, type Doctor } from '@/data/mockData';
+import { Stethoscope, Calendar, ArrowRight, CircleDollarSign, IdCard, Phone } from 'lucide-react';
+import { doctors, hospitalInfo, type Doctor } from '@/data/mockData';
 import DoctorAvatar from '@/components/DoctorAvatar';
+import { getActiveCamps } from '@/data/promotions';
 
 interface DoctorsDirectoryProps {
-  onBookDoctor: (doctor: Doctor, preferNextDay?: boolean) => void;
-}
-
-function formatRegDisplay(reg: string) {
-  return reg.replace(/TSMC Reg No:/i, 'TSMC Reg #').trim();
+  onBookDoctor: (doctor: Doctor) => void;
 }
 
 export default function DoctorsDirectory({ onBookDoctor }: DoctorsDirectoryProps) {
@@ -33,14 +21,14 @@ export default function DoctorsDirectory({ onBookDoctor }: DoctorsDirectoryProps
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium mb-4">
             <Stethoscope className="w-3.5 h-3.5" />
-            Specialists on Duty
+            Our Clinicians
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
             Meet our consultants
           </h2>
           <p className="text-slate-600 mt-3 text-lg">
-            Experienced specialists across disciplines, available for in-person and follow-up
-            consultations throughout the week.
+            Request an appointment online and our reception team will call you to confirm the
+            time. For other specialties, call reception.
           </p>
         </motion.div>
 
@@ -48,6 +36,20 @@ export default function DoctorsDirectory({ onBookDoctor }: DoctorsDirectoryProps
           {doctors.map((doctor, index) => (
             <DoctorCard key={doctor.id} doctor={doctor} index={index} onBook={onBookDoctor} />
           ))}
+          <div className="glass-surface p-5 flex flex-col">
+            <h3 className="text-slate-900 font-semibold text-sm">Other specialties</h3>
+            <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+              Cardiology, orthopaedics, paediatrics, gynaecology, eye care and more — call
+              reception for today's consultants and OPD timings.
+            </p>
+            <a
+              href={hospitalInfo.phoneTel}
+              className="mt-auto pt-4 w-full flex items-center justify-center gap-2 px-4 py-3 min-h-12 rounded-xl text-sm font-semibold bg-white border border-slate-200 text-slate-800 hover:bg-slate-50"
+            >
+              <Phone className="w-4 h-4 text-teal-700" />
+              Call {hospitalInfo.phone}
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -61,8 +63,10 @@ function DoctorCard({
 }: {
   doctor: Doctor;
   index: number;
-  onBook: (d: Doctor, preferNextDay?: boolean) => void;
+  onBook: (d: Doctor) => void;
 }) {
+  const waived =
+    doctor.fee === 0 || getActiveCamps().some((c) => c.doctors.some((d) => d.name === doctor.name));
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -72,33 +76,23 @@ function DoctorCard({
       whileHover={{ y: -4 }}
       className="group glass-surface p-5"
     >
-      <div className="flex flex-wrap items-start justify-between mb-4 gap-2">
-        <div className="flex items-center gap-3 min-w-0 flex-1">
-          <DoctorAvatar name={doctor.name} size="md" />
-          <div className="min-w-0">
-            <h3 className="text-slate-900 font-semibold text-sm">{doctor.name}</h3>
-            <p className="text-[11px] text-slate-500 mt-0.5">{doctor.credentials}</p>
-            {doctor.designation && (
-              <p className="text-[11px] text-teal-800 font-medium mt-0.5">{doctor.designation}</p>
-            )}
-          </div>
+      <div className="flex items-center gap-3 min-w-0 mb-4">
+        <DoctorAvatar name={doctor.name} photo={doctor.photo} size="md" />
+        <div className="min-w-0">
+          <h3 className="text-slate-900 font-semibold text-sm">{doctor.name}</h3>
+          <p className="text-[11px] text-slate-500 mt-0.5">{doctor.credentials}</p>
+          {doctor.designation && (
+            <p className="text-[11px] text-teal-800 font-medium mt-0.5">{doctor.designation}</p>
+          )}
         </div>
-        {doctor.available ? (
-          <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Available
-          </span>
-        ) : (
-          <span className="shrink-0 text-[10px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-            Tomorrow
-          </span>
-        )}
       </div>
 
-      <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-slate-700 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg mb-3">
-        <IdCard className="w-3.5 h-3.5 text-teal-600" />
-        {formatRegDisplay(doctor.registrationNumber)}
-      </div>
+      {doctor.registrationNumber && (
+        <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-slate-700 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg mb-3">
+          <IdCard className="w-3.5 h-3.5 text-teal-600" />
+          {doctor.registrationNumber}
+        </div>
+      )}
 
       <div className="flex items-center gap-1.5 text-xs text-teal-700 mb-3 font-medium">
         <Stethoscope className="w-3.5 h-3.5" />
@@ -106,58 +100,23 @@ function DoctorCard({
       </div>
 
       <div className="space-y-2 mb-4">
-        <div className="flex items-center justify-between gap-2 text-xs text-slate-600">
-          <span className="flex items-center gap-2">
-            <MapPin className="w-3.5 h-3.5 text-slate-400" />
-            {doctor.room}
-          </span>
-          <span className="flex items-center gap-1 font-semibold text-slate-800">
-            <CircleDollarSign className="w-3.5 h-3.5 text-teal-600" />
-            {doctor.campWaiverEligible || doctor.fee === 0
-              ? '₹0 Waiver'
-              : `₹${doctor.fee}`}
-          </span>
-        </div>
         <div className="flex items-center gap-2 text-xs text-slate-600">
-          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+          <Calendar className="w-3.5 h-3.5 text-slate-500" />
           OPD: {doctor.opdDays.join(', ')}
         </div>
-        <div className="rounded-lg bg-teal-50/70 border border-teal-100 px-2.5 py-1.5 text-[11px] text-teal-900">
-          {doctor.campWaiverEligible || doctor.fee === 0
-            ? 'Consultation: ₹0 OP Registration (Community Waiver)'
-            : `Consultation fee: ₹${doctor.fee} · Cabin ${doctor.room.replace(/^Cabin\s*/i, '')}`}
-        </div>
-        <div className="flex items-center gap-2 text-xs text-slate-600">
-          <BadgeCheck className="w-3.5 h-3.5 text-slate-400" />
-          {doctor.experience} years experience
-        </div>
-        <div className="flex items-center gap-2 text-xs text-slate-600">
-          <Star className="w-3.5 h-3.5 text-amber-500" />
-          {doctor.rating} / 5.0 rating
+        <div className="flex items-center gap-2 rounded-lg bg-teal-50/70 border border-teal-100 px-2.5 py-1.5 text-[11px] text-teal-900">
+          <CircleDollarSign className="w-3.5 h-3.5 text-teal-700" />
+          {waived ? 'Consultation: ₹0 OP Registration (Community Waiver)' : `Consultation fee: ₹${doctor.fee}`}
         </div>
       </div>
 
       <button
         type="button"
-        onClick={() => onBook(doctor, !doctor.available)}
-        className={`w-full flex items-center justify-center gap-2 px-4 py-3 min-h-12 rounded-xl text-sm font-semibold transition-all active:scale-[0.98] ${
-          doctor.available
-            ? 'bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-600/15'
-            : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200'
-        }`}
+        onClick={() => onBook(doctor)}
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 min-h-12 rounded-xl text-sm font-semibold transition-all active:scale-[0.98] bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-600/15"
       >
-        {doctor.available ? (
-          <>
-            Book Slot
-            <ArrowRight className="w-4 h-4" />
-          </>
-        ) : (
-          <>
-            <span className="sm:hidden">Book Tomorrow</span>
-            <span className="hidden sm:inline">Book Next Available: Tomorrow</span>
-            <ArrowRight className="w-4 h-4" />
-          </>
-        )}
+        Request appointment
+        <ArrowRight className="w-4 h-4" />
       </button>
     </motion.div>
   );

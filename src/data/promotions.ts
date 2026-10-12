@@ -1,4 +1,5 @@
-import { WHATSAPP_CAMP_RSVP, WHATSAPP_OPD_INQUIRE } from '@/lib/whatsapp';
+import { wa, WHATSAPP_OPD_INQUIRE } from '@/lib/whatsapp';
+import { campPhase } from '@/lib/dates';
 
 export type PromotionType = 'camp' | 'discount' | 'general';
 
@@ -16,6 +17,10 @@ export interface Promotion {
   highlightBadge: string;
   /** Human-readable schedule / validity line */
   date: string;
+  /** ISO with +05:30. Drives the countdown; omit for always-on offers. */
+  startsAt?: string;
+  /** ISO with +05:30. The promotion hides itself site-wide after this. */
+  endsAt?: string;
   doctors: PromotionDoctor[];
   benefits: string[];
   symptoms: string[];
@@ -29,7 +34,7 @@ export interface Promotion {
   statusLabel?: 'LIMITED TIME CAMP' | 'UPCOMING EVENT' | 'ALWAYS ON';
 }
 
-/** Toggle `isActive` here to show/hide campaigns site-wide. */
+/** Toggle `isActive` to show/hide campaigns site-wide; dated camps also auto-hide after `endsAt`. */
 export const promotions: Promotion[] = [
   {
     id: 'urology-mega-camp',
@@ -38,6 +43,8 @@ export const promotions: Promotion[] = [
     title: 'Free Mega Urology Medical Camp',
     highlightBadge: 'Free OP & 50% Off Ultrasound',
     date: 'Sunday, 11th October 2026 | 10:00 AM - 2:00 PM',
+    startsAt: '2026-10-11T10:00:00+05:30',
+    endsAt: '2026-10-11T14:00:00+05:30',
     timeWindow: '10:00 AM – 2:00 PM',
     statusLabel: 'LIMITED TIME CAMP',
     announcementText:
@@ -68,7 +75,7 @@ export const promotions: Promotion[] = [
       'Frequent night urination',
       'Blood in urine',
     ],
-    whatsappCTA: WHATSAPP_CAMP_RSVP,
+    whatsappCTA: wa('Hello AKR Hospital, I would like to RSVP for the Free Mega Urology Medical Camp.'),
   },
   {
     id: 'free-op-kondal-rao',
@@ -130,7 +137,7 @@ export const promotions: Promotion[] = [
     statusLabel: 'ALWAYS ON',
     doctors: [],
     benefits: [
-      'Ultrasound 50% off during Mega Urology Camp hours (Oct 11, 10 AM–2 PM) and notified OPD windows',
+      'Ultrasound 50% off during active camp hours and notified OPD windows',
       'Same-day reporting where available',
     ],
     symptoms: [],
@@ -138,8 +145,8 @@ export const promotions: Promotion[] = [
   },
 ];
 
-export function getActivePromotions(): Promotion[] {
-  return promotions.filter((p) => p.isActive);
+export function getActivePromotions(now = Date.now()): Promotion[] {
+  return promotions.filter((p) => p.isActive && campPhase(now, p.startsAt, p.endsAt) !== 'ended');
 }
 
 export function getActiveCamps(): Promotion[] {

@@ -13,8 +13,6 @@ import {
   MapPin,
   AlertTriangle,
   PhoneCall,
-  Users,
-  Clock,
   ChevronRight,
   Search,
   Navigation,
@@ -28,7 +26,7 @@ type Lang = 'en' | 'te';
 
 interface CareBotProps {
   onGenerateToken: () => void;
-  onBookAppointment: () => void;
+  onBookAppointment: (specialtyId?: string) => void;
   onCheckEligibility: () => void;
   /** Controlled open state when launcher is hosted in FloatingDock */
   open?: boolean;
@@ -64,7 +62,7 @@ const T = {
     typing: 'CareBot is typing...',
     // Quick chips
     qr_check_token: 'Check Live Token',
-    qr_book_ambulance: 'Book Ambulance',
+    qr_book_ambulance: 'Emergency / Ambulance',
     qr_book_appt: 'Book Appointment',
     qr_cashless_tpa: 'Cashless TPA Desk',
     qr_open_live_token: 'Open Live Token',
@@ -87,37 +85,36 @@ const T = {
     tb_find_doctor: 'Find Doctor',
     // Emergency
     emergency_title: 'CRITICAL EMERGENCY DETECTED',
-    emergency_msg: `CRITICAL EMERGENCY DETECTED. Call 1066 or our Emergency Casualty (+91 87492 73030) immediately. An emergency team is stationed at Didugupadu, Madhira.`,
+    emergency_msg: `CRITICAL EMERGENCY DETECTED. Call our 24/7 Casualty (+91 87492 73030) immediately, or 108 for a government ambulance. Our emergency team is at Didugupadu, Madhira.`,
     emergency_btn: 'Call Casualty Now',
     emergency_navigate: 'Navigate to Casualty',
     // Token flow
-    token_response: (serving: string, ahead: number, wait: number, paused: boolean) =>
-      `Token A-019, your status is Waiting. General Medicine (Cabin 104) is serving token ${serving}. There are ${ahead} patients ahead of you. Estimated wait: ~${wait} mins.${paused ? ' The queue is currently paused.' : ''}`,
+    token_response: (serving: string, paused: boolean) =>
+      `Reception is now serving token ${serving}.${paused ? ' The queue is paused briefly.' : ''} Open the queue tracker and enter the number on your reception slip to see how many patients are ahead of you.`,
+    token_not_live: `The live OPD queue isn't published right now. Please ask at reception or call ${hospitalInfo.phone} for your turn.`,
     token_opening: 'Opening your live token tracker now...',
     token_currently_serving: 'Currently Serving',
-    token_your_token: 'Your Token',
-    token_ahead: 'ahead',
     token_paused: 'Queue is paused',
     // Trauma flow
-    trauma_response: `For acute fractures or trauma, visit our 24/7 Level-1 Trauma unit on the Ground Floor immediately. For general orthopedic consultations, book an OPD slot.`,
+    trauma_response: `For acute fractures or trauma, come to our 24/7 casualty immediately. For general orthopaedic consultations, request an OPD appointment.`,
     trauma_book_slot: 'Book Slot',
-    trauma_casualty_loc: 'Casualty Location',
-    trauma_nav_msg: `Tap here to open Google Maps directions to ${hospitalInfo.name}. The casualty entrance is Ground Floor, Wing A.`,
+    trauma_casualty_loc: 'Directions',
+    trauma_nav_msg: `Tap here to open Google Maps directions to ${hospitalInfo.name} (${hospitalInfo.landmark}).`,
     // Eligibility flow
-    eligibility_intro: `I can check your cashless insurance eligibility. We accept Star Health, ICICI Lombard, MediAssist, Care Health, and HDFC ERGO. Please select your insurance provider below.`,
-    eligibility_provider: (name: string, procedures: string, docs: string, turnaround: string) =>
-      `${name} — Empanelled. Covered procedures: ${procedures}. Pre-auth turnaround: ${turnaround}. Please present at the TPA Desk (1st Floor): ${docs}. You can also use the full eligibility checker for detailed verification.`,
-    eligibility_guidance: `All planned inpatient procedures are covered under pre-authorization. Please present your insurance policy card and doctor's admission slip at the TPA Desk (1st Floor).`,
+    eligibility_intro: `I can help with cashless insurance. Our TPA desk works with Star Health, ICICI Lombard, MediAssist, Care Health, and HDFC ERGO. Please select your insurance provider below.`,
+    eligibility_provider: (name: string, procedures: string, docs: string) =>
+      `${name} — commonly covered: ${procedures}. Coverage depends on your policy, so please confirm with our TPA desk (${hospitalInfo.phone}). Bring: ${docs}.`,
+    eligibility_guidance: `Planned inpatient procedures may be covered after pre-authorisation, depending on your policy. Please bring your insurance card and doctor's admission advice to the TPA desk.`,
     eligibility_open_checker: 'Open Full Eligibility Checker',
     eligibility_not_found: `I couldn't find that provider. Please try one of the listed providers.`,
     // Misc
-    book_appt_msg: 'Opening the OPD booking form. Choose your department, date, and time slot to schedule your consultation.',
+    book_appt_msg: 'Opening the appointment request form. Choose your department and a preferred time — reception will call you to confirm.',
     call_reception_msg: `You can reach reception at ${hospitalInfo.phone}. They're available 9 AM – 8 PM daily.`,
-    find_doctor_msg: (docList: string) => `Here are our specialists on duty today: ${docList}. Would you like to book a slot with any of them?`,
-    fallback: `I understand you're asking about that. I can help with: tracking your OPD token, emergency triage, department guidance, booking appointments, or checking insurance eligibility. Could you rephrase, or try one of the quick options below?`,
+    find_doctor_msg: (docList: string) => `Our listed consultants: ${docList}. For other specialties, call reception at ${hospitalInfo.phone}. Would you like to request an appointment?`,
+    fallback: `Sorry, I didn't catch that. I can help with: tracking your OPD token, emergency triage, department guidance, booking appointments, or checking insurance eligibility. Could you rephrase, or try one of the quick options below?`,
     opening_checker: 'Opening the full cashless eligibility checker...',
-    casualty_msg: `Call 1066 now for ambulance dispatch. Our 24/7 emergency team will assist you immediately. The casualty entrance is on the Ground Floor.`,
-    casualty_loc_msg: `Casualty is located at Ground Floor, Wing A — Emergency Block. ${hospitalInfo.address}. Tap "Navigate" to get directions.`,
+    casualty_msg: `Call our 24/7 Casualty at +91 87492 73030, or 108 for a government ambulance.`,
+    casualty_loc_msg: `Casualty is at ${hospitalInfo.name}, ${hospitalInfo.landmark} — ${hospitalInfo.address}. Tap "Directions" to open Google Maps.`,
     // Special offers
     qr_special_offers: '🏷️ Special Offers & Discounts',
     qr_call_appointment: '📞 Call: +91 98490 57185',
@@ -127,14 +124,15 @@ const T = {
     offers_call: 'Call: +91 98490 57185',
     offers_lab: 'Book Lab Test (30% Off)',
     // Q&A knowledge base
-    qa_1: `AKR Multi Speciality Hospital is headed by our Managing Director, **Dr. Kondal Rao**, offering expert clinical consultations and 24/7 care.`,
+    qa_1: `The hospital was founded in ${hospitalInfo.established} by **Dr. A. Kondal Rao**, our Founder & Chief Physician and former DM&HO, Khammam.`,
+    fee_msg: `Dr. Kondal Rao's OP consultation is free. Fees for other consultants vary — reception confirms the fee when they call you back, or call ${hospitalInfo.phone}.`,
     qa_2: `Yes! We provide **Free OP Consultation** with Dr. Kondal Rao as part of our community healthcare initiative. Book via the bot or call +91 98490 57185.`,
     qa_3: `Yes, we offer a flat **30% discount on all Laboratory Tests** at our computerized diagnostic center.`,
-    qa_4: `Random/Fasting Blood Sugar tests are available at just **₹20/-** with instant reporting.`,
+    qa_4: `Random/Fasting Blood Sugar tests are available at just **₹20/-**.`,
     qa_5: `Yes, our 24/7 in-house pharmacy offers a **20% discount on medicines** on valid prescriptions.`,
-    qa_6: `You can call our direct appointment desk directly at **+91 98490 57185** or book a slot right here in the app.`,
+    qa_6: `You can call our direct appointment desk directly at **+91 98490 57185** or request an appointment on this website.`,
     qa_7: `Yes, Dr. AKR Hospital is operational **24 Hours (24/7)** for Casualty, Emergency Trauma, Pharmacy, and Inpatient services.`,
-    qa_8: `We are located **Opposite Susheela College, Wyra Road, Madhira** (Samatha Nagar / Didugupadu). Tap 'Navigate' for Google Maps directions.`,
+    qa_8: `We are located **Opposite Susheela College, Wyra Road, Madhira** (Samatha Nagar / Didugupadu). Tap 'Directions' to open Google Maps.`,
     qa_9: `Current offers: 1) Free OP with Dr. Kondal Rao, 2) 30% off Lab tests, 3) 20% off Pharmacy, and 4) ₹20 Blood Sugar check.`,
     qa_10: `Regular Outpatient (OP) timings are 9:00 AM to 8:00 PM daily. Emergency and casualty services remain open 24/7.`,
   },
@@ -144,7 +142,7 @@ const T = {
     placeholder: 'కేర్‌బాట్‌ను అడగండి...',
     typing: 'కేర్‌బాట్ టైప్ చేస్తోంది...',
     qr_check_token: 'లైవ్ టోకెన్ స్థితి',
-    qr_book_ambulance: 'అంబులెన్స్ కాల్',
+    qr_book_ambulance: 'అత్యవసరం / అంబులెన్స్',
     qr_book_appt: 'అపాయింట్‌మెంట్ బుకింగ్',
     qr_cashless_tpa: 'క్యాష్‌లెస్ TPA డెస్క్',
     qr_open_live_token: 'లైవ్ టోకెన్ తెరవండి',
@@ -165,33 +163,32 @@ const T = {
     tb_call_reception: 'రిసెప్షన్ కాల్',
     tb_find_doctor: 'వైద్యులు',
     emergency_title: 'అత్యవసర పరిస్థితి (EMERGENCY)',
-    emergency_msg: `అత్యవసర పరిస్థితి (EMERGENCY). వెంటనే మా ఎమర్జెన్సీ క్యాజువాలిటీ నంబర్ 1066 లేదా +91 87492 73030 కు కాల్ చేయండి. మా అత్యవసర విభాగం దిడుగుపాడు, మధిరలో 24/7 అందుబాటులో ఉంది.`,
+    emergency_msg: `అత్యవసర పరిస్థితి (EMERGENCY). వెంటనే మా 24/7 క్యాజువాలిటీ +91 87492 73030 కు కాల్ చేయండి, లేదా ప్రభుత్వ అంబులెన్స్ కోసం 108 కు కాల్ చేయండి. మా అత్యవసర విభాగం దిడుగుపాడు, మధిరలో 24/7 అందుబాటులో ఉంది.`,
     emergency_btn: 'అత్యవసర కాల్ చేయండి',
     emergency_navigate: 'క్యాజువాలిటీకి నావిగేట్',
-    token_response: (serving: string, ahead: number, wait: number, paused: boolean) =>
-      `టోకెన్ సంఖ్య A-019, మీ ప్రస్తుత స్థితి: వేచి ఉన్నారు (Waiting). జనరల్ మెడిసిన్ (క్యాబిన్ 104) లో ప్రస్తుత టోకెన్ ${serving} నడుస్తోంది. మీ కంటే ముందు ${ahead} గురు రోగులు ఉన్నారు. అంచనా సమయం: ~${wait} నిమిషాలు.${paused ? ' క్యూ ప్రస్తుతం నిలిపివేయబడింది.' : ''}`,
+    token_response: (serving: string, paused: boolean) =>
+      `రిసెప్షన్‌లో ప్రస్తుతం టోకెన్ ${serving} నడుస్తోంది.${paused ? ' క్యూ కొద్దిసేపు నిలిపివేయబడింది.' : ''} మీ కంటే ముందు ఎంత మంది ఉన్నారో చూడటానికి క్యూ ట్రాకర్ తెరిచి మీ రిసెప్షన్ స్లిప్‌లోని నంబర్ నమోదు చేయండి.`,
+    token_not_live: `లైవ్ OPD క్యూ ప్రస్తుతం అందుబాటులో లేదు. మీ వంతు కోసం దయచేసి రిసెప్షన్‌లో అడగండి లేదా ${hospitalInfo.phone} కు కాల్ చేయండి.`,
     token_opening: 'మీ లైవ్ టోకెన్ ట్రాకర్‌ను తెరుస్తోంది...',
     token_currently_serving: 'ప్రస్తుతం నడుస్తున్నది',
-    token_your_token: 'మీ టోకెన్',
-    token_ahead: 'ముందు ఉన్నారు',
     token_paused: 'క్యూ నిలిపివేయబడింది',
-    trauma_response: `తీవ్రమైన ఎముకల గాయాలు మరియు ప్రమాదాల కోసం గ్రౌండ్ ఫ్లోర్‌లోని మా 24/7 లెవల్-1 ట్రామా కేర్ సెంటర్‌కు వెళ్లండి. సాధారణ సమస్యల కోసం ఓపీడీ (OPD) స్లాట్ బుక్ చేసుకోండి.`,
+    trauma_response: `తీవ్రమైన ఎముకల గాయాలు మరియు ప్రమాదాల కోసం వెంటనే మా 24/7 క్యాజువాలిటీకి రండి. సాధారణ సమస్యల కోసం OPD అపాయింట్‌మెంట్ కోరండి.`,
     trauma_book_slot: 'స్లాట్ బుక్ చేయండి',
-    trauma_casualty_loc: 'క్యాజువాలిటీ స్థానం',
-    trauma_nav_msg: `ఇక్కడ క్లిక్ చేసి ${hospitalInfo.name} కు Google Maps ద్వారా దారి చూడండి. క్యాజువాలిటీ ప్రవేశం గ్రౌండ్ ఫ్లోర్, Wing A.`,
-    eligibility_intro: `మీ క్యాష్‌లెస్ ఇన్సూరెన్స్ అర్హతను నేను తనిఖీ చేయగలను. మేము Star Health, ICICI Lombard, MediAssist, Care Health, మరియు HDFC ERGO అంగీకరిస్తాము. దయచేసి మీ ఇన్సూరెన్స్ ప్రొవైడర్‌ను ఎంచుకోండి.`,
-    eligibility_provider: (name: string, procedures: string, docs: string, turnaround: string) =>
-      `${name} — అంగీకరించబడింది. కవర్ చేసిన విధానాలు: ${procedures}. ప్రీ-ఆథ్ సమయం: ${turnaround}. TPA డెస్క్ (1వ అంతస్తు) వద్ద సమర్పించండి: ${docs}. పూర్తి చెకర్ కోసం ఎలిజిబిలిటీ చెకర్ ఉపయోగించండి.`,
-    eligibility_guidance: `అనుమతించబడిన ప్రైవేట్ ఇన్సూరెన్స్ పాలసీల ద్వారా క్యాష్‌లెస్ చికిత్స అందుబాటులో ఉంది. మొదటి అంతస్తులోని TPA డెస్క్ వద్ద మీ ఇన్సూరెన్స్ కార్డ్ మరియు అడ్మిషన్ లెటర్ సమర్పించండి.`,
+    trauma_casualty_loc: 'దారి',
+    trauma_nav_msg: `ఇక్కడ క్లిక్ చేసి ${hospitalInfo.name} కు Google Maps ద్వారా దారి చూడండి (${hospitalInfo.landmark}).`,
+    eligibility_intro: `మీ క్యాష్‌లెస్ ఇన్సూరెన్స్ అర్హతను నేను తనిఖీ చేయగలను. మా TPA డెస్క్ Star Health, ICICI Lombard, MediAssist, Care Health, మరియు HDFC ERGO తో పనిచేస్తుంది. దయచేసి మీ ఇన్సూరెన్స్ ప్రొవైడర్‌ను ఎంచుకోండి.`,
+    eligibility_provider: (name: string, procedures: string, docs: string) =>
+      `${name} — సాధారణంగా కవర్ అయ్యేవి: ${procedures}. కవరేజ్ మీ పాలసీపై ఆధారపడి ఉంటుంది, దయచేసి మా TPA డెస్క్ (${hospitalInfo.phone}) వద్ద నిర్ధారించుకోండి. తీసుకురావలసినవి: ${docs}.`,
+    eligibility_guidance: `అనుమతించబడిన ప్రైవేట్ ఇన్సూరెన్స్ పాలసీల ద్వారా క్యాష్‌లెస్ చికిత్స అందుబాటులో ఉంది. మా TPA డెస్క్ వద్ద మీ ఇన్సూరెన్స్ కార్డ్ మరియు అడ్మిషన్ లెటర్ సమర్పించండి.`,
     eligibility_open_checker: 'పూర్తి ఎలిజిబిలిటీ చెకర్ తెరవండి',
     eligibility_not_found: `ఆ ప్రొవైడర్ కనుగొనబడలేదు. దయచేసి జాబితాలోని ప్రొవైడర్‌లలో ఒకదానిని ప్రయత్నించండి.`,
-    book_appt_msg: 'OPD బుకింగ్ ఫారమ్‌ను తెరుస్తోంది. మీ విభాగం, తేదీ, మరియు సమయ స్లాట్‌ను ఎంచుకోండి.',
+    book_appt_msg: 'అపాయింట్‌మెంట్ అభ్యర్థన ఫారమ్‌ను తెరుస్తోంది. మీ విభాగం మరియు అనుకూల సమయాన్ని ఎంచుకోండి — నిర్ధారణ కోసం రిసెప్షన్ మీకు కాల్ చేస్తుంది.',
     call_reception_msg: `రిసెప్షన్‌ను ${hospitalInfo.phone} వద్ద చేరుకోవచ్చు. రోజు 9 AM – 8 PM అందుబాటులో ఉంది.`,
-    find_doctor_msg: (docList: string) => `ఈ రోజు విధుల్లో ఉన్న మా వైద్యులు: ${docList}. వారిలో ఎవరితోనైనా స్లాట్ బుక్ చేయాలా?`,
-    fallback: `నేను అర్థం చేసుకున్నాను. నేను సహాయపడగలిగే అంశాలు: OPD టోకెన్ ట్రాకింగ్, అత్యవసర ట్రయేజ్, విభాగ మార్గదర్శనం, అపాయింట్‌మెంట్ బుకింగ్, లేదా ఇన్సూరెన్స్ అర్హత. దయచేసి మళ్లీ చెప్పండి లేదా కింది ఆప్షన్‌లను ప్రయత్నించండి.`,
+    find_doctor_msg: (docList: string) => `మా వైద్యులు: ${docList}. ఇతర విభాగాల కోసం రిసెప్షన్‌కు ${hospitalInfo.phone} కు కాల్ చేయండి. అపాయింట్‌మెంట్ కోరాలా?`,
+    fallback: `క్షమించండి, అర్థం కాలేదు. నేను సహాయపడగలిగే అంశాలు: OPD టోకెన్ ట్రాకింగ్, అత్యవసర ట్రయేజ్, విభాగ మార్గదర్శనం, అపాయింట్‌మెంట్ బుకింగ్, లేదా ఇన్సూరెన్స్ అర్హత. దయచేసి మళ్లీ చెప్పండి లేదా కింది ఆప్షన్‌లను ప్రయత్నించండి.`,
     opening_checker: 'పూర్తి క్యాష్‌లెస్ ఎలిజిబిలిటీ చెకర్‌ను తెరుస్తోంది...',
-    casualty_msg: `అంబులెన్స్ కోసం ఇప్పుడే 1066 కు కాల్ చేయండి. మా 24/7 అత్యవసర బృందం వెంటనే మీకు సహాయం చేస్తుంది. క్యాజువాలిటీ ప్రవేశం గ్రౌండ్ ఫ్లోర్‌లో ఉంది.`,
-    casualty_loc_msg: `క్యాజువాలిటీ గ్రౌండ్ ఫ్లోర్, Wing A — ఎమర్జెన్సీ బ్లాక్‌లో ఉంది. ${hospitalInfo.address}. దారి కోసం "నావిగేట్" నొక్కండి.`,
+    casualty_msg: `మా 24/7 క్యాజువాలిటీ +91 87492 73030 కు లేదా ప్రభుత్వ అంబులెన్స్ కోసం 108 కు కాల్ చేయండి.`,
+    casualty_loc_msg: `క్యాజువాలిటీ ${hospitalInfo.name} లో ఉంది (${hospitalInfo.landmark}) — ${hospitalInfo.address}. Google Maps కోసం "దారి" నొక్కండి.`,
     // Special offers
     qr_special_offers: '🏷️ ప్రత్యేక ఆఫర్లు & తగ్గింపులు',
     qr_call_appointment: '📞 కాల్: +91 98490 57185',
@@ -201,14 +198,15 @@ const T = {
     offers_call: 'కాల్: +91 98490 57185',
     offers_lab: 'ల్యాబ్ పరీక్ష బుక్ చేయండి (30% తగ్గింపు)',
     // Q&A knowledge base
-    qa_1: `మా ఆసుపత్రి మేనేజింగ్ డైరెక్టర్ **డా॥ కొండల్ రావు గారు**. వారి పర్యవేక్షణలో 24 గంటల నాణ్యమైన వైద్య సేవలు అందించబడుతున్నాయి.`,
+    qa_1: `మా ఆసుపత్రిని ${hospitalInfo.established} లో వ్యవస్థాపకులు & చీఫ్ ఫిజీషియన్ **డా॥ ఎ. కొండల్ రావు గారు** (మాజీ DM&HO, ఖమ్మం) స్థాపించారు.`,
+    fee_msg: `డా॥ కొండల్ రావు గారి OP కన్సల్టేషన్ ఉచితం. ఇతర వైద్యుల ఫీజు వేర్వేరుగా ఉంటుంది — రిసెప్షన్ మీకు కాల్ చేసినప్పుడు ఫీజు తెలియజేస్తారు, లేదా ${hospitalInfo.phone} కు కాల్ చేయండి.`,
     qa_2: `అవును! మా ప్రత్యేక ఆఫర్ కింద **డా॥ కొండల్ రావు గారిచే ఉచిత OP కన్సల్టేషన్** అందించబడుతోంది. అపాయింట్‌మెంట్ కోసం 9849057185 నంబర్‌ను సంప్రదించండి.`,
     qa_3: `అవును, మా కంప్యూటరైజ్డ్ లేబరేటరీలో చేసే అన్ని రకాల రక్త మరియు వ్యాధి నిర్ధారణ పరీక్షలపై **30% తగ్గింపు** లభిస్తుంది.`,
-    qa_4: `మా వద్ద కేవలం **₹20/- లకే షుగర్ పరీక్ష** చేయబడుతుంది. రిపోర్టు వెంటనే ఇవ్వబడుతుంది.`,
+    qa_4: `మా వద్ద కేవలం **₹20/- లకే షుగర్ పరీక్ష** చేయబడుతుంది.`,
     qa_5: `అవును, మా 24 గంటల మెడికల్ షాపులో ప్రిస్క్రిప్షన్ మందులపై **20% తగ్గింపు** పొందవచ్చు.`,
     qa_6: `మీరు నేరుగా మా అపాయింట్‌‌మెంట్ విభాగం నంబర్ **9849057185** కు కాల్ చేసి సమయం తీసుకోవచ్చు.`,
     qa_7: `అవును, మా ఆసుపత్రి ఎమర్జెన్సీ, ట్రామా, మెడికల్ షాప్ మరియు ఇన్-పేషెంట్ విభాగాలతో **24 గంటలు అందుబాటులో** ఉంటుంది.`,
-    qa_8: `మా ఆసుపత్రి **సుశీల కళాశాల ఎదురుగా, వైరా రోడ్, మధిర** వద్ద కలదు. గూగుల్ మ్యాప్స్ దిశల కోసం 'దిశలు/దారి' బటన్ పై క్లిక్ చేయండి.`,
+    qa_8: `మా ఆసుపత్రి **సుశీల కళాశాల ఎదురుగా, వైరా రోడ్, మధిర** వద్ద కలదు. గూగుల్ మ్యాప్స్ కోసం 'దారి' బటన్ నొక్కండి.`,
     qa_9: `ప్రత్యేక ఆఫర్లు: 1) డా॥ కొండల్ రావు గారి ఉచిత OP, 2) ల్యాబ్‌లో 30% తగ్గింపు, 3) మెడికల్ షాపులో 20% తగ్గింపు, 4) కేవలం ₹20/- లకే షుగర్ పరీక్ష.`,
     qa_10: `సాధారణ OP సమయాలు ప్రతిరోజూ ఉదయం 9:00 నుండి రాత్రి 8:00 వరకు. అత్యవసర సేవలు 24 గంటలూ అందుబాటులో ఉంటాయి.`,
   },
@@ -221,11 +219,12 @@ const emergencyKeywordsEn = [
   'severe bleeding', 'unconscious', 'stroke', 'heart attack', 'suicide',
   'not breathing', 'choking', 'severe burn', 'drowning', 'seizure',
   'severe pain', 'collapsed', 'paralysis', 'poisoning', 'accident',
+  'emergency', 'ambulance', 'urgent', '108',
 ];
 
 const emergencyKeywordsTe = [
   'ఛాతీ నొప్పి', 'శ్వాస తీసుకోవడంలో ఇబ్బంది', 'ప్రమాదం', 'గుండెపోటు',
-  'నిస్పృహ', 'రక్తస్రావం', 'మూర్ఛ', 'విషం',
+  'నిస్పృహ', 'రక్తస్రావం', 'మూర్ఛ', 'విషం', 'అత్యవసర', 'అంబులెన్స్',
 ];
 
 const traumaKeywordsEn = [
@@ -238,7 +237,7 @@ const traumaKeywordsTe = [
   'ఎముక విరిగింది', 'గాయం', 'పగిలింది', 'దెబ్బ', 'ప్రమాదం',
 ];
 
-const tokenKeywordsEn = ['token', 'queue', 'wait', 'my turn', 'where am i', 'a-019', 'a019'];
+const tokenKeywordsEn = ['token', 'queue', 'wait', 'my turn', 'where am i'];
 const tokenKeywordsTe = ['టోకెన్', 'క్యూ', 'వేచి', 'స్థితి'];
 
 const eligibilityKeywordsEn = [
@@ -256,7 +255,7 @@ const eligibilityKeywordsTe = [
 const mdKeywordsEn = ['chief doctor', 'managing director', 'kondal rao', 'head doctor', 'who runs', 'who is the md', 'md of'];
 const mdKeywordsTe = ['మేనేజింగ్ డైరెక్టర్', 'ముఖ్య వైద్యులు', 'కొండల్ రావు'];
 
-const freeOpKeywordsEn = ['free consultation', 'free op', 'free checkup', 'free doctor'];
+const freeOpKeywordsEn = ['free consultation', 'free op', 'free checkup', 'free doctor', 'op free', 'consultation free'];
 const freeOpKeywordsTe = ['ఉచిత op', 'ఉచితమేనా', 'ఉచిత కన్సల్టేషన్', 'ఉచిత'];
 
 const sugarTestKeywordsEn = ['sugar test', 'diabetes test', 'blood sugar', 'glucose test', 'sugar check', 'sugar cost'];
@@ -271,17 +270,25 @@ const pharmacyKeywordsTe = ['మెడికల్ షాపు', 'మందు�
 const appointmentLineKeywordsEn = ['appointment number', 'direct phone', '9849057185', 'call for appointment', 'book kondal rao', 'kondal rao appointment'];
 const appointmentLineKeywordsTe = ['అపాయింట్‌మెంట్ నంబర్', 'నేరుగా కాల్', 'నంబర్‌కు'];
 
-const opTimingKeywordsEn = ['op timing', 'consultation time', 'op hours', 'when does op', 'op consultation timing', 'consultation timing'];
+const opTimingKeywordsEn = ['op timing', 'consultation time', 'op hours', 'when does op', 'op consultation timing', 'consultation timing', 'timing', 'timings', 'what time'];
 const opTimingKeywordsTe = ['op సమయాలు', 'కన్సల్టేషన్ సమయాలు', 'సమయాలు'];
 
 const hoursKeywordsEn = ['open at night', 'sunday', '24 hours', '24/7', 'operational hours', 'open today', 'open now', 'night', 'weekend'];
 const hoursKeywordsTe = ['రాత్రి', 'ఆదివారం', '24 గంటలు', 'ఎప్పుడు తెరుస్తారు'];
 
-const landmarkKeywordsEn = ['landmark', 'where is the hospital', 'how to reach', 'how do i get', 'susheela college', 'wyra road'];
+const landmarkKeywordsEn = ['landmark', 'where is the hospital', 'how to reach', 'how do i get', 'susheela college', 'wyra road', 'address', 'location', 'directions', 'map'];
 const landmarkKeywordsTe = ['ల్యాండ్‌మార్క్', 'ఎక్కడ', 'సమీప', 'సుశీల కళాశాల'];
 
 const offersKeywordsEn = ['discounts', 'offers', 'packages', 'concessions', 'health checkup', 'special offer'];
 const offersKeywordsTe = ['ఆఫర్లు', 'తగ్గింపులు', 'ప్యాకేజీలు', 'రాయితీ'];
+
+const feeKeywordsEn = ['fee', 'fees', 'charges', 'cost', 'price'];
+const feeKeywordsTe = ['ఫీజు', 'ఛార్జీ', 'ఖర్చు'];
+
+const greetingKeywordsEn = ['hi', 'hello', 'hey', 'namaste', 'namaskaram'];
+const greetingKeywordsTe = ['నమస్కారం', 'హలో'];
+
+const doctorKeywords = ['doctor', 'specialist', 'consultant', 'urolog', 'kidney', 'prostate', 'వైద్య', 'డాక్టర్'];
 
 function matchesAny(text: string, keywords: string[]): boolean {
   return keywords.some((kw) => {
@@ -303,7 +310,7 @@ function formatInlineBold(text: string): ReactNode {
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       return (
-        <strong key={i} className="font-semibold text-white">
+        <strong key={i} className="font-semibold text-slate-900">
           {part.slice(2, -2)}
         </strong>
       );
@@ -329,27 +336,27 @@ function createMessage(
 // ─── Quick reply metadata ──────────────────────────────────────
 
 const quickReplyMeta: Record<QuickReplyKey, { icon: typeof Zap; color: string }> = {
-  check_token: { icon: Zap, color: 'text-teal-300' },
-  book_ambulance: { icon: Ambulance, color: 'text-rose-300' },
-  book_appt: { icon: Calendar, color: 'text-emerald-300' },
-  cashless_tpa: { icon: ShieldCheck, color: 'text-sky-300' },
-  open_live_token: { icon: Activity, color: 'text-teal-300' },
-  star_health: { icon: ShieldCheck, color: 'text-sky-300' },
-  icici_lombard: { icon: ShieldCheck, color: 'text-indigo-300' },
-  mediassist: { icon: ShieldCheck, color: 'text-indigo-300' },
-  care_health: { icon: ShieldCheck, color: 'text-sky-300' },
-  hdfc_ergo: { icon: ShieldCheck, color: 'text-indigo-300' },
-  other_tpa: { icon: ShieldCheck, color: 'text-slate-300' },
-  open_full_checker: { icon: Search, color: 'text-teal-300' },
-  casualty_location: { icon: MapPin, color: 'text-rose-300' },
-  book_ortho: { icon: Calendar, color: 'text-emerald-300' },
-  call_casualty: { icon: PhoneCall, color: 'text-rose-300' },
-  navigate_casualty: { icon: MapPin, color: 'text-rose-300' },
-  call_reception: { icon: Phone, color: 'text-teal-300' },
-  find_doctor: { icon: Stethoscope, color: 'text-teal-300' },
-  special_offers: { icon: Tag, color: 'text-amber-300' },
-  call_appointment: { icon: PhoneCall, color: 'text-teal-300' },
-  book_lab_test: { icon: FlaskConical, color: 'text-sky-300' },
+  check_token: { icon: Zap, color: 'text-teal-700' },
+  book_ambulance: { icon: Ambulance, color: 'text-rose-700' },
+  book_appt: { icon: Calendar, color: 'text-emerald-700' },
+  cashless_tpa: { icon: ShieldCheck, color: 'text-sky-700' },
+  open_live_token: { icon: Activity, color: 'text-teal-700' },
+  star_health: { icon: ShieldCheck, color: 'text-sky-700' },
+  icici_lombard: { icon: ShieldCheck, color: 'text-indigo-700' },
+  mediassist: { icon: ShieldCheck, color: 'text-indigo-700' },
+  care_health: { icon: ShieldCheck, color: 'text-sky-700' },
+  hdfc_ergo: { icon: ShieldCheck, color: 'text-indigo-700' },
+  other_tpa: { icon: ShieldCheck, color: 'text-slate-600' },
+  open_full_checker: { icon: Search, color: 'text-teal-700' },
+  casualty_location: { icon: MapPin, color: 'text-rose-700' },
+  book_ortho: { icon: Calendar, color: 'text-emerald-700' },
+  call_casualty: { icon: PhoneCall, color: 'text-rose-700' },
+  navigate_casualty: { icon: MapPin, color: 'text-rose-700' },
+  call_reception: { icon: Phone, color: 'text-teal-700' },
+  find_doctor: { icon: Stethoscope, color: 'text-teal-700' },
+  special_offers: { icon: Tag, color: 'text-amber-700' },
+  call_appointment: { icon: PhoneCall, color: 'text-teal-700' },
+  book_lab_test: { icon: FlaskConical, color: 'text-sky-700' },
 };
 
 const initialQuickReplies: QuickReplyKey[] = [
@@ -372,10 +379,6 @@ const providerQuickReplyMap: Record<string, QuickReplyKey> = {
 
 // ─── Component ─────────────────────────────────────────────────
 
-const ASSIGNED_TOKEN = 'A-019';
-const ASSIGNED_TOKEN_NUM = 19;
-const MINUTES_PER_TOKEN = 8;
-
 export default function CareBot({
   onGenerateToken,
   onBookAppointment,
@@ -396,7 +399,7 @@ export default function CareBot({
   const [messages, setMessages] = useState<Message[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { currentTokenServed, isPaused } = useOpdQueue();
+  const { isLive, currentTokenServed, isPaused } = useOpdQueue();
 
   const t = T[lang];
 
@@ -416,14 +419,13 @@ export default function CareBot({
     }
   }, [messages, isTyping]);
 
-  // Re-translate existing bot messages when language changes
+  // Replies are stored as sent text, so a language switch greets again in the new language.
   useEffect(() => {
-    setMessages((prev) =>
-      prev.map((msg) => {
-        if (msg.sender === 'user') return msg;
-        return { ...msg, lang };
-      })
-    );
+    setMessages((prev) => {
+      if (prev.length === 0) return prev;
+      const greeting = createMessage('bot', T[lang].greeting, lang, 'text', { quickReplies: initialQuickReplies });
+      return prev.length === 1 ? [greeting] : [...prev, greeting];
+    });
   }, [lang]);
 
   const addBotMessage = useCallback(
@@ -446,17 +448,22 @@ export default function CareBot({
   }, [t, lang, addBotMessage]);
 
   const handleTokenQuery = useCallback(() => {
-    const tokensAhead = Math.max(ASSIGNED_TOKEN_NUM - currentTokenServed, 0);
-    const waitMinutes = tokensAhead * MINUTES_PER_TOKEN;
-    const servingToken = `A-${String(currentTokenServed).padStart(3, '0')}`;
-
+    if (!isLive) {
+      addBotMessage(
+        createMessage('bot', t.token_not_live, lang, 'text', {
+          quickReplies: ['call_reception', 'book_appt'] as QuickReplyKey[],
+        })
+      );
+      return;
+    }
+    const servingToken = `#${currentTokenServed}`;
     addBotMessage(
-      createMessage('bot', t.token_response(servingToken, tokensAhead, waitMinutes, isPaused), lang, 'token', {
-        data: { tokensAhead, waitMinutes, servingToken, isPaused },
+      createMessage('bot', t.token_response(servingToken, isPaused), lang, 'token', {
+        data: { servingToken, isPaused },
         quickReplies: ['open_live_token', 'book_appt'] as QuickReplyKey[],
       })
     );
-  }, [currentTokenServed, isPaused, t, lang, addBotMessage]);
+  }, [isLive, currentTokenServed, isPaused, t, lang, addBotMessage]);
 
   const handleTraumaQuery = useCallback(() => {
     addBotMessage(
@@ -484,7 +491,7 @@ export default function CareBot({
       const procedures = provider.coveredProcedures.join(', ');
       const docs = provider.deskRequirements.join(', ');
       addBotMessage(
-        createMessage('bot', t.eligibility_provider(provider.name, procedures, docs, provider.turnaround), lang, 'eligibility', {
+        createMessage('bot', t.eligibility_provider(provider.name, procedures, docs), lang, 'eligibility', {
           quickReplies: ['open_full_checker', 'book_appt'] as QuickReplyKey[],
         })
       );
@@ -524,8 +531,11 @@ export default function CareBot({
           );
           break;
         case 'book_appt':
-        case 'book_ortho':
           onBookAppointment();
+          addBotMessage(createMessage('bot', t.book_appt_msg, lang, 'text'));
+          break;
+        case 'book_ortho':
+          onBookAppointment('orthopedics');
           addBotMessage(createMessage('bot', t.book_appt_msg, lang, 'text'));
           break;
         case 'cashless_tpa':
@@ -557,8 +567,7 @@ export default function CareBot({
           }));
           break;
         case 'find_doctor': {
-          const availableDoctors = doctors.filter((d) => d.available);
-          const docList = availableDoctors.map((d) => `${d.name} (${d.specialtyName}, ${d.room})`).join('; ');
+          const docList = doctors.map((d) => `${d.name} (${d.specialtyName})`).join('; ');
           addBotMessage(createMessage('bot', t.find_doctor_msg(docList), lang, 'text', {
             quickReplies: ['book_appt', 'check_token'] as QuickReplyKey[],
           }));
@@ -628,10 +637,14 @@ export default function CareBot({
       addBotMessage(createMessage('bot', t.qa_8, lang, 'department', { quickReplies: ['navigate_casualty', 'call_reception'] as QuickReplyKey[] }));
     } else if (matchesAny(lower, [...offersKeywordsEn, ...offersKeywordsTe])) {
       addBotMessage(createMessage('bot', t.qa_9, lang, 'offers', { quickReplies: ['call_appointment', 'book_lab_test'] as QuickReplyKey[] }));
-    } else if (lower.includes('doctor') || lower.includes('specialist') || lower.includes('వైద్య')) {
+    } else if (matchesAny(lower, [...feeKeywordsEn, ...feeKeywordsTe])) {
+      addBotMessage(createMessage('bot', t.fee_msg, lang, 'text', { quickReplies: ['book_appt', 'call_reception'] as QuickReplyKey[] }));
+    } else if (doctorKeywords.some((kw) => lower.includes(kw))) {
       handleQuickReply('find_doctor');
     } else if (lower.includes('book') || lower.includes('appointment') || lower.includes('బుక్')) {
       handleQuickReply('book_appt');
+    } else if (matchesAny(lower, [...greetingKeywordsEn, ...greetingKeywordsTe])) {
+      addBotMessage(createMessage('bot', t.greeting, lang, 'text', { quickReplies: initialQuickReplies }));
     } else {
       addBotMessage(
         createMessage('bot', t.fallback, lang, 'text', {
@@ -644,7 +657,7 @@ export default function CareBot({
   // ─── Render ────────────────────────────────────────────────
 
   const receptionPhone = hospitalInfo.phone.replace(/\s/g, '');
-  const emergencyPhone = '1066';
+  const emergencyPhone = hospitalInfo.ambulancePhone;
   const casualtyPhone = hospitalInfo.phone.replace(/\s/g, '');
   const mapsUrl = hospitalInfo.mapsDirectionsUrl;
 
@@ -694,14 +707,11 @@ export default function CareBot({
               <div className="flex items-center gap-2.5">
                 <div className="relative w-10 h-10 rounded-full overflow-hidden border border-teal-500/30">
                   <img src="/carebot-avatar.webp" alt="CareBot" width={40} height={40} className="w-full h-full object-cover" decoding="async" />
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-1 ring-slate-900" />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-1 ring-white" />
                 </div>
                 <div>
-                  <div className="text-slate-900 font-semibold text-sm flex items-center gap-1.5">
-                    CareBot
-                    <span className="text-[9px] font-medium text-teal-300 bg-teal-500/10 px-1.5 py-0.5 rounded-full border border-teal-500/20">AI</span>
-                  </div>
-                  <div className="text-[11px] text-emerald-300 flex items-center gap-1">
+                  <div className="text-slate-900 font-semibold text-sm">CareBot</div>
+                  <div className="text-[11px] text-emerald-700 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     {t.online}
                   </div>
@@ -710,17 +720,17 @@ export default function CareBot({
 
               <div className="flex items-center gap-2">
                 {/* Language toggle */}
-                <div className="inline-flex p-0.5 bg-slate-800 border border-slate-700 rounded-full text-[11px] font-bold">
+                <div className="inline-flex p-0.5 bg-slate-100 border border-slate-200 rounded-full text-[11px] font-bold">
                   <button
                     onClick={() => setLang('en')}
-                    className={`px-2.5 py-1 rounded-full transition-all ${lang === 'en' ? 'bg-teal-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
+                    className={`px-3 py-1.5 rounded-full transition-all ${lang === 'en' ? 'bg-teal-600 text-white' : 'text-slate-600 hover:text-slate-900'}`}
                     aria-label="English"
                   >
                     EN
                   </button>
                   <button
                     onClick={() => setLang('te')}
-                    className={`px-2.5 py-1 rounded-full transition-all ${lang === 'te' ? 'bg-teal-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
+                    className={`px-3 py-1.5 rounded-full transition-all ${lang === 'te' ? 'bg-teal-600 text-white' : 'text-slate-600 hover:text-slate-900'}`}
                     aria-label="Telugu"
                   >
                     తె
@@ -728,7 +738,7 @@ export default function CareBot({
                 </div>
                 <button
                   onClick={() => setOpen(false)}
-                  className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                  className="p-2.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                   aria-label="Close CareBot"
                 >
                   <X className="w-5 h-5" />
@@ -764,10 +774,10 @@ export default function CareBot({
 
               {isTyping && (
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full overflow-hidden border border-slate-700 shrink-0">
+                  <div className="w-7 h-7 rounded-full overflow-hidden border border-slate-200 shrink-0">
                     <img src="/carebot-avatar.webp" alt="CareBot" width={40} height={40} className="w-full h-full object-cover" decoding="async" />
                   </div>
-                  <div className="bg-slate-800/80 rounded-2xl rounded-tl-sm px-4 py-2.5 flex items-center gap-1">
+                  <div className="bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-2.5 flex items-center gap-1">
                     {[0, 1, 2].map((i) => (
                       <motion.span
                         key={i}
@@ -787,10 +797,10 @@ export default function CareBot({
                 <button
                   key={tool.key}
                   onClick={tool.action}
-                  className="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg hover:bg-slate-800/50 transition-colors group"
+                  className="flex flex-col items-center gap-0.5 px-3 py-1 min-h-11 rounded-lg hover:bg-slate-100 transition-colors group"
                 >
-                  <tool.icon className="w-4 h-4 text-slate-400 group-hover:text-teal-300 transition-colors" />
-                  <span className="text-[9px] text-slate-400 group-hover:text-slate-200 transition-colors font-sans">{tool.label}</span>
+                  <tool.icon className="w-4 h-4 text-slate-600 group-hover:text-teal-700 transition-colors" />
+                  <span className="text-[11px] text-slate-600 group-hover:text-slate-900 transition-colors font-sans">{tool.label}</span>
                 </button>
               ))}
             </div>
@@ -805,7 +815,7 @@ export default function CareBot({
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') handleSend(); }}
                   placeholder={t.placeholder}
-                  className="flex-1 bg-slate-800 text-slate-100 text-sm rounded-xl px-4 py-2.5 border border-slate-700 focus:border-teal-500 focus:outline-none transition-colors placeholder:text-slate-500 font-sans"
+                  className="flex-1 min-w-0 bg-white text-slate-900 text-base md:text-sm rounded-xl px-4 py-2.5 border border-slate-300 focus:border-teal-600 focus:outline-none transition-colors placeholder:text-slate-500 font-sans"
                 />
                 <button
                   onClick={handleSend}
@@ -813,7 +823,7 @@ export default function CareBot({
                   className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                     input.trim()
                       ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white hover:shadow-lg hover:shadow-teal-500/30'
-                      : 'bg-slate-800 text-slate-600 cursor-not-allowed'
+                      : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                   }`}
                   aria-label="Send message"
                 >
@@ -846,7 +856,7 @@ function MessageBubble({
   emergencyPhone: string;
   casualtyPhone: string;
   mapsUrl: string;
-  onBookAppointment: () => void;
+  onBookAppointment: (specialtyId?: string) => void;
   onCheckEligibility: () => void;
 }) {
   const t = T[lang];
@@ -867,7 +877,7 @@ function MessageBubble({
 
   return (
     <div className="flex items-start gap-2">
-      <div className="w-7 h-7 rounded-full overflow-hidden border border-slate-700 shrink-0 mt-0.5">
+      <div className="w-7 h-7 rounded-full overflow-hidden border border-slate-200 shrink-0 mt-0.5">
         <img src="/carebot-avatar.webp" alt="CareBot" width={40} height={40} className="w-full h-full object-cover" decoding="async" />
       </div>
       <div className="flex-1 min-w-0 space-y-2">
@@ -881,32 +891,32 @@ function MessageBubble({
           {/* Emergency */}
           {message.type === 'emergency' && (
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-rose-300 font-bold text-sm">
-                <AlertTriangle className="w-5 h-5 animate-pulse" />
+              <div className="flex items-center gap-2 text-rose-700 font-bold text-sm">
+                <AlertTriangle className="w-5 h-5 motion-safe:animate-pulse" />
                 {t.emergency_title}
               </div>
-              <p className="text-slate-100">{displayText}</p>
-              <a
-                href={`tel:${emergencyPhone}`}
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-rose-600 to-red-600 text-white hover:shadow-lg hover:shadow-rose-600/40 transition-all animate-pulse"
-              >
-                <PhoneCall className="w-5 h-5" />
-                {t.emergency_btn}
-              </a>
+              <p>{displayText}</p>
               <a
                 href={`tel:${casualtyPhone}`}
-                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:border-rose-500/40 transition-all"
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-bold bg-red-700 text-white hover:bg-red-800 transition-colors"
               >
-                <Phone className="w-4 h-4 text-rose-400" />
-                +91 87492 73030
+                <PhoneCall className="w-5 h-5" />
+                {t.emergency_btn} · {hospitalInfo.phone}
+              </a>
+              <a
+                href={`tel:${emergencyPhone}`}
+                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold bg-white text-slate-800 border border-slate-200 hover:border-rose-300 transition-colors"
+              >
+                <Phone className="w-4 h-4 text-rose-600" />
+                {hospitalInfo.ambulanceLabel}
               </a>
               <a
                 href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:border-rose-500/40 transition-all"
+                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold bg-white text-slate-800 border border-slate-200 hover:border-rose-300 transition-colors"
               >
-                <Navigation className="w-4 h-4 text-rose-400" />
+                <Navigation className="w-4 h-4 text-rose-600" />
                 {t.emergency_navigate}
               </a>
             </div>
@@ -915,35 +925,15 @@ function MessageBubble({
           {/* Token tracking */}
           {message.type === 'token' && (
             <div className="space-y-3">
-              <p className="text-slate-100">{displayText}</p>
+              <p>{displayText}</p>
               {message.data && (
-                <div className="bg-slate-900/60 border border-slate-700/50 rounded-xl p-3 space-y-2">
+                <div className="bg-white border border-slate-200 rounded-xl p-3 space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">{t.token_currently_serving}</span>
-                    <span className="text-emerald-300 font-bold font-mono">{message.data.servingToken as string}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">{t.token_your_token}</span>
-                    <span className="text-teal-300 font-bold font-mono">{ASSIGNED_TOKEN}</span>
-                  </div>
-                  <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full"
-                      style={{ width: `${Math.min(((19 - (message.data.tokensAhead as number)) / 19) * 100, 100)}%` }}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="flex items-center gap-1 text-slate-300">
-                      <Users className="w-3 h-3" />
-                      {message.data.tokensAhead as number} {t.token_ahead}
-                    </span>
-                    <span className="flex items-center gap-1 text-slate-300">
-                      <Clock className="w-3 h-3" />
-                      ~{message.data.waitMinutes as number} min
-                    </span>
+                    <span className="text-slate-600">{t.token_currently_serving}</span>
+                    <span className="text-emerald-700 font-bold font-mono">{message.data.servingToken as string}</span>
                   </div>
                   {(message.data.isPaused as boolean) && (
-                    <div className="text-[11px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg px-2 py-1">
+                    <div className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1">
                       {t.token_paused}
                     </div>
                   )}
@@ -955,20 +945,20 @@ function MessageBubble({
           {/* Department */}
           {message.type === 'department' && (
             <div className="space-y-3">
-              <p className="text-slate-100">{displayText}</p>
+              <p>{displayText}</p>
               <div className="flex flex-wrap gap-2">
                 <a
                   href={mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs font-medium text-teal-300 bg-teal-500/10 border border-teal-500/20 px-3 py-2 rounded-lg hover:bg-teal-500/20 transition-colors"
+                  className="flex items-center gap-1.5 text-xs font-medium text-teal-800 bg-teal-50 border border-teal-200 px-3 py-2 rounded-lg hover:bg-teal-100 transition-colors"
                 >
                   <MapPin className="w-3.5 h-3.5" />
                   {t.trauma_casualty_loc}
                 </a>
                 <button
-                  onClick={onBookAppointment}
-                  className="flex items-center gap-1.5 text-xs font-medium text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 rounded-lg hover:bg-emerald-500/20 transition-colors"
+                  onClick={() => onBookAppointment()}
+                  className="flex items-center gap-1.5 text-xs font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-lg hover:bg-emerald-100 transition-colors"
                 >
                   <Calendar className="w-3.5 h-3.5" />
                   {t.trauma_book_slot}
@@ -980,10 +970,10 @@ function MessageBubble({
           {/* Eligibility */}
           {message.type === 'eligibility' && (
             <div className="space-y-3">
-              <p className="text-slate-100">{displayText}</p>
+              <p>{displayText}</p>
               <button
                 onClick={onCheckEligibility}
-                className="flex items-center gap-1.5 text-xs font-medium text-teal-300 bg-teal-500/10 border border-teal-500/20 px-3 py-2 rounded-lg hover:bg-teal-500/20 transition-colors w-full justify-center"
+                className="flex items-center gap-1.5 text-xs font-medium text-teal-800 bg-teal-50 border border-teal-200 px-3 py-2 rounded-lg hover:bg-teal-100 transition-colors w-full justify-center"
               >
                 <Search className="w-3.5 h-3.5" />
                 {t.eligibility_open_checker}
@@ -994,21 +984,21 @@ function MessageBubble({
           {/* Special offers */}
           {message.type === 'offers' && (
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
+              <div className="flex items-center gap-2 text-amber-800 font-bold text-sm">
                 <Tag className="w-4 h-4" />
                 {t.offers_title}
               </div>
-              <p className="text-slate-100">{displayText}</p>
+              <p>{displayText}</p>
               <a
                 href={`tel:${hospitalInfo.appointmentLine.replace(/\s/g, '')}`}
-                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold bg-teal-600/20 text-teal-200 border border-teal-500/30 hover:bg-teal-600/30 transition-all"
+                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold bg-teal-50 text-teal-800 border border-teal-200 hover:bg-teal-100 transition-all"
               >
                 <PhoneCall className="w-4 h-4" />
                 {t.offers_call}
               </a>
               <button
-                onClick={onBookAppointment}
-                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold bg-sky-600/20 text-sky-200 border border-sky-500/30 hover:bg-sky-600/30 transition-all"
+                onClick={() => onBookAppointment()}
+                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold bg-sky-50 text-sky-800 border border-sky-200 hover:bg-sky-100 transition-all"
               >
                 <FlaskConical className="w-4 h-4" />
                 {t.offers_lab}
@@ -1018,20 +1008,20 @@ function MessageBubble({
 
           {/* Plain text */}
           {message.type === 'text' && (
-            <p className="text-slate-100">{displayText}</p>
+            <p>{displayText}</p>
           )}
 
           {/* Quick replies */}
           {message.quickReplies && message.quickReplies.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {message.quickReplies.map((key) => {
-                const meta = quickReplyMeta[key] ?? { icon: ChevronRight, color: 'text-slate-300' };
+                const meta = quickReplyMeta[key] ?? { icon: ChevronRight, color: 'text-slate-600' };
                 const label = T[lang][`qr_${key}`] as string;
                 return (
                   <button
                     key={key}
                     onClick={() => onQuickReply(key)}
-                    className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-teal-500/40 text-slate-200 hover:text-teal-300 transition-all font-sans"
+                    className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-teal-400 text-slate-800 hover:text-teal-800 transition-all font-sans"
                   >
                     <meta.icon className={`w-3 h-3 ${meta.color}`} />
                     {label}

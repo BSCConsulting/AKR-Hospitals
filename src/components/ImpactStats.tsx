@@ -1,48 +1,42 @@
 import { motion } from 'framer-motion';
-import { Activity, Users, Hospital, Timer } from 'lucide-react';
-import AnimatedCounter from '@/components/AnimatedCounter';
+import { Activity, Ambulance, TestTube, Droplet } from 'lucide-react';
 import { hospitalInfo } from '@/data/mockData';
 
 const stats = [
   {
-    icon: Hospital,
-    value: hospitalInfo.beds,
-    suffix: '+',
-    label: 'Inpatient beds',
-    sub: 'Multi-speciality capacity',
+    icon: Ambulance,
+    value: '24/7',
+    label: 'Casualty & pharmacy',
+    sub: 'Open round the clock',
     color: 'from-rose-500 to-orange-400',
   },
   {
-    icon: Users,
-    value: hospitalInfo.doctors,
-    suffix: '+',
-    label: 'Consultants',
-    sub: 'Across clinical wings',
+    icon: TestTube,
+    value: '30% off',
+    label: 'Laboratory tests',
+    sub: 'Flat discount on all lab tests',
     color: 'from-teal-500 to-emerald-500',
   },
   {
-    icon: Timer,
-    value: 8,
-    suffix: ' min',
-    label: 'Trauma response',
-    sub: 'Target door-to-care',
+    icon: Droplet,
+    value: '₹20',
+    label: 'Sugar test',
+    sub: 'Routine blood glucose',
     color: 'from-sky-500 to-cyan-500',
   },
   {
     icon: Activity,
-    value: Number(hospitalInfo.established),
-    suffix: '',
+    value: hospitalInfo.established,
     label: 'Serving since',
-    sub: 'Community healthcare',
+    sub: 'Community healthcare in Madhira',
     color: 'from-amber-500 to-orange-500',
-    isYear: true,
   },
 ];
 
-/** Dense animated impact band — fills visual whitespace with proof. */
+/** Dense impact band — only facts the hospital advertises itself. */
 export default function ImpactStats() {
   return (
-    <section className="relative py-6 sm:py-8 md:py-10" aria-label="Hospital impact metrics">
+    <section className="relative py-6 sm:py-8 md:py-10" aria-label="Hospital highlights">
       <div className="section-shell">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {stats.map((stat, i) => (
@@ -64,11 +58,7 @@ export default function ImpactStats() {
                 <stat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
               <div className="relative text-xl sm:text-3xl font-bold text-slate-900 tracking-tight tabular-nums leading-none">
-                {stat.isYear ? (
-                  <AnimatedCounter value={stat.value} />
-                ) : (
-                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                )}
+                {stat.value}
               </div>
               <div className="relative text-xs sm:text-sm font-semibold text-slate-800 mt-1.5 leading-snug">
                 {stat.label}

@@ -26,7 +26,7 @@ export default function LocationSection() {
           </h2>
           <p className="text-slate-600 mt-3 text-lg">
             Samatha Nagar, Didugupadu — easily accessible from Khammam and surrounding
-            villages. Our 24/7 casualty entrance is on the ground floor.
+            villages. Our casualty is open 24/7.
           </p>
         </motion.div>
 
@@ -48,7 +48,7 @@ export default function LocationSection() {
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
               />
-              <div className="absolute top-4 left-4 glass-surface !rounded-xl px-4 py-2.5 pointer-events-none">
+              <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-auto glass-surface !rounded-xl px-4 py-2.5 pointer-events-none">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-teal-600" />
                   <span className="text-sm font-semibold text-slate-900">{hospitalInfo.name}</span>
@@ -85,7 +85,7 @@ export default function LocationSection() {
                   </div>
                   <div>
                     <div className="text-sm font-semibold text-emerald-800">24/7 Casualty Entrance</div>
-                    <div className="text-[11px] text-slate-600 mt-0.5">Ground Floor — always open</div>
+                    <div className="text-[11px] text-slate-600 mt-0.5">Always open, day and night</div>
                   </div>
                 </div>
 

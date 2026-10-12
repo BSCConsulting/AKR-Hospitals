@@ -2,13 +2,9 @@
 
 export const WHATSAPP_NUMBER = '919849057185';
 
-function wa(text: string): string {
+export function wa(text: string): string {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
-
-export const WHATSAPP_CAMP_RSVP = wa(
-  'Hello AKR Hospital, I would like to RSVP for the Mega Urology Camp on Oct 11.'
-);
 
 export const WHATSAPP_OPD_INQUIRE = wa(
   'Hello, I want to inquire about OPD consultations.'
@@ -18,22 +14,24 @@ export const WHATSAPP_OPD_INQUIRE = wa(
 export const WHATSAPP_LINK = WHATSAPP_OPD_INQUIRE;
 
 export function whatsappBookingConfirm(details: {
-  reference: string;
+  reference?: string;
   patientName: string;
+  mobile: string;
   department: string;
-  doctorName: string;
+  doctorName?: string;
   dateLabel: string;
   time: string;
-  reason?: string;
+  reason: string;
 }): string {
   const lines = [
-    `Hello AKR Hospital, please confirm my OPD booking.`,
-    `Reference: ${details.reference}`,
+    `Hello AKR Hospital, I would like an OPD appointment.`,
+    ...(details.reference ? [`Reference: ${details.reference}`] : []),
     `Patient: ${details.patientName}`,
+    `Mobile: ${details.mobile}`,
     `Department: ${details.department}`,
-    `Doctor: ${details.doctorName}`,
-    `Slot: ${details.dateLabel} at ${details.time}`,
+    `Doctor: ${details.doctorName ?? 'Any available'}`,
+    `Preferred: ${details.dateLabel} at ${details.time}`,
+    `Reason: ${details.reason}`,
   ];
-  if (details.reason) lines.push(`Reason: ${details.reason}`);
   return wa(lines.join('\n'));
 }
