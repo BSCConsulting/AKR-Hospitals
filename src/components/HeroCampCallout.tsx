@@ -83,7 +83,7 @@ export default function HeroCampCallout() {
           windows follow standard tariffs unless a separate subsidy is announced.
         </p>
 
-        <div className="flex flex-col xs:flex-row sm:flex-row gap-2 pt-0.5">
+        <div className="flex flex-col sm:flex-row gap-2 pt-0.5">
           <a
             href={camp.whatsappCTA}
             target="_blank"

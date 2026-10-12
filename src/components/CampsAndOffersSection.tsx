@@ -45,20 +45,6 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
           </span>
         </div>
 
-        {/* Relocated offer pills — static inline (not floating FABs) */}
-        <div className="flex flex-wrap gap-2">
-          {['Free Consultation', '₹20 Sugar Test', '30% Off Lab Tests', 'Ultrasound Scan 50% Off', '20% Off Pharmacy'].map(
-            (pill) => (
-              <span
-                key={pill}
-                className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium bg-white border border-slate-200 text-slate-700 shadow-sm"
-              >
-                {pill}
-              </span>
-            )
-          )}
-        </div>
-
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
             <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">{camp.title}</h3>

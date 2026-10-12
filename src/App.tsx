@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import HeroTriage, { type BookingPrefill } from '@/components/HeroTriage';
@@ -180,6 +180,17 @@ function App() {
   const closeToken = useCallback(() => setTokenOpen(false), []);
   const closeBooking = useCallback(() => setBookingResult(null), []);
   const closeEligibility = useCallback(() => setEligibilityOpen(false), []);
+
+  const dialogOpen = tokenOpen || bookingResult !== null || eligibilityOpen;
+  useEffect(() => {
+    // CareBot is a full-screen sheet only on phones; on desktop it's a side panel the page can scroll under.
+    if (!dialogOpen && !(careBotOpen && window.matchMedia('(max-width: 767px)').matches)) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [dialogOpen, careBotOpen]);
 
   return (
     <MotionConfig reducedMotion="user">

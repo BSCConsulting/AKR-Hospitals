@@ -67,7 +67,7 @@ export default function CarePathway() {
               <span className="relative mb-1.5 sm:mb-2">
                 <span className="absolute inset-0 rounded-full bg-teal-400/20 animate-pulse-ring" />
                 <span className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center shadow-md shadow-teal-600/20">
-                  <step.icon className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+                  <step.icon className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
                 </span>
                 <span className="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center">
                   {i + 1}

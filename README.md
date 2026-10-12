@@ -4,7 +4,7 @@ Patient-facing website for **Dr. AKR's Multispeciality Hospital** (Madhira, Tela
 
 Built with Vite, React, TypeScript, Tailwind CSS, Framer Motion, and optional Supabase (appointment requests + realtime OPD queue).
 
-**Mobile-first:** phone layouts put the appointment form above the pathway/camp blocks, use 44px+ touch targets, a sticky Casualty/Book bar, and a contact FAB cleared above that bar. Casualty CTAs dial the hospital casualty line (`+91 87492 73030`); 108 (govt. ambulance) is the secondary option.
+**Mobile-first:** phone layouts put the appointment form above the pathway/camp blocks, use 44px+ touch targets, and add a four-button bottom bar (Casualty, WhatsApp, CareBot, Book OPD) that replaces the desktop floating dock. Casualty CTAs dial the hospital casualty line (`+91 87492 73030`); 108 (govt. ambulance) is the secondary option.
 
 **Content rule:** only facts confirmed by the hospital go on the site. Unconfirmed items are left out and tracked as `TODO(hospital)` in `src/data/`.
 

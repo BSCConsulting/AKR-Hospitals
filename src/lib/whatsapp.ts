@@ -10,9 +10,6 @@ export const WHATSAPP_OPD_INQUIRE = wa(
   'Hello, I want to inquire about OPD consultations.'
 );
 
-/** @deprecated Prefer WHATSAPP_OPD_INQUIRE — kept as the default general CTA. */
-export const WHATSAPP_LINK = WHATSAPP_OPD_INQUIRE;
-
 export function whatsappBookingConfirm(details: {
   reference?: string;
   patientName: string;

@@ -67,7 +67,7 @@ export default function Navbar() {
           <div className="flex items-center h-16 gap-3 min-w-0">
             <a href="#home" className="flex items-center gap-2.5 group shrink-0">
               <div className="w-9 h-9 xl:w-10 xl:h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center shadow-md shadow-teal-600/20">
-                <Activity className="w-4.5 h-4.5 xl:w-5 xl:h-5 text-white" strokeWidth={2.5} />
+                <Activity className="w-[18px] h-[18px] xl:w-5 xl:h-5 text-white" strokeWidth={2.5} />
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-slate-900 font-bold text-[15px] xl:text-base tracking-tight">

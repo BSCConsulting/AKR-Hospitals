@@ -23,11 +23,6 @@ const typeColors: Record<InsuranceProvider['type'], string> = {
 export default function EligibilityChecker({ open, onClose }: EligibilityCheckerProps) {
   const [selected, setSelected] = useState<InsuranceProvider | null>(null);
 
-  const handleClose = () => {
-    setSelected(null);
-    onClose();
-  };
-
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -43,7 +38,7 @@ export default function EligibilityChecker({ open, onClose }: EligibilityChecker
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          onClick={handleClose}
+          onClick={onClose}
           className="fixed inset-0 z-[80] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4"
         >
           <motion.div
@@ -60,7 +55,7 @@ export default function EligibilityChecker({ open, onClose }: EligibilityChecker
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 bg-white/95 sticky top-0 z-10">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center">
-                  <ShieldCheck className="w-4.5 h-4.5 text-teal-700" />
+                  <ShieldCheck className="w-[18px] h-[18px] text-teal-700" />
                 </div>
                 <div>
                   <h3 id="eligibility-title" className="text-slate-900 font-semibold text-sm">
@@ -70,7 +65,9 @@ export default function EligibilityChecker({ open, onClose }: EligibilityChecker
                 </div>
               </div>
               <button
-                onClick={handleClose}
+                type="button"
+                autoFocus
+                onClick={onClose}
                 className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                 aria-label="Close"
               >

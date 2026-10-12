@@ -12,7 +12,7 @@
   body {
     @apply bg-slate-50 text-slate-700 antialiased;
     background-color: #f8fafc;
-    /* Room for mobile sticky CTA + FAB (safe-area aware) */
+    /* Clear the home indicator on notched phones */
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 

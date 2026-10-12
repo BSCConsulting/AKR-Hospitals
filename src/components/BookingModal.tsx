@@ -81,9 +81,9 @@ function ModalBody({ result, onClose }: { result: BookingResult; onClose: () => 
             }`}
           >
             {sent ? (
-              <CheckCircle2 className="w-4.5 h-4.5 text-emerald-700" />
+              <CheckCircle2 className="w-[18px] h-[18px] text-emerald-700" />
             ) : (
-              <AlertTriangle className="w-4.5 h-4.5 text-amber-700" />
+              <AlertTriangle className="w-[18px] h-[18px] text-amber-700" />
             )}
           </div>
           <h3 id="booking-modal-title" className="text-slate-900 font-semibold text-base">
@@ -92,6 +92,7 @@ function ModalBody({ result, onClose }: { result: BookingResult; onClose: () => 
         </div>
         <button
           type="button"
+          autoFocus
           onClick={onClose}
           className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
           aria-label="Close"

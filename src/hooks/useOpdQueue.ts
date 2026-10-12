@@ -3,6 +3,7 @@ import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import { toLocalDateString } from '@/lib/dates';
 
 interface OpdSession {
+  id: string;
   session_date: string;
   current_token_served: number;
   is_paused: boolean;
@@ -34,7 +35,7 @@ export function useOpdQueue(): UseOpdQueueResult {
         if (cancelled) return;
         client
           .from('opd_sessions')
-          .select('session_date, current_token_served, is_paused')
+          .select('id, session_date, current_token_served, is_paused')
           .eq('session_date', today)
           .maybeSingle()
           .then(({ data, error }) => {
@@ -49,8 +50,14 @@ export function useOpdQueue(): UseOpdQueueResult {
             'postgres_changes',
             { event: '*', schema: 'public', table: 'opd_sessions' },
             (payload) => {
-              const updated = payload.new as OpdSession | undefined;
-              if (updated?.session_date === today) setSession(updated);
+              if (payload.eventType === 'DELETE') {
+                // DELETE payloads carry only the primary key.
+                const deletedId = (payload.old as Partial<OpdSession>).id;
+                setSession((s) => (s?.id === deletedId ? null : s));
+                return;
+              }
+              const updated = payload.new as OpdSession;
+              if (updated.session_date === today) setSession(updated);
             }
           )
           .subscribe();

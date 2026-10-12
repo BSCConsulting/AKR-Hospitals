@@ -48,7 +48,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
             <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-xl border-b border-slate-200 px-5 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center">
-                  <Ticket className="w-4.5 h-4.5 text-teal-700" />
+                  <Ticket className="w-[18px] h-[18px] text-teal-700" />
                 </div>
                 <div>
                   <h3 id="token-drawer-title" className="text-slate-900 font-semibold text-sm">
@@ -58,6 +58,8 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                 </div>
               </div>
               <button
+                type="button"
+                autoFocus
                 onClick={onClose}
                 className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                 aria-label="Close"

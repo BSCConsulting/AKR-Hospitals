@@ -52,4 +52,7 @@ DROP POLICY IF EXISTS "anon_update_opd_sessions" ON opd_sessions;
 DROP POLICY IF EXISTS "anon_delete_opd_sessions" ON opd_sessions;
 
 -- Enable realtime publication for this table
-ALTER PUBLICATION supabase_realtime ADD TABLE opd_sessions;
+DO $$ BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE opd_sessions;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;

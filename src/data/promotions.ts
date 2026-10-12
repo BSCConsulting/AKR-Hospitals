@@ -26,8 +26,6 @@ export interface Promotion {
   symptoms: string[];
   /** Pre-filled WhatsApp deep link */
   whatsappCTA: string;
-  /** Short line for the top announcement bar */
-  announcementText?: string;
   /** Optional time window shown in the camp card */
   timeWindow?: string;
   /** Card status badge */
@@ -47,8 +45,6 @@ export const promotions: Promotion[] = [
     endsAt: '2026-10-11T14:00:00+05:30',
     timeWindow: '10:00 AM – 2:00 PM',
     statusLabel: 'LIMITED TIME CAMP',
-    announcementText:
-      'Active Camp: Free Mega Urology Camp — Free OP Consultation & 50% Off Scans',
     doctors: [
       {
         name: 'Dr. Pinnamaneni Sreedhar',
@@ -85,8 +81,6 @@ export const promotions: Promotion[] = [
     highlightBadge: '₹0 OP Registration (Select Doctors)',
     date: 'Daily during OPD hours (9 AM – 8 PM) · Select consultants',
     statusLabel: 'ALWAYS ON',
-    announcementText:
-      'Community Waiver: ₹0 OP Registration with select doctors (Dr. Kondal Rao & camp clinicians)',
     doctors: [
       {
         name: 'Dr. A. Kondal Rao',
@@ -153,15 +147,7 @@ export function getActiveCamps(): Promotion[] {
   return getActivePromotions().filter((p) => p.type === 'camp');
 }
 
-export function getActiveDiscounts(): Promotion[] {
-  return getActivePromotions().filter((p) => p.type === 'discount' || p.type === 'general');
-}
-
-export function hasActivePromotion(): boolean {
-  return getActivePromotions().length > 0;
-}
-
-/** Primary camp used for the feature card / announcement (first active camp). */
+/** Primary camp used for the feature card (first active camp). */
 export function getFeaturedCamp(): Promotion | undefined {
   return getActiveCamps()[0];
 }
@@ -186,5 +172,3 @@ export const ROUTINE_SUBSIDIES = [
 
 export const SUPPORT_PHONE = '+91 87492 73030';
 export const SUPPORT_PHONE_TEL = 'tel:+918749273030';
-export const APPOINTMENT_PHONE = '+91 98490 57185';
-export const APPOINTMENT_PHONE_TEL = 'tel:+919849057185';
