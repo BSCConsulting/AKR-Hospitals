@@ -65,7 +65,7 @@ export default function CampCountdown({ startsAt, endsAt, className = '' }: Camp
             <div className="text-base sm:text-lg font-bold text-slate-900 tabular-nums leading-none">
               {unit.value}
             </div>
-            <div className="text-[9px] uppercase tracking-wide text-emerald-800 font-semibold mt-0.5">
+            <div className="text-[10px] uppercase tracking-wide text-emerald-800 font-semibold mt-0.5">
               {unit.label}
             </div>
           </div>

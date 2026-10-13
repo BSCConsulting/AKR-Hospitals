@@ -36,7 +36,7 @@ export default function CarePathway() {
         <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-teal-700">
           Your care pathway
         </p>
-        <span className="text-[10px] text-slate-500">4 simple steps</span>
+        <span className="text-[11px] text-slate-500">4 simple steps</span>
       </div>
       <ol className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
         {steps.map((step, i) => (
@@ -76,7 +76,7 @@ export default function CarePathway() {
               <span className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight">
                 {step.title}
               </span>
-              <span className="text-[9px] sm:text-[10px] text-slate-500 mt-0.5 leading-snug px-0.5">
+              <span className="text-[11px] sm:text-xs text-slate-500 mt-0.5 leading-snug px-0.5">
                 {step.desc}
               </span>
             </motion.a>

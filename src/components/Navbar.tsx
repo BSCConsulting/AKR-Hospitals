@@ -73,7 +73,7 @@ export default function Navbar() {
                 <span className="text-slate-900 font-bold text-[15px] xl:text-base tracking-tight">
                   AKR <span className="text-teal-700">Hospital</span>
                 </span>
-                <span className="text-[9px] xl:text-[10px] text-slate-500 font-medium tracking-wide uppercase mt-0.5">
+                <span className="text-[10px] text-slate-500 font-medium tracking-wide uppercase mt-0.5">
                   Multi-Speciality
                 </span>
               </div>

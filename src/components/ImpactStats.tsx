@@ -63,7 +63,7 @@ export default function ImpactStats() {
               <div className="relative text-xs sm:text-sm font-semibold text-slate-800 mt-1.5 leading-snug">
                 {stat.label}
               </div>
-              <div className="relative text-[10px] sm:text-[11px] text-slate-500 mt-0.5 leading-snug">
+              <div className="relative text-xs text-slate-500 mt-0.5 leading-snug">
                 {stat.sub}
               </div>
             </motion.div>

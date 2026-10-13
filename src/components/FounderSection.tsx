@@ -34,7 +34,7 @@ export default function FounderSection() {
           <div className="relative glass-surface p-4 sm:p-6 flex flex-col items-center justify-center">
             <div className="relative w-full max-w-md mx-auto">
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-teal-300/50 via-emerald-200/40 to-sky-200/40 blur-sm" />
-              <div className="relative rounded-2xl overflow-hidden border border-white shadow-lg shadow-slate-900/10 bg-slate-100 aspect-[3/4] max-h-[28rem] mx-auto">
+              <div className="relative rounded-2xl overflow-hidden border border-white shadow-lg shadow-slate-900/10 bg-slate-100 aspect-[3/4] max-h-[22rem] sm:max-h-[28rem] mx-auto">
                 <img
                   src="/founder-dr-kondal-rao.webp"
                   alt="Dr. A. Kondal Rao, Founder & Chief Physician"

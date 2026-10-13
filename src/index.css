@@ -44,7 +44,8 @@
 
 @layer components {
   .page-canvas {
-    @apply relative min-h-screen overflow-x-hidden;
+    /* clip, not hidden: hidden turns this into a scroll container and breaks the sticky navbar */
+    @apply relative min-h-screen overflow-x-clip;
     background-color: #f8fafc;
   }
 

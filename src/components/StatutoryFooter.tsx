@@ -206,7 +206,7 @@ export default function StatutoryFooter() {
                 key={doc.id}
                 type="button"
                 onClick={() => setOpen(doc.id)}
-                className="text-[11px] font-semibold text-teal-800 hover:text-teal-600 underline underline-offset-2 px-2 py-1.5 rounded-md hover:bg-teal-50/80"
+                className="text-xs font-semibold text-teal-800 hover:text-teal-600 underline underline-offset-2 px-2 py-2.5 rounded-md hover:bg-teal-50/80"
               >
                 {doc.label}
               </button>

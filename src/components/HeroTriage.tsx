@@ -249,7 +249,7 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-600 -mt-1 sm:-mt-2 leading-snug">
+              <p className="text-xs text-slate-600 -mt-1 sm:-mt-2 leading-snug">
                 Pick a preferred time — our reception team will call you to confirm the slot and
                 consultation fee.
               </p>
@@ -398,7 +398,7 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                       }`}
                     >
                       <div className="text-xs font-semibold leading-tight">{tab.label}</div>
-                      <div className="text-[11px] text-slate-600 mt-0.5 leading-tight">{tab.subLabel}</div>
+                      <div className="text-xs text-slate-600 mt-0.5 leading-tight">{tab.subLabel}</div>
                     </button>
                   ))}
                 </div>
@@ -428,7 +428,7 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                       }`}
                     >
                       <div className="text-xs font-semibold">{period.label}</div>
-                      <div className="text-[11px] text-slate-600">{period.hint}</div>
+                      <div className="text-xs text-slate-600">{period.hint}</div>
                     </button>
                   ))}
                 </div>
@@ -457,7 +457,7 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                 {formErrors.slot && <p className="text-xs text-red-700">{formErrors.slot}</p>}
               </fieldset>
 
-              <p className="text-[11px] text-slate-600 leading-relaxed rounded-lg border border-slate-200 bg-slate-50/80 px-3 py-2">
+              <p className="text-xs text-slate-600 leading-relaxed rounded-lg border border-slate-200 bg-slate-50/80 px-3 py-2">
                 By submitting, you consent to Dr. AKR Hospital storing these details and contacting
                 you by phone/WhatsApp about this appointment (DPDP Act, 2023). We never share
                 patient records.

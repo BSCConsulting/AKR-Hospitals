@@ -91,14 +91,14 @@ function Footer() {
               href={hospitalInfo.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-full hover:bg-teal-100 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-teal-800 bg-teal-50 border border-teal-200 px-3 py-2.5 rounded-full hover:bg-teal-100 transition-colors"
             >
               <MapPin className="w-3.5 h-3.5" />
               Google Maps Directions
             </a>
             <a
               href={hospitalInfo.phoneTel}
-              className="flex items-start gap-2.5 text-sm text-slate-600 hover:text-teal-700 transition-colors"
+              className="flex items-start gap-2.5 py-1.5 text-sm text-slate-600 hover:text-teal-700 transition-colors"
             >
               <Phone className="w-4 h-4 mt-0.5 text-teal-600 shrink-0" />
               Desk · {hospitalInfo.phone}
@@ -107,7 +107,7 @@ function Footer() {
               href={WHATSAPP_OPD_INQUIRE}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-start gap-2.5 text-sm text-slate-600 hover:text-[#0B6E62] transition-colors"
+              className="flex items-start gap-2.5 py-1.5 text-sm text-slate-600 hover:text-[#0B6E62] transition-colors"
             >
               <WhatsAppIcon className="w-4 h-4 mt-0.5 text-[#0B6E62] shrink-0" />
               {hospitalInfo.appointmentLine} (WhatsApp)
@@ -132,7 +132,7 @@ function Footer() {
                 </div>
               </a>
               <div className="pl-6 border-t border-red-200/80 pt-2">
-                <a href={hospitalInfo.ambulanceTel} className="text-red-800 font-bold text-sm hover:underline">
+                <a href={hospitalInfo.ambulanceTel} className="inline-block py-2 text-red-800 font-bold text-sm hover:underline">
                   {hospitalInfo.ambulanceLabel}
                 </a>
               </div>
@@ -154,7 +154,7 @@ function Footer() {
           </p>
           <p className="text-xs text-slate-500 text-center sm:text-right">
             Casualty:{' '}
-            <a href={hospitalInfo.phoneTel} className="text-red-600 font-semibold hover:underline">
+            <a href={hospitalInfo.phoneTel} className="inline-block py-2 text-red-600 font-semibold hover:underline">
               {hospitalInfo.phone}
             </a>
             <span className="mx-1.5 text-slate-300">·</span>
