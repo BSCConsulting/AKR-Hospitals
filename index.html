@@ -7,18 +7,18 @@
     <!-- TODO(domain): switch every akr-hospitals.vercel.app URL back to https://akrhospital.in once its DNS points at Vercel. -->
     <meta name="theme-color" content="#F8FAFC" />
     <meta name="color-scheme" content="light" />
-    <title>Dr. AKR's Multispeciality Hospital | Madhira, Telangana</title>
+    <title>AKR Super Speciality Hospitals | Madhira, Telangana</title>
     <meta
       name="description"
-      content="Dr. AKR's Multispeciality Hospital in Madhira, Khammam, Telangana — 24/7 casualty, trauma, urology, maternity, eye care, diagnostics, and cashless TPA. Request an OPD appointment online."
+      content="AKR Super Speciality Hospitals, Madhira, Khammam, Telangana — 24/7 casualty, family physician and ambulance, laparoscopic surgery, cardiology, urology, CT, 2D Echo, X-Ray, ultrasound and cashless TPA. Sister hospital in Vijayawada. Request an OPD appointment online."
     />
     <link rel="canonical" href="https://akr-hospitals.vercel.app/" />
     <meta property="og:url" content="https://akr-hospitals.vercel.app/" />
-    <meta property="og:site_name" content="Dr. AKR's Multispeciality Hospital" />
-    <meta property="og:title" content="Dr. AKR's Multispeciality Hospital | Madhira" />
+    <meta property="og:site_name" content="AKR Super Speciality Hospitals" />
+    <meta property="og:title" content="AKR Super Speciality Hospitals | Madhira" />
     <meta
       property="og:description"
-      content="Multi-speciality hospital in Madhira, Telangana since 2008 — 24/7 casualty, OPD appointments, diagnostics, and cashless insurance."
+      content="Super speciality hospital in Madhira, Telangana since 2008 — 24/7 casualty and ambulance, specialist OPDs, CT and full diagnostics, cashless insurance."
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_IN" />
@@ -26,10 +26,10 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Dr. AKR's Multispeciality Hospital | Madhira" />
+    <meta name="twitter:title" content="AKR Super Speciality Hospitals | Madhira" />
     <meta
       name="twitter:description"
-      content="Multi-speciality hospital in Madhira, Telangana. Request an OPD appointment; casualty open 24/7."
+      content="Super speciality hospital in Madhira, Telangana. Request an OPD appointment; casualty and ambulance open 24/7."
     />
     <meta name="twitter:image" content="https://akr-hospitals.vercel.app/og-cover.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -41,52 +41,50 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Hospital",
-        "name": "Dr. AKR's Multispeciality Hospital",
-        "url": "https://akr-hospitals.vercel.app/",
-        "telephone": "+918749273030",
-        "image": ["https://akr-hospitals.vercel.app/og-cover.jpg", "https://akr-hospitals.vercel.app/og-cover.webp"],
-        "description": "Multi-speciality hospital in Madhira, Khammam, Telangana with 24/7 casualty, OPD, diagnostics, and cashless TPA support.",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Samatha Nagar, Didugupadu",
-          "addressLocality": "Madhira",
-          "addressRegion": "Telangana",
-          "postalCode": "507203",
-          "addressCountry": "IN"
-        },
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": 16.9364216,
-          "longitude": 80.3673425
-        },
-        "openingHours": "Mo-Su 00:00-23:59",
-        "openingHoursSpecification": [
+        "@graph": [
           {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": [
-              "Monday",
-              "Tuesday",
-              "Wednesday",
-              "Thursday",
-              "Friday",
-              "Saturday",
-              "Sunday"
-            ],
-            "opens": "00:00",
-            "closes": "23:59",
-            "description": "24/7 Casualty"
+            "@type": "Hospital",
+            "@id": "https://akr-hospitals.vercel.app/#madhira",
+            "name": "AKR Super Speciality Hospitals",
+            "url": "https://akr-hospitals.vercel.app/",
+            "logo": "https://akr-hospitals.vercel.app/brand/akr-logo.svg",
+            "telephone": "+918749273030",
+            "image": ["https://akr-hospitals.vercel.app/og-cover.jpg", "https://akr-hospitals.vercel.app/og-cover.webp"],
+            "description": "Super speciality hospital in Madhira, Khammam, Telangana with 24/7 casualty, family physician and ambulance, specialist OPDs, CT and full diagnostics, and cashless TPA support.",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Samatha Nagar, Didugupadu",
+              "addressLocality": "Madhira",
+              "addressRegion": "Telangana",
+              "postalCode": "507203",
+              "addressCountry": "IN"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 16.9364216,
+              "longitude": 80.3673425
+            },
+            "openingHours": "Mo-Su 00:00-23:59",
+            "medicalSpecialty": ["Emergency", "PrimaryCare", "Surgical", "Cardiovascular", "Urologic", "Obstetric"],
+            "hasMap": "https://www.google.com/maps/dir/?api=1&destination=16.9364216,80.3673425"
+          },
+          {
+            "@type": "Hospital",
+            "@id": "https://mahajanhospitals.in/#vijayawada",
+            "name": "Mahajan Super Speciality Hospitals",
+            "url": "https://mahajanhospitals.in/",
+            "telephone": "+919391944733",
+            "email": "contact@mahajanhospitals.in",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Kiran Tower, RR Nagar, Kabela Centre",
+              "addressLocality": "Vijayawada",
+              "addressRegion": "Andhra Pradesh",
+              "addressCountry": "IN"
+            },
+            "sameAs": ["https://akr-hospitals.vercel.app/#branches"]
           }
-        ],
-        "medicalSpecialty": [
-          "Emergency",
-          "Urology",
-          "Cardiology",
-          "Orthopedics",
-          "Ophthalmology",
-          "Obstetrics"
-        ],
-        "hasMap": "https://www.google.com/maps/dir/?api=1&destination=16.9364216,80.3673425"
+        ]
       }
     </script>
   </head>

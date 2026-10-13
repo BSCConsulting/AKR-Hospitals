@@ -6,6 +6,7 @@ import TrustMarquee from '@/components/TrustMarquee';
 import ImpactStats from '@/components/ImpactStats';
 import CampsAndOffersSection from '@/components/CampsAndOffersSection';
 import BentoGrid from '@/components/BentoGrid';
+import FacilitiesSection from '@/components/FacilitiesSection';
 import PatientServicesSection from '@/components/PatientServicesSection';
 import FloatingDock from '@/components/FloatingDock';
 import MobileStickyBar from '@/components/MobileStickyBar';
@@ -16,9 +17,9 @@ import LocationSection from '@/components/LocationSection';
 import StatutoryFooter from '@/components/StatutoryFooter';
 import { WHATSAPP_OPD_INQUIRE } from '@/lib/whatsapp';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
-import { Phone, MapPin, Activity, Shield, Award, Clock } from 'lucide-react';
-import { hospitalInfo, type Doctor } from '@/data/mockData';
-import { accreditation } from '@/data/compliance';
+import { Phone, MapPin, Clock } from 'lucide-react';
+import { hospitalInfo, branches, opdSpecialties, familyPhysician, type Doctor } from '@/data/mockData';
+import { formatSession } from '@/lib/dates';
 
 const LiveTokenDrawer = lazy(() => import('@/components/LiveTokenDrawer'));
 const BookingModal = lazy(() => import('@/components/BookingModal'));
@@ -33,28 +34,28 @@ function Footer() {
           {/* Col 1 — Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center shadow-md shadow-teal-600/20">
-                <Activity className="w-5 h-5 text-white" strokeWidth={2.5} />
-              </div>
+              <img src={hospitalInfo.logo} alt="" width={40} height={40} className="w-10 h-10 rounded-xl" />
               <div>
                 <span className="text-slate-900 font-bold text-base">
-                  AKR <span className="text-teal-700">Hospital</span>
+                  AKR <span className="text-teal-700">Super Speciality</span>
                 </span>
-                <div className="text-[10px] text-slate-500 uppercase tracking-wide">Multi-Speciality</div>
+                <div className="text-[11px] text-slate-500 uppercase tracking-wide">Hospitals · Madhira</div>
               </div>
             </div>
             <p className="text-slate-600 text-sm leading-relaxed">
               {hospitalInfo.tagline} Serving Madhira, Telangana since {hospitalInfo.established} with
               compassion and clinical excellence.
             </p>
-            <div className="flex flex-col gap-2">
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 w-fit">
-                <Shield className="w-3.5 h-3.5" /> {accreditation.nabh.short}
+            <a
+              href="#branches"
+              className="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white/80 px-3 py-2.5 hover:border-teal-300 transition-colors"
+            >
+              <img src={branches[1].logo} alt="" width={32} height={32} className="w-8 h-8 rounded-lg" />
+              <span className="text-xs text-slate-600 leading-snug">
+                Sister hospital in {branches[1].city}:{' '}
+                <span className="font-semibold text-slate-900">{branches[1].name}</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-teal-800 bg-teal-50 px-3 py-1.5 rounded-full border border-teal-200 w-fit">
-                <Award className="w-3.5 h-3.5" /> {accreditation.iso.short}
-              </span>
-            </div>
+            </a>
           </div>
 
           {/* Col 2 — Quick Links */}
@@ -63,11 +64,13 @@ function Footer() {
             <nav className="flex flex-col text-sm">
               {[
                 { href: '#departments', label: 'Specialties / Clinical Wings' },
+                { href: '#facilities', label: 'Facilities & Diagnostics' },
                 { href: '#camps', label: 'Health Camps & Offers' },
                 { href: '#cashless', label: 'TPA / Cashless Desk' },
                 { href: '#specialists', label: 'Our Consultants' },
                 { href: '#appointments', label: 'Request an Appointment' },
                 { href: '#founder', label: 'Meet Our Founder' },
+                { href: '#branches', label: 'Our Hospitals (Madhira & Vijayawada)' },
               ].map((link) => (
                 <a
                   key={link.href}
@@ -128,7 +131,7 @@ function Footer() {
                     Casualty · Primary
                   </div>
                   <div className="text-red-700 font-bold text-lg mt-0.5">{hospitalInfo.phone}</div>
-                  <div className="text-xs text-red-800 mt-0.5">24/7 trauma & emergency desk</div>
+                  <div className="text-xs text-red-800 mt-0.5">24/7 casualty, family physician & ambulance</div>
                 </div>
               </a>
               <div className="pl-6 border-t border-red-200/80 pt-2">
@@ -137,14 +140,18 @@ function Footer() {
                 </a>
               </div>
             </div>
-            <div className="text-xs text-slate-600 space-y-1">
+            <dl className="text-xs text-slate-600 space-y-1">
               <div>
-                <span className="font-semibold text-slate-800">OPD:</span> 9 AM – 8 PM Daily
+                <dt className="inline font-semibold text-slate-800">Family physician: </dt>
+                <dd className="inline">{formatSession(familyPhysician)}</dd>
               </div>
-              <div>
-                <span className="font-semibold text-slate-800">Diagnostics:</span> 7 AM – 10 PM
-              </div>
-            </div>
+              {opdSpecialties.map((s) => (
+                <div key={s.id}>
+                  <dt className="inline font-semibold text-slate-800">{s.name}: </dt>
+                  <dd className="inline">{formatSession(s)}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
 
@@ -213,6 +220,7 @@ function App() {
             <ImpactStats />
             <CampsAndOffersSection />
             <BentoGrid />
+            <FacilitiesSection />
             <PatientServicesSection onCheckEligibility={() => setEligibilityOpen(true)} />
             <FounderSection />
             <DoctorsDirectory

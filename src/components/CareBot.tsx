@@ -20,7 +20,16 @@ import {
   FlaskConical,
 } from 'lucide-react';
 import { useOpdQueue } from '@/hooks/useOpdQueue';
-import { hospitalInfo, insuranceProviders, doctors } from '@/data/mockData';
+import {
+  hospitalInfo,
+  insuranceProviders,
+  doctors,
+  opdSpecialties,
+  familyPhysician,
+  facilities,
+  branches,
+} from '@/data/mockData';
+import { formatSession } from '@/lib/dates';
 
 type Lang = 'en' | 'te';
 
@@ -54,9 +63,16 @@ type QuickReplyKey =
 
 // ─── Translations ──────────────────────────────────────────────
 
+const scheduleText = [
+  `Family physician: ${formatSession(familyPhysician)} (walk in)`,
+  ...opdSpecialties.map((s) => `${s.name}: ${formatSession(s)}`),
+].join('; ');
+const facilityText = facilities.map((f) => f.name).join(', ');
+const [madhira, vijayawada] = branches;
+
 const T = {
   en: {
-    greeting: `Hello! I am CareBot, your 24/7 AKR medical concierge. How can I assist you today?`,
+    greeting: `Hello! I am CareBot, your 24/7 AKR Super Speciality Hospitals assistant. How can I assist you today?`,
     online: 'Online · 24/7',
     placeholder: 'Ask CareBot anything...',
     typing: 'CareBot is typing...',
@@ -74,7 +90,7 @@ const T = {
     qr_other_tpa: 'Other Corporate TPA',
     qr_open_full_checker: 'Open Full Checker',
     qr_casualty_location: 'Casualty Location',
-    qr_book_ortho: 'Book Orthopedics Slot',
+    qr_book_ortho: 'Book OPD Slot',
     qr_call_casualty: 'Call Casualty',
     qr_navigate_casualty: 'Navigate to Casualty',
     qr_call_reception: 'Call Reception',
@@ -85,7 +101,7 @@ const T = {
     tb_find_doctor: 'Find Doctor',
     // Emergency
     emergency_title: 'CRITICAL EMERGENCY DETECTED',
-    emergency_msg: `CRITICAL EMERGENCY DETECTED. Call our 24/7 Casualty (+91 87492 73030) immediately, or 108 for a government ambulance. Our emergency team is at Didugupadu, Madhira.`,
+    emergency_msg: `CRITICAL EMERGENCY DETECTED. Call our 24/7 Casualty & hospital ambulance (+91 87492 73030) immediately, or 108 for a government ambulance. Our emergency team is at Didugupadu, Madhira.`,
     emergency_btn: 'Call Casualty Now',
     emergency_navigate: 'Navigate to Casualty',
     // Token flow
@@ -96,7 +112,7 @@ const T = {
     token_currently_serving: 'Currently Serving',
     token_paused: 'Queue is paused',
     // Trauma flow
-    trauma_response: `For acute fractures or trauma, come to our 24/7 casualty immediately. For general orthopaedic consultations, request an OPD appointment.`,
+    trauma_response: `For acute fractures or trauma, come to our 24/7 casualty immediately — a family physician is on duty round the clock. For a follow-up visit, request a General Medicine OPD appointment.`,
     trauma_book_slot: 'Book Slot',
     trauma_casualty_loc: 'Directions',
     trauma_nav_msg: `Tap here to open Google Maps directions to ${hospitalInfo.name} (${hospitalInfo.landmark}).`,
@@ -109,11 +125,11 @@ const T = {
     eligibility_not_found: `I couldn't find that provider. Please try one of the listed providers.`,
     // Misc
     book_appt_msg: 'Opening the appointment request form. Choose your department and a preferred time — reception will call you to confirm.',
-    call_reception_msg: `You can reach reception at ${hospitalInfo.phone}. They're available 9 AM – 8 PM daily.`,
+    call_reception_msg: `You can reach our casualty & reception desk at ${hospitalInfo.phone} — answered 24/7. For Vijayawada, call ${vijayawada.name} at ${vijayawada.phones[0].display}.`,
     find_doctor_msg: (docList: string) => `Our listed consultants: ${docList}. For other specialties, call reception at ${hospitalInfo.phone}. Would you like to request an appointment?`,
     fallback: `Sorry, I didn't catch that. I can help with: tracking your OPD token, emergency triage, department guidance, booking appointments, or checking insurance eligibility. Could you rephrase, or try one of the quick options below?`,
     opening_checker: 'Opening the full cashless eligibility checker...',
-    casualty_msg: `Call our 24/7 Casualty at +91 87492 73030, or 108 for a government ambulance.`,
+    casualty_msg: `Call our 24/7 Casualty & hospital ambulance at +91 87492 73030, or 108 for a government ambulance.`,
     casualty_loc_msg: `Casualty is at ${hospitalInfo.name}, ${hospitalInfo.landmark} — ${hospitalInfo.address}. Tap "Directions" to open Google Maps.`,
     // Special offers
     qr_special_offers: '🏷️ Special Offers & Discounts',
@@ -131,13 +147,15 @@ const T = {
     qa_4: `Random/Fasting Blood Sugar tests are available at just **₹20/-**.`,
     qa_5: `Yes, our 24/7 in-house pharmacy offers a **20% discount on medicines** on valid prescriptions.`,
     qa_6: `You can call our direct appointment desk directly at **+91 98490 57185** or request an appointment on this website.`,
-    qa_7: `Yes, Dr. AKR Hospital is operational **24 Hours (24/7)** for Casualty, Emergency Trauma, Pharmacy, and Inpatient services.`,
+    qa_7: `Yes, ${hospitalInfo.name} is open **24 Hours (24/7)** for Casualty, Emergency Trauma, Pharmacy, Ambulance and Inpatient services, with a family physician on duty round the clock.`,
     qa_8: `We are located **Opposite Susheela College, Wyra Road, Madhira** (Samatha Nagar / Didugupadu). Tap 'Directions' to open Google Maps.`,
     qa_9: `Current offers: 1) Free OP with Dr. Kondal Rao, 2) 30% off Lab tests, 3) 20% off Pharmacy, and 4) ₹20 Blood Sugar check.`,
-    qa_10: `Regular Outpatient (OP) timings are 9:00 AM to 8:00 PM daily. Emergency and casualty services remain open 24/7.`,
+    qa_10: `OPD timings at Madhira — ${scheduleText}. Casualty, pharmacy and ambulance are open 24/7.`,
+    facilities_msg: `Facilities at ${hospitalInfo.name}, Madhira: ${facilityText}.`,
+    branches_msg: `We have two hospitals: **${madhira.name}** in Madhira (${madhira.phones[0].display}) and our sister hospital **${vijayawada.name}**, ${vijayawada.address} (${vijayawada.phones[0].display}). Online appointment requests are for Madhira; for Vijayawada please call.`,
   },
   te: {
-    greeting: `నమస్కారం! నేను కేర్‌బాట్ (CareBot), మీ 24/7 AKR హాస్పిటల్ సహాయకుడిని. మీకు ఎలా సహాయపడగలను?`,
+    greeting: `నమస్కారం! నేను కేర్‌బాట్ (CareBot), మీ 24/7 AKR సూపర్ స్పెషాలిటీ హాస్పిటల్స్ సహాయకుడిని. మీకు ఎలా సహాయపడగలను?`,
     online: 'ఆన్‌లైన్ · 24/7',
     placeholder: 'కేర్‌బాట్‌ను అడగండి...',
     typing: 'కేర్‌బాట్ టైప్ చేస్తోంది...',
@@ -154,7 +172,7 @@ const T = {
     qr_other_tpa: 'ఇతర కార్పొరేట్ TPA',
     qr_open_full_checker: 'పూర్తి చెకర్ తెరవండి',
     qr_casualty_location: 'క్యాజువాలిటీ స్థానం',
-    qr_book_ortho: 'ఆర్థో స్లాట్ బుక్ చేయండి',
+    qr_book_ortho: 'OPD స్లాట్ బుక్ చేయండి',
     qr_call_casualty: 'క్యాజువాలిటీ కాల్',
     qr_navigate_casualty: 'క్యాజువాలిటీకి నావిగేట్',
     qr_call_reception: 'రిసెప్షన్ కాల్',
@@ -163,7 +181,7 @@ const T = {
     tb_call_reception: 'రిసెప్షన్ కాల్',
     tb_find_doctor: 'వైద్యులు',
     emergency_title: 'అత్యవసర పరిస్థితి (EMERGENCY)',
-    emergency_msg: `అత్యవసర పరిస్థితి (EMERGENCY). వెంటనే మా 24/7 క్యాజువాలిటీ +91 87492 73030 కు కాల్ చేయండి, లేదా ప్రభుత్వ అంబులెన్స్ కోసం 108 కు కాల్ చేయండి. మా అత్యవసర విభాగం దిడుగుపాడు, మధిరలో 24/7 అందుబాటులో ఉంది.`,
+    emergency_msg: `అత్యవసర పరిస్థితి (EMERGENCY). వెంటనే మా 24/7 క్యాజువాలిటీ & ఆసుపత్రి అంబులెన్స్ +91 87492 73030 కు కాల్ చేయండి, లేదా ప్రభుత్వ అంబులెన్స్ కోసం 108 కు కాల్ చేయండి. మా అత్యవసర విభాగం దిడుగుపాడు, మధిరలో 24/7 అందుబాటులో ఉంది.`,
     emergency_btn: 'అత్యవసర కాల్ చేయండి',
     emergency_navigate: 'క్యాజువాలిటీకి నావిగేట్',
     token_response: (serving: string, paused: boolean) =>
@@ -183,11 +201,11 @@ const T = {
     eligibility_open_checker: 'పూర్తి ఎలిజిబిలిటీ చెకర్ తెరవండి',
     eligibility_not_found: `ఆ ప్రొవైడర్ కనుగొనబడలేదు. దయచేసి జాబితాలోని ప్రొవైడర్‌లలో ఒకదానిని ప్రయత్నించండి.`,
     book_appt_msg: 'అపాయింట్‌మెంట్ అభ్యర్థన ఫారమ్‌ను తెరుస్తోంది. మీ విభాగం మరియు అనుకూల సమయాన్ని ఎంచుకోండి — నిర్ధారణ కోసం రిసెప్షన్ మీకు కాల్ చేస్తుంది.',
-    call_reception_msg: `రిసెప్షన్‌ను ${hospitalInfo.phone} వద్ద చేరుకోవచ్చు. రోజు 9 AM – 8 PM అందుబాటులో ఉంది.`,
+    call_reception_msg: `మా క్యాజువాలిటీ & రిసెప్షన్‌ను ${hospitalInfo.phone} వద్ద 24 గంటలూ చేరుకోవచ్చు. విజయవాడ కోసం ${vijayawada.name} కు ${vijayawada.phones[0].display} వద్ద కాల్ చేయండి.`,
     find_doctor_msg: (docList: string) => `మా వైద్యులు: ${docList}. ఇతర విభాగాల కోసం రిసెప్షన్‌కు ${hospitalInfo.phone} కు కాల్ చేయండి. అపాయింట్‌మెంట్ కోరాలా?`,
     fallback: `క్షమించండి, అర్థం కాలేదు. నేను సహాయపడగలిగే అంశాలు: OPD టోకెన్ ట్రాకింగ్, అత్యవసర ట్రయేజ్, విభాగ మార్గదర్శనం, అపాయింట్‌మెంట్ బుకింగ్, లేదా ఇన్సూరెన్స్ అర్హత. దయచేసి మళ్లీ చెప్పండి లేదా కింది ఆప్షన్‌లను ప్రయత్నించండి.`,
     opening_checker: 'పూర్తి క్యాష్‌లెస్ ఎలిజిబిలిటీ చెకర్‌ను తెరుస్తోంది...',
-    casualty_msg: `మా 24/7 క్యాజువాలిటీ +91 87492 73030 కు లేదా ప్రభుత్వ అంబులెన్స్ కోసం 108 కు కాల్ చేయండి.`,
+    casualty_msg: `మా 24/7 క్యాజువాలిటీ & ఆసుపత్రి అంబులెన్స్ +91 87492 73030 కు లేదా ప్రభుత్వ అంబులెన్స్ కోసం 108 కు కాల్ చేయండి.`,
     casualty_loc_msg: `క్యాజువాలిటీ ${hospitalInfo.name} లో ఉంది (${hospitalInfo.landmark}) — ${hospitalInfo.address}. Google Maps కోసం "దారి" నొక్కండి.`,
     // Special offers
     qr_special_offers: '🏷️ ప్రత్యేక ఆఫర్లు & తగ్గింపులు',
@@ -208,7 +226,9 @@ const T = {
     qa_7: `అవును, మా ఆసుపత్రి ఎమర్జెన్సీ, ట్రామా, మెడికల్ షాప్ మరియు ఇన్-పేషెంట్ విభాగాలతో **24 గంటలు అందుబాటులో** ఉంటుంది.`,
     qa_8: `మా ఆసుపత్రి **సుశీల కళాశాల ఎదురుగా, వైరా రోడ్, మధిర** వద్ద కలదు. గూగుల్ మ్యాప్స్ కోసం 'దారి' బటన్ నొక్కండి.`,
     qa_9: `ప్రత్యేక ఆఫర్లు: 1) డా॥ కొండల్ రావు గారి ఉచిత OP, 2) ల్యాబ్‌లో 30% తగ్గింపు, 3) మెడికల్ షాపులో 20% తగ్గింపు, 4) కేవలం ₹20/- లకే షుగర్ పరీక్ష.`,
-    qa_10: `సాధారణ OP సమయాలు ప్రతిరోజూ ఉదయం 9:00 నుండి రాత్రి 8:00 వరకు. అత్యవసర సేవలు 24 గంటలూ అందుబాటులో ఉంటాయి.`,
+    qa_10: `మధిరలో OPD సమయాలు — ${scheduleText}. క్యాజువాలిటీ, మెడికల్ షాప్ మరియు అంబులెన్స్ 24 గంటలూ అందుబాటులో ఉంటాయి.`,
+    facilities_msg: `మధిర ${hospitalInfo.name} లో అందుబాటులో ఉన్న సదుపాయాలు: ${facilityText}.`,
+    branches_msg: `మాకు రెండు ఆసుపత్రులు ఉన్నాయి: మధిరలో **${madhira.name}** (${madhira.phones[0].display}) మరియు విజయవాడలో **${vijayawada.name}**, ${vijayawada.address} (${vijayawada.phones[0].display}). ఆన్‌లైన్ అపాయింట్‌మెంట్ మధిర కోసం మాత్రమే; విజయవాడ కోసం దయచేసి కాల్ చేయండి.`,
   },
 } as const;
 
@@ -288,7 +308,13 @@ const feeKeywordsTe = ['ఫీజు', 'ఛార్జీ', 'ఖర్చు'];
 const greetingKeywordsEn = ['hi', 'hello', 'hey', 'namaste', 'namaskaram'];
 const greetingKeywordsTe = ['నమస్కారం', 'హలో'];
 
-const doctorKeywords = ['doctor', 'specialist', 'consultant', 'urolog', 'kidney', 'prostate', 'వైద్య', 'డాక్టర్'];
+const facilityKeywordsEn = ['facilities', 'facility', 'equipment', 'ct', 'ct scan', 'x-ray', 'xray', 'echo', '2d echo', 'ecg', 'ultrasound', 'scan', 'laparoscopy', 'diagnostics'];
+const facilityKeywordsTe = ['సదుపాయాలు', 'పరికరాలు', 'స్కాన్', 'ఎక్స్‌రే'];
+
+const branchKeywordsEn = ['vijayawada', 'mahajan', 'branch', 'branches', 'other hospital'];
+const branchKeywordsTe = ['విజయవాడ', 'మహాజన్', 'బ్రాంచ్'];
+
+const doctorKeywords = ['doctor', 'specialist', 'consultant', 'urolog', 'kidney', 'prostate', 'cardio', 'surgeon', 'వైద్య', 'డాక్టర్'];
 
 function matchesAny(text: string, keywords: string[]): boolean {
   return keywords.some((kw) => {
@@ -535,7 +561,7 @@ export default function CareBot({
           addBotMessage(createMessage('bot', t.book_appt_msg, lang, 'text'));
           break;
         case 'book_ortho':
-          onBookAppointment('orthopedics');
+          onBookAppointment();
           addBotMessage(createMessage('bot', t.book_appt_msg, lang, 'text'));
           break;
         case 'cashless_tpa':
@@ -567,7 +593,12 @@ export default function CareBot({
           }));
           break;
         case 'find_doctor': {
-          const docList = doctors.map((d) => `${d.name} (${d.specialtyName})`).join('; ');
+          const docList = doctors
+            .map((d) => {
+              const opd = opdSpecialties.find((s) => s.id === d.specialtyId);
+              return `${d.name} (${d.specialtyName}${opd ? `, ${formatSession(opd)}` : ''})`;
+            })
+            .join('; ');
           addBotMessage(createMessage('bot', t.find_doctor_msg(docList), lang, 'text', {
             quickReplies: ['book_appt', 'check_token'] as QuickReplyKey[],
           }));
@@ -637,6 +668,10 @@ export default function CareBot({
       addBotMessage(createMessage('bot', t.qa_8, lang, 'department', { quickReplies: ['navigate_casualty', 'call_reception'] as QuickReplyKey[] }));
     } else if (matchesAny(lower, [...offersKeywordsEn, ...offersKeywordsTe])) {
       addBotMessage(createMessage('bot', t.qa_9, lang, 'offers', { quickReplies: ['call_appointment', 'book_lab_test'] as QuickReplyKey[] }));
+    } else if (matchesAny(lower, [...branchKeywordsEn, ...branchKeywordsTe])) {
+      addBotMessage(createMessage('bot', t.branches_msg, lang, 'text', { quickReplies: ['book_appt', 'call_reception'] as QuickReplyKey[] }));
+    } else if (matchesAny(lower, [...facilityKeywordsEn, ...facilityKeywordsTe])) {
+      addBotMessage(createMessage('bot', t.facilities_msg, lang, 'text', { quickReplies: ['book_appt', 'special_offers'] as QuickReplyKey[] }));
     } else if (matchesAny(lower, [...feeKeywordsEn, ...feeKeywordsTe])) {
       addBotMessage(createMessage('bot', t.fee_msg, lang, 'text', { quickReplies: ['book_appt', 'call_reception'] as QuickReplyKey[] }));
     } else if (doctorKeywords.some((kw) => lower.includes(kw))) {

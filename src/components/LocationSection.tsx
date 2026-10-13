@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { MapPin, Navigation, Phone, Clock, Activity, Building2 } from 'lucide-react';
-import { hospitalInfo } from '@/data/mockData';
+import { MapPin, Navigation, Phone, Clock, Activity, Building2, Mail, CheckCircle2 } from 'lucide-react';
+import { hospitalInfo, branches, opdSpecialties } from '@/data/mockData';
+import { formatSession } from '@/lib/dates';
 
 export default function LocationSection() {
   const { coordinates, mapsDirectionsUrl, phone, address } = hospitalInfo;
@@ -8,7 +9,7 @@ export default function LocationSection() {
   const casualtyPhone = phone.replace(/\s/g, '');
 
   return (
-    <section id="location" className="relative section-pad">
+    <section id="branches" className="relative section-pad scroll-mt-20">
       <div className="section-shell">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -19,14 +20,14 @@ export default function LocationSection() {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium mb-4">
             <MapPin className="w-3.5 h-3.5" />
-            Find & Reach Us
+            Our Hospitals
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-            Located in the heart of Madhira
+            Madhira &amp; Vijayawada
           </h2>
           <p className="text-slate-600 mt-3 text-lg">
-            Samatha Nagar, Didugupadu — easily accessible from Khammam and surrounding
-            villages. Our casualty is open 24/7.
+            {hospitalInfo.name} in Madhira and its sister hospital in Vijayawada, both founded by
+            Dr. A. Kondal Rao. Our Madhira casualty is open 24/7.
           </p>
         </motion.div>
 
@@ -91,7 +92,9 @@ export default function LocationSection() {
 
                 <div className="flex items-center gap-3 text-xs text-slate-600">
                   <Clock className="w-4 h-4 text-teal-600 shrink-0" />
-                  <span>OPD: 9 AM – 8 PM Daily · Diagnostics: 7 AM – 10 PM</span>
+                  <span>
+                    General Medicine OPD: {formatSession(opdSpecialties[0])} · Specialist OPDs weekly
+                  </span>
                 </div>
               </div>
 
@@ -116,6 +119,82 @@ export default function LocationSection() {
             </div>
           </motion.div>
         </div>
+
+        {branches
+          .filter((b) => b.id !== 'madhira')
+          .map((b) => (
+            <motion.div
+              key={b.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.5 }}
+              className="glass-surface p-5 sm:p-6 mt-6 grid gap-5 lg:grid-cols-5"
+            >
+              <div className="lg:col-span-3 space-y-3 min-w-0">
+                <div className="flex items-center gap-3">
+                  <img src={b.logo} alt="" width={48} height={48} className="w-12 h-12 rounded-xl shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-indigo-700">
+                      Sister hospital · {b.city}
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900 leading-tight">{b.name}</h3>
+                  </div>
+                </div>
+                <p className="flex items-start gap-2 text-sm text-slate-600">
+                  <MapPin className="w-4 h-4 mt-0.5 text-indigo-600 shrink-0" />
+                  {b.address}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {b.services.map((svc) => (
+                    <span
+                      key={svc}
+                      className="inline-flex items-center gap-1 text-xs font-medium text-slate-700 bg-white/80 border border-slate-200 px-2 py-0.5 rounded-full"
+                    >
+                      <CheckCircle2 className="w-3 h-3 text-indigo-600" />
+                      {svc}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="lg:col-span-2 grid gap-2 content-start">
+                {b.phones.map((p, i) => (
+                  <a
+                    key={p.tel}
+                    href={p.tel}
+                    className={`flex items-center justify-center gap-2 px-4 py-3 min-h-12 rounded-xl text-sm font-semibold ${
+                      i === 0
+                        ? 'bg-indigo-700 text-white hover:bg-indigo-600'
+                        : 'bg-white border border-slate-200 text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    <Phone className="w-4 h-4" />
+                    {p.label} · {p.display}
+                  </a>
+                ))}
+                <div className="grid grid-cols-2 gap-2">
+                  <a
+                    href={b.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-3 py-3 min-h-12 rounded-xl text-sm font-semibold bg-white border border-slate-200 text-slate-800 hover:bg-slate-50"
+                  >
+                    <Navigation className="w-4 h-4 text-indigo-700" />
+                    Directions
+                  </a>
+                  {b.email && (
+                    <a
+                      href={`mailto:${b.email}`}
+                      className="flex items-center justify-center gap-2 px-3 py-3 min-h-12 rounded-xl text-sm font-semibold bg-white border border-slate-200 text-slate-800 hover:bg-slate-50"
+                    >
+                      <Mail className="w-4 h-4 text-indigo-700" />
+                      Email
+                    </a>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
       </div>
     </section>
   );

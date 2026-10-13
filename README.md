@@ -1,12 +1,29 @@
 # AKR Hospitals
 
-Patient-facing website for **Dr. AKR's Multispeciality Hospital** (Madhira, Telangana): OPD appointment requests, optional live OPD queue, cashless eligibility checker, CareBot, and location/contact.
+Patient-facing website for **AKR Super Speciality Hospitals** (Madhira, Telangana) and its sister hospital **Mahajan Super Speciality Hospitals** (Vijayawada): OPD appointment requests, optional live OPD queue, cashless eligibility checker, CareBot, facilities, and both locations.
+
+Online appointment requests are for **Madhira only**; Vijayawada is call-only (`+91 93919 44733`).
 
 Built with Vite, React, TypeScript, Tailwind CSS, Framer Motion, and optional Supabase (appointment requests + realtime OPD queue).
 
 **Mobile-first:** phone layouts put the appointment form above the pathway/camp blocks, use 44px+ touch targets, and add a four-button bottom bar (Casualty, WhatsApp, CareBot, Book OPD) that replaces the desktop floating dock. Casualty CTAs dial the hospital casualty line (`+91 87492 73030`); 108 (govt. ambulance) is the secondary option.
 
 **Content rule:** only facts confirmed by the hospital go on the site. Unconfirmed items are left out and tracked as `TODO(hospital)` in `src/data/`.
+
+## Updating content
+
+Everything editable lives in `src/data/mockData.ts`.
+
+| What | Where |
+|------|-------|
+| OPD schedule (drives booking dates/times, CareBot, footer) | `opdSpecialties` — `days` use `Date.getDay()` (0 = Sunday), `end` is exclusive |
+| Doctors | `doctors` — add `fee` only when confirmed, else reception confirms it |
+| Doctor photos | Save as `public/doctors/<name>.webp` (square, ~400px) and set `photo`; until then `PHOTO_PLACEHOLDER` is shown |
+| Logos | Replace `public/brand/akr-logo.svg` and `public/brand/mahajan-logo.svg` (keep the file names, or update `logo` in `hospitalInfo` / `branches`) |
+| Branches | `branches` — Vijayawada PIN code and map pin are still `TODO(hospital)` |
+| Facilities | `facilities` |
+
+Current schedule: family physician 24/7 (walk in) · General Medicine daily 11 AM – 1 PM · General & Laparoscopic Surgery Thursdays 11 AM – 2 PM · Cardiology Tuesdays 4 – 6 PM · Urology & Andrology Sundays 10 AM – 2 PM.
 
 ## Live URLs
 
@@ -36,7 +53,7 @@ Open the URL Vite prints (default `http://localhost:5173`).
 | `npm run preview` | Preview production build |
 | `npm run typecheck` | TypeScript check |
 | `npm run lint` | ESLint |
-| `npm run check` | Assert-based self-checks (camp expiry, booking reference, mobile validation) |
+| `npm run check` | Assert-based self-checks (camp expiry, OPD schedule dates, booking reference, mobile validation) |
 
 ## Environment
 

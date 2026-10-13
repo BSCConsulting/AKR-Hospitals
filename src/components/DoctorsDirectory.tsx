@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Stethoscope, Calendar, ArrowRight, CircleDollarSign, IdCard, Phone } from 'lucide-react';
-import { doctors, hospitalInfo, type Doctor } from '@/data/mockData';
+import { doctors, hospitalInfo, opdSpecialties, type Doctor } from '@/data/mockData';
+import { formatSession } from '@/lib/dates';
 import DoctorAvatar from '@/components/DoctorAvatar';
 import { getActiveCamps } from '@/data/promotions';
 
@@ -39,8 +40,8 @@ export default function DoctorsDirectory({ onBookDoctor }: DoctorsDirectoryProps
           <div className="glass-surface p-5 flex flex-col">
             <h3 className="text-slate-900 font-semibold text-sm">Other specialties</h3>
             <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-              Cardiology, orthopaedics, paediatrics, gynaecology, eye care and more — call
-              reception for today's consultants and OPD timings.
+              Maternity, eye care and more — call reception for today's consultants
+              and OPD timings.
             </p>
             <a
               href={hospitalInfo.phoneTel}
@@ -67,6 +68,12 @@ function DoctorCard({
 }) {
   const waived =
     doctor.fee === 0 || getActiveCamps().some((c) => c.doctors.some((d) => d.name === doctor.name));
+  const opd = opdSpecialties.find((s) => s.id === doctor.specialtyId);
+  const feeText = waived
+    ? 'Consultation: ₹0 OP Registration (Community Waiver)'
+    : doctor.fee !== undefined
+      ? `Consultation fee: ₹${doctor.fee}`
+      : 'Fee confirmed by reception when they call you';
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -100,13 +107,15 @@ function DoctorCard({
       </div>
 
       <div className="space-y-2 mb-4">
-        <div className="flex items-center gap-2 text-xs text-slate-600">
-          <Calendar className="w-3.5 h-3.5 text-slate-500" />
-          OPD: {doctor.opdDays.join(', ')}
-        </div>
+        {opd && (
+          <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+            <Calendar className="w-3.5 h-3.5 text-slate-500" />
+            OPD: {formatSession(opd)}
+          </div>
+        )}
         <div className="flex items-center gap-2 rounded-lg bg-teal-50/70 border border-teal-100 px-2.5 py-1.5 text-[11px] text-teal-900">
           <CircleDollarSign className="w-3.5 h-3.5 text-teal-700" />
-          {waived ? 'Consultation: ₹0 OP Registration (Community Waiver)' : `Consultation fee: ₹${doctor.fee}`}
+          {feeText}
         </div>
       </div>
 

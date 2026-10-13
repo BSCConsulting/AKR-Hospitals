@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Phone, Activity, Ambulance } from 'lucide-react';
+import { Menu, X, Phone, Ambulance } from 'lucide-react';
 import { navItems, hospitalInfo } from '@/data/mockData';
-import { accreditation } from '@/data/compliance';
 import WhatsAppButton from '@/components/WhatsAppButton';
 
 /** Primary desktop links — keep count lean so CTAs never clip. */
@@ -10,7 +9,7 @@ const primaryNav = navItems.filter((item) =>
 );
 
 const secondaryNav = navItems.filter((item) =>
-  ['Insurance', 'Founder'].includes(item.label)
+  ['Facilities', 'Insurance', 'Founder', 'Branches'].includes(item.label)
 );
 
 export default function Navbar() {
@@ -50,9 +49,9 @@ export default function Navbar() {
             </span>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <span className="text-teal-800 font-medium whitespace-nowrap">
-              {accreditation.nabh.short}
-            </span>
+            <a href="#branches" className="text-teal-800 font-medium whitespace-nowrap hover:underline">
+              Also in Vijayawada: Mahajan Super Speciality Hospitals
+            </a>
             <WhatsAppButton variant="inline" />
           </div>
         </div>
@@ -66,15 +65,19 @@ export default function Navbar() {
         <div className="section-shell">
           <div className="flex items-center h-16 gap-3 min-w-0">
             <a href="#home" className="flex items-center gap-2.5 group shrink-0">
-              <div className="w-9 h-9 xl:w-10 xl:h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center shadow-md shadow-teal-600/20">
-                <Activity className="w-[18px] h-[18px] xl:w-5 xl:h-5 text-white" strokeWidth={2.5} />
-              </div>
+              <img
+                src={hospitalInfo.logo}
+                alt=""
+                width={40}
+                height={40}
+                className="w-9 h-9 xl:w-10 xl:h-10 rounded-xl shadow-md shadow-teal-600/20"
+              />
               <div className="flex flex-col leading-none">
-                <span className="text-slate-900 font-bold text-[15px] xl:text-base tracking-tight">
-                  AKR <span className="text-teal-700">Hospital</span>
+                <span className="text-slate-900 font-bold text-sm xl:text-base tracking-tight">
+                  AKR <span className="text-teal-700">Super Speciality</span>
                 </span>
                 <span className="text-[10px] text-slate-500 font-medium tracking-wide uppercase mt-0.5">
-                  Multi-Speciality
+                  Hospitals · Madhira
                 </span>
               </div>
             </a>

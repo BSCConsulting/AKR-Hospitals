@@ -3,7 +3,8 @@ import {
   Ambulance,
   Baby,
   Eye,
-  ScanLine,
+  HeartPulse,
+  Scissors,
   Activity,
   CheckCircle2,
 } from 'lucide-react';
@@ -14,18 +15,10 @@ const iconMap: Record<string, LucideIcon> = {
   ambulance: Ambulance,
   baby: Baby,
   eye: Eye,
-  'scan-line': ScanLine,
+  'heart-pulse': HeartPulse,
+  scissors: Scissors,
   activity: Activity,
 };
-
-/** 12-col balanced bento: 3+2 on desktop, no orphaned empty cells. */
-const spanByIndex = [
-  'md:col-span-3 lg:col-span-4',
-  'md:col-span-3 lg:col-span-4',
-  'md:col-span-3 lg:col-span-4',
-  'md:col-span-3 lg:col-span-6',
-  'md:col-span-6 lg:col-span-6',
-] as const;
 
 export default function BentoGrid() {
   return (
@@ -46,8 +39,8 @@ export default function BentoGrid() {
             Our clinical departments
           </h2>
           <p className="text-slate-600 mt-3 text-lg">
-            Trauma, maternity, urology & surgery, eye care, and diagnostics — under one roof in
-            Madhira. Call reception for specialist OPD days.
+            24/7 emergency care, cardiology, laparoscopic surgery, urology, maternity and eye care
+            — under one roof in Madhira.
           </p>
         </motion.div>
 
@@ -57,7 +50,6 @@ export default function BentoGrid() {
               key={dept.id}
               dept={dept}
               index={index}
-              span={spanByIndex[index] ?? 'md:col-span-3 lg:col-span-4'}
             />
           ))}
         </div>
@@ -69,11 +61,9 @@ export default function BentoGrid() {
 function BentoCard({
   dept,
   index,
-  span,
 }: {
   dept: Department;
   index: number;
-  span: string;
 }) {
   const Icon = iconMap[dept.icon] ?? Activity;
   const isHighlighted = dept.highlight;
@@ -85,7 +75,7 @@ function BentoCard({
       viewport={{ once: true, margin: '-60px' }}
       transition={{ delay: index * 0.06, duration: 0.45 }}
       whileHover={{ y: -4 }}
-      className={`group relative overflow-hidden glass-surface ${span} p-5 ${
+      className={`group relative overflow-hidden glass-surface md:col-span-3 lg:col-span-4 p-5 ${
         isHighlighted ? 'lg:p-6' : ''
       }`}
     >

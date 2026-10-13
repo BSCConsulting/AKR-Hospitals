@@ -49,7 +49,7 @@ export const promotions: Promotion[] = [
       {
         name: 'Dr. Pinnamaneni Sreedhar',
         title: 'Urologist',
-        qualification: 'M.Ch Urology',
+        qualification: 'MS, M.Ch (Urology)',
       },
       {
         name: 'Dr. A. Kondal Rao',
@@ -71,7 +71,7 @@ export const promotions: Promotion[] = [
       'Frequent night urination',
       'Blood in urine',
     ],
-    whatsappCTA: wa('Hello AKR Hospital, I would like to RSVP for the Free Mega Urology Medical Camp.'),
+    whatsappCTA: wa('Hello AKR Super Speciality Hospitals, I would like to RSVP for the Free Mega Urology Medical Camp.'),
   },
   {
     id: 'free-op-kondal-rao',
@@ -79,7 +79,7 @@ export const promotions: Promotion[] = [
     isActive: true,
     title: 'Special Camp / First-Visit Community Waiver',
     highlightBadge: '₹0 OP Registration (Select Doctors)',
-    date: 'Daily during OPD hours (9 AM – 8 PM) · Select consultants',
+    date: 'Daily · 11 AM – 1 PM (General Medicine OPD)',
     statusLabel: 'ALWAYS ON',
     doctors: [
       {
@@ -90,7 +90,7 @@ export const promotions: Promotion[] = [
     ],
     benefits: [
       '₹0 OP registration for first-visit / community waiver doctors',
-      'Standard consultant fees (₹400–₹800) apply to other specialists',
+      'Standard consultant fees apply to other specialists (reception confirms when they call)',
     ],
     symptoms: [],
     whatsappCTA: WHATSAPP_OPD_INQUIRE,

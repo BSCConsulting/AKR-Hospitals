@@ -1,4 +1,4 @@
-/** Centralized WhatsApp deep links for AKR Hospital CTAs. */
+/** Centralized WhatsApp deep links for AKR Super Speciality Hospitals CTAs. */
 
 export const WHATSAPP_NUMBER = '919849057185';
 
@@ -21,7 +21,7 @@ export function whatsappBookingConfirm(details: {
   reason: string;
 }): string {
   const lines = [
-    `Hello AKR Hospital, I would like an OPD appointment.`,
+    `Hello AKR Super Speciality Hospitals (Madhira), I would like an OPD appointment.`,
     ...(details.reference ? [`Reference: ${details.reference}`] : []),
     `Patient: ${details.patientName}`,
     `Mobile: ${details.mobile}`,

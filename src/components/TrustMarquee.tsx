@@ -1,13 +1,12 @@
-import { ShieldCheck, Award, Ambulance, Clock, BadgeCheck, TestTube } from 'lucide-react';
-import { accreditation } from '@/data/compliance';
+import { ShieldCheck, Ambulance, ScanLine, BadgeCheck, TestTube, Building2, Stethoscope } from 'lucide-react';
 
 const items = [
-  { icon: ShieldCheck, label: accreditation.nabh.short },
-  { icon: Award, label: accreditation.iso.short },
-  { icon: Ambulance, label: '24/7 Trauma & Casualty' },
-  { icon: Clock, label: 'OPD 9 AM – 8 PM' },
+  { icon: Ambulance, label: '24/7 Casualty & Ambulance' },
+  { icon: Stethoscope, label: 'Family physician on duty 24/7' },
+  { icon: ScanLine, label: 'CT · 2D Echo · X-Ray · Ultrasound' },
   { icon: BadgeCheck, label: 'Cashless TPA Desk' },
   { icon: TestTube, label: '30% off lab tests' },
+  { icon: Building2, label: 'Madhira · Vijayawada' },
   { icon: ShieldCheck, label: 'Est. 2008 · Madhira' },
 ];
 

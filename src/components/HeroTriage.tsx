@@ -14,10 +14,26 @@ import {
   Navigation,
   PauseCircle,
   Loader2,
+  MapPin,
 } from 'lucide-react';
-import { timeSlots, opdSpecialties, getDateTabs, doctors, hospitalInfo } from '@/data/mockData';
+import {
+  opdSpecialties,
+  doctors,
+  hospitalInfo,
+  branches,
+  familyPhysician,
+  type BranchId,
+} from '@/data/mockData';
 import { hasFreeOpConsultation } from '@/data/promotions';
-import { accreditation } from '@/data/compliance';
+import {
+  addLocalDays,
+  formatMonthDay,
+  formatSession,
+  formatWeekday,
+  nextSessions,
+  sessionHours,
+  toLocalDateString,
+} from '@/lib/dates';
 import HeroCampCallout from '@/components/HeroCampCallout';
 import CarePathway from '@/components/CarePathway';
 import WhatsAppIcon from '@/components/WhatsAppIcon';
@@ -47,10 +63,9 @@ const itemVariants = {
   },
 };
 
-const todayHours = [
-  { label: 'OPD', value: '9 AM – 8 PM daily' },
-  { label: 'Casualty & pharmacy', value: '24/7' },
-  { label: 'Diagnostics', value: '7 AM – 10 PM' },
+const scheduleRows = [
+  { id: 'family', label: 'Family physician (walk in)', session: familyPhysician },
+  ...opdSpecialties.map((s) => ({ id: s.id, label: s.name, session: s })),
 ];
 
 export interface BookingPrefill {
@@ -69,33 +84,42 @@ interface HeroTriageProps {
 type FormErrors = { name?: string; mobile?: string; reason?: string; slot?: string };
 
 export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }: HeroTriageProps) {
-  const nowHour = useMemo(() => new Date().getHours(), []);
-  const lastSlotHour = Number(timeSlots[timeSlots.length - 1].time.slice(0, 2));
-  const [selectedDept, setSelectedDept] = useState('general-medicine');
+  const now = useMemo(() => new Date(), []);
+  const nowHour = now.getHours();
+  const todayStr = toLocalDateString(now);
+  const [branchId, setBranchId] = useState<BranchId>('madhira');
+  const [selectedDept, setSelectedDept] = useState(opdSpecialties[0].id);
   const [selectedDoctorId, setSelectedDoctorId] = useState('');
-  const [selectedDate, setSelectedDate] = useState(nowHour >= lastSlotHour ? 'tomorrow' : 'today');
+  const [selectedDate, setSelectedDate] = useState('');
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [patientName, setPatientName] = useState('');
   const [mobile, setMobile] = useState('');
   const [visitReason, setVisitReason] = useState<VisitReasonId | ''>('');
   const [honeypot, setHoneypot] = useState('');
   const [formErrors, setFormErrors] = useState<FormErrors>({});
-  const [slotPeriod, setSlotPeriod] = useState<'morning' | 'evening'>(nowHour >= 12 ? 'evening' : 'morning');
   const [submitting, setSubmitting] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
-  const dateTabs = useMemo(() => getDateTabs(), []);
+  const branch = branches.find((b) => b.id === branchId) ?? branches[0];
+  const spec = opdSpecialties.find((s) => s.id === selectedDept) ?? opdSpecialties[0];
+  const dateTabs = useMemo(() => {
+    const tomorrowStr = toLocalDateString(addLocalDays(now, 1));
+    return nextSessions(spec, now).map((d) => {
+      const id = toLocalDateString(d);
+      const label = id === todayStr ? 'Today' : id === tomorrowStr ? 'Tomorrow' : formatWeekday(d);
+      return { id, label, subLabel: formatMonthDay(d) };
+    });
+  }, [spec, now, todayStr]);
+  const activeDate = dateTabs.find((t) => t.id === selectedDate)?.id ?? dateTabs[0]?.id ?? '';
+  const hours = sessionHours(spec);
+  const isPastSlot = (time: string) => activeDate === todayStr && Number(time.slice(0, 2)) <= nowHour;
+  const activeSlot = selectedSlot && hours.includes(selectedSlot) && !isPastSlot(selectedSlot) ? selectedSlot : null;
+  const branchDoctors = doctors.filter((d) => d.branch === branchId);
   const freeOpActive = hasFreeOpConsultation();
   const { isLive, currentTokenServed, isPaused } = useOpdQueue();
 
-  const visibleSlots = timeSlots.filter((s) =>
-    slotPeriod === 'morning' ? Number(s.time.slice(0, 2)) < 14 : Number(s.time.slice(0, 2)) >= 14
-  );
-  const deptDoctors = doctors.filter((d) => d.specialtyId === selectedDept);
-  const isPastSlot = (time: string, dateId = selectedDate) =>
-    dateId === 'today' && Number(time.slice(0, 2)) <= nowHour;
-
   useEffect(() => {
     if (!prefill) return;
+    setBranchId('madhira');
     setSelectedDept(prefill.specialtyId);
     setSelectedDoctorId(prefill.doctorId ?? '');
     document.getElementById('appointments')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -110,25 +134,22 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
       errors.mobile = 'Enter a valid 10-digit Indian mobile (starts with 6–9)';
     }
     if (!visitReason) errors.reason = 'Select reason for visit';
-    const chosen = timeSlots.find((s) => s.id === selectedSlot);
-    if (!chosen) errors.slot = 'Choose a preferred time';
-    else if (isPastSlot(chosen.time)) errors.slot = 'That time has passed — pick a later slot or another day';
+    if (!activeSlot) errors.slot = 'Choose a preferred time';
     setFormErrors(errors);
     if (Object.keys(errors).length > 0) return;
 
-    const dateTab = dateTabs.find((d) => d.id === selectedDate);
-    const slot = timeSlots.find((s) => s.id === selectedSlot);
+    const dateTab = dateTabs.find((d) => d.id === activeDate);
     const reasonLabel = VISIT_REASONS.find((r) => r.id === visitReason)?.label;
-    if (!dateTab || !slot || !reasonLabel) return;
+    if (!dateTab || !activeSlot || !reasonLabel) return;
 
     const details = {
       patientName: patientName.trim(),
       mobile: normalizeMobile(mobile),
-      department: opdSpecialties.find((s) => s.id === selectedDept)?.name ?? '',
+      department: spec.name,
       doctorName: doctors.find((d) => d.id === selectedDoctorId)?.name,
-      date: dateTab.date,
+      date: dateTab.id,
       dateLabel: `${dateTab.label}, ${dateTab.subLabel}`,
-      time: slot.time,
+      time: activeSlot,
       reason: reasonLabel,
     };
     const reference = generateOpdReference();
@@ -167,13 +188,14 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
           className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-7"
         >
           <div className="lg:col-span-7 min-w-0 flex flex-col gap-3 sm:gap-3.5">
-            <motion.div
+            <motion.a
+              href="#branches"
               variants={itemVariants}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium w-fit max-w-full order-1"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium w-fit max-w-full order-1 hover:bg-teal-100"
             >
-              <Shield className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">{accreditation.nabh.short}</span>
-            </motion.div>
+              <MapPin className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">Madhira · Vijayawada</span>
+            </motion.a>
 
             <motion.div variants={itemVariants} className="space-y-1.5 sm:space-y-2 order-2">
               <h1 className="text-[1.75rem] leading-[1.12] sm:text-5xl lg:text-[3.25rem] font-bold text-slate-900 tracking-tight sm:leading-[1.08]">
@@ -184,13 +206,13 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
               </h1>
               <p className="text-slate-600 text-sm sm:text-lg max-w-xl leading-relaxed">
                 <span className="sm:hidden">
-                  Multi-speciality care in Madhira — 24/7 casualty, OPD appointments, diagnostics
-                  &amp; cashless TPA.
+                  Super-speciality care in Madhira — 24/7 casualty &amp; ambulance, specialist OPDs,
+                  CT scan and cashless TPA.
                 </span>
                 <span className="hidden sm:inline">
-                  {hospitalInfo.tagline} A multi-speciality hospital serving Madhira and the
-                  Khammam region since {hospitalInfo.established} with 24/7 trauma care,
-                  maternity, diagnostics, and cashless insurance — all under one roof.
+                  {hospitalInfo.tagline} Serving Madhira and the Khammam region since{' '}
+                  {hospitalInfo.established} with a 24/7 family physician and ambulance, cardiology,
+                  laparoscopic surgery, urology, CT scan and full diagnostics — all under one roof.
                 </span>
               </p>
             </motion.div>
@@ -249,7 +271,27 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-600 -mt-1 sm:-mt-2 leading-snug">
+              <div role="group" aria-label="Branch" className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100/90 border border-slate-200 rounded-xl">
+                {branches.map((b) => (
+                  <button
+                    key={b.id}
+                    type="button"
+                    aria-pressed={branchId === b.id}
+                    onClick={() => setBranchId(b.id)}
+                    className={`min-h-11 px-2 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                      branchId === b.id
+                        ? 'bg-white text-teal-800 shadow-sm border border-teal-200'
+                        : 'text-slate-700 hover:text-slate-900'
+                    }`}
+                  >
+                    {b.city}
+                  </button>
+                ))}
+              </div>
+
+              {branch.bookOnline ? (
+              <>
+              <p className="text-xs text-slate-600 leading-snug">
                 Pick a preferred time — our reception team will call you to confirm the slot and
                 consultation fee.
               </p>
@@ -347,6 +389,7 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                     onChange={(e) => {
                       setSelectedDept(e.target.value);
                       setSelectedDoctorId('');
+                      setSelectedSlot(null);
                     }}
                     className="w-full bg-white/90 text-slate-800 text-base sm:text-sm rounded-lg px-3 py-3 sm:py-2.5 min-h-12 sm:min-h-0 border border-slate-300 focus:border-teal-500 focus:outline-none cursor-pointer"
                   >
@@ -364,18 +407,30 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                   <select
                     id="hero-doctor"
                     value={selectedDoctorId}
-                    onChange={(e) => setSelectedDoctorId(e.target.value)}
+                    onChange={(e) => {
+                      const doc = doctors.find((d) => d.id === e.target.value);
+                      setSelectedDoctorId(e.target.value);
+                      if (doc && doc.specialtyId !== selectedDept) {
+                        setSelectedDept(doc.specialtyId);
+                        setSelectedSlot(null);
+                      }
+                    }}
                     className="w-full bg-white/90 text-slate-800 text-base sm:text-sm rounded-lg px-3 py-3 sm:py-2.5 min-h-12 sm:min-h-0 border border-slate-300 focus:border-teal-500 focus:outline-none cursor-pointer"
                   >
                     <option value="">Any available doctor</option>
-                    {deptDoctors.map((d) => (
+                    {branchDoctors.map((d) => (
                       <option key={d.id} value={d.id}>
-                        {d.name}
+                        {d.name} — {d.specialtyName}
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
+
+              <p className="flex items-center gap-1.5 text-xs font-medium text-teal-800 bg-teal-50/80 border border-teal-100 rounded-lg px-3 py-2">
+                <Clock className="w-3.5 h-3.5 shrink-0" />
+                {spec.name} OPD: {formatSession(spec)}
+              </p>
 
               <fieldset className="space-y-2">
                 <legend className="text-xs font-medium text-slate-700 mb-1.5">Preferred day</legend>
@@ -384,15 +439,10 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                     <button
                       key={tab.id}
                       type="button"
-                      aria-pressed={selectedDate === tab.id}
-                      disabled={tab.id === 'today' && nowHour >= lastSlotHour}
-                      onClick={() => {
-                        setSelectedDate(tab.id);
-                        const slot = timeSlots.find((s) => s.id === selectedSlot);
-                        if (slot && isPastSlot(slot.time, tab.id)) setSelectedSlot(null);
-                      }}
-                      className={`flex-1 min-h-12 sm:min-h-0 px-2 sm:px-3 py-2 rounded-lg text-center transition-all border disabled:opacity-40 disabled:cursor-not-allowed ${
-                        selectedDate === tab.id
+                      aria-pressed={activeDate === tab.id}
+                      onClick={() => setSelectedDate(tab.id)}
+                      className={`flex-1 min-h-12 sm:min-h-0 px-2 sm:px-3 py-2 rounded-lg text-center transition-all border ${
+                        activeDate === tab.id
                           ? 'bg-teal-50 border-teal-300 text-teal-800'
                           : 'bg-white/90 border-slate-200 text-slate-700 hover:border-slate-300'
                       }`}
@@ -406,50 +456,23 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
 
               <fieldset className="space-y-2">
                 <legend className="text-xs font-medium text-slate-700 mb-1.5">Preferred time</legend>
-                <div className="inline-flex p-1 bg-slate-100/90 border border-slate-200 rounded-xl w-full sm:w-auto">
-                  {(
-                    [
-                      { id: 'morning', label: 'Morning', hint: '09:00 – 12:00' },
-                      { id: 'evening', label: 'Evening', hint: '14:00 – 19:00' },
-                    ] as const
-                  ).map((period) => (
-                    <button
-                      key={period.id}
-                      type="button"
-                      aria-pressed={slotPeriod === period.id}
-                      onClick={() => {
-                        setSlotPeriod(period.id);
-                        setSelectedSlot(null);
-                      }}
-                      className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-left transition-all ${
-                        slotPeriod === period.id
-                          ? 'bg-white text-teal-800 shadow-sm border border-teal-200'
-                          : 'text-slate-700 hover:text-slate-900'
-                      }`}
-                    >
-                      <div className="text-xs font-semibold">{period.label}</div>
-                      <div className="text-xs text-slate-600">{period.hint}</div>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 sm:gap-2">
-                  {visibleSlots.map((slot) => {
-                    const isSelected = selectedSlot === slot.id;
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2">
+                  {hours.map((time) => {
+                    const isSelected = activeSlot === time;
                     return (
                       <button
-                        key={slot.id}
+                        key={time}
                         type="button"
                         aria-pressed={isSelected}
-                        disabled={isPastSlot(slot.time)}
-                        onClick={() => setSelectedSlot(slot.id)}
+                        disabled={isPastSlot(time)}
+                        onClick={() => setSelectedSlot(time)}
                         className={`px-1.5 sm:px-2 py-2.5 min-h-12 rounded-lg text-center text-xs font-bold border transition-colors disabled:opacity-40 disabled:line-through disabled:cursor-not-allowed ${
                           isSelected
                             ? 'bg-teal-700 text-white border-teal-700 shadow-md shadow-teal-700/25'
                             : 'bg-white/90 text-slate-800 border-slate-300 hover:border-teal-400'
                         }`}
                       >
-                        {slot.time}
+                        {time}
                       </button>
                     );
                   })}
@@ -458,7 +481,7 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
               </fieldset>
 
               <p className="text-xs text-slate-600 leading-relaxed rounded-lg border border-slate-200 bg-slate-50/80 px-3 py-2">
-                By submitting, you consent to Dr. AKR Hospital storing these details and contacting
+                By submitting, you consent to {hospitalInfo.name} storing these details and contacting
                 you by phone/WhatsApp about this appointment (DPDP Act, 2023). We never share
                 patient records.
               </p>
@@ -480,6 +503,37 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                   </>
                 )}
               </button>
+              </>
+              ) : (
+                <div className="rounded-xl border border-slate-200 bg-white/80 p-4 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <img src={branch.logo} alt="" width={40} height={40} className="w-10 h-10 rounded-xl" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-slate-900">{branch.name}</p>
+                      <p className="text-xs text-slate-600">{branch.address}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-700">
+                    Appointments in {branch.city} are booked by phone. Call the hospital and reception will give you a time.
+                  </p>
+                  <div className="grid gap-2">
+                    {branch.phones.map((p, i) => (
+                      <a
+                        key={p.tel}
+                        href={p.tel}
+                        className={`flex items-center justify-center gap-2 px-4 py-3 min-h-12 rounded-xl text-sm font-semibold ${
+                          i === 0
+                            ? 'bg-teal-700 text-white hover:bg-teal-600'
+                            : 'bg-white border border-slate-200 text-slate-800 hover:bg-slate-50'
+                        }`}
+                      >
+                        <Phone className="w-4 h-4" />
+                        {p.label} · {p.display}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {isLive && (
                 <button
@@ -501,16 +555,27 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
             <div className="glass-surface p-4 sm:p-5 space-y-4">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-teal-700" />
-                <h2 className="text-slate-900 font-semibold text-sm">Today at the hospital</h2>
+                <h2 className="text-slate-900 font-semibold text-sm">OPD schedule · Madhira</h2>
               </div>
 
               <dl className="divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white/80">
-                {todayHours.map((row) => (
-                  <div key={row.label} className="flex items-center justify-between gap-3 px-3.5 py-2.5 text-sm">
-                    <dt className="text-slate-600">{row.label}</dt>
-                    <dd className="font-semibold text-slate-900 text-right">{row.value}</dd>
-                  </div>
-                ))}
+                {scheduleRows.map((row) => {
+                  const next = nextSessions(row.session, now, 1)[0];
+                  const today = next !== undefined && toLocalDateString(next) === todayStr;
+                  return (
+                    <div key={row.id} className="flex items-center justify-between gap-3 px-3.5 py-2.5 text-sm">
+                      <dt className="text-slate-600 min-w-0">
+                        {row.label}
+                        {today && row.id !== 'family' && (
+                          <span className="ml-1.5 align-middle text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-full px-1.5 py-0.5">
+                            Today
+                          </span>
+                        )}
+                      </dt>
+                      <dd className="font-semibold text-slate-900 text-right shrink-0">{formatSession(row.session)}</dd>
+                    </div>
+                  );
+                })}
               </dl>
 
               {isLive && (

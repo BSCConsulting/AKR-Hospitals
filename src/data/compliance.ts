@@ -1,11 +1,4 @@
-/** Statutory accreditation & establishment credentials for public display. */
-
-// TODO(hospital): add certificate numbers / validity only once confirmed in writing.
-export const accreditation = {
-  nabh: { short: 'NABH Accredited' },
-  iso: { short: 'ISO 9001:2015 Certified' },
-} as const;
-
+/** Statutory establishment notices for public display. */
 export const clinicalEstablishment = {
   act: 'Telangana Clinical Establishments (Registration and Regulation) Act',
   bmwReturnsNote:
