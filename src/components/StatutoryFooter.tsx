@@ -176,7 +176,7 @@ export default function StatutoryFooter() {
                 <button
                   type="button"
                   onClick={() => setOpen(null)}
-                  className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg"
+                  className="p-3 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg"
                   aria-label="Close statutory notice"
                 >
                   <X className="w-5 h-5" />
@@ -196,7 +196,7 @@ export default function StatutoryFooter() {
     <>
       <div className="relative z-10 border-t border-slate-200 bg-slate-100/90">
         <div className="section-shell py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <p className="text-[11px] text-slate-600 flex items-center gap-1.5">
+          <p className="text-xs text-slate-600 flex items-center gap-1.5">
             <FileText className="w-3.5 h-3.5 text-slate-500 shrink-0" />
             Statutory notices · DPDP 2023 · Clinical Establishments Act · BMW Rules 2016
           </p>
@@ -206,7 +206,7 @@ export default function StatutoryFooter() {
                 key={doc.id}
                 type="button"
                 onClick={() => setOpen(doc.id)}
-                className="text-xs font-semibold text-teal-800 hover:text-teal-600 underline underline-offset-2 px-2 py-2.5 rounded-md hover:bg-teal-50/80"
+                className="text-xs font-semibold text-teal-800 hover:text-teal-600 underline underline-offset-2 px-2 min-h-11 inline-flex items-center rounded-md hover:bg-teal-50/80"
               >
                 {doc.label}
               </button>

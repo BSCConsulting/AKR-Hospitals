@@ -57,7 +57,7 @@ export default function PatientServicesSection({ onCheckEligibility }: PatientSe
                   className="rounded-xl border border-slate-200/80 bg-white/70 px-4 py-3"
                 >
                   <div className="text-sm font-semibold text-slate-900">{p.name}</div>
-                  <div className="text-[11px] text-slate-500 mt-0.5">{{ tpa: 'TPA', corporate: 'Corporate insurer', government: 'Government scheme' }[p.type]}</div>
+                  <div className="text-xs text-slate-500 mt-0.5">{{ tpa: 'TPA', corporate: 'Corporate insurer', government: 'Government scheme' }[p.type]}</div>
                 </div>
               ))}
             </div>

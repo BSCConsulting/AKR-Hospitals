@@ -191,7 +191,7 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
             <motion.a
               href="#branches"
               variants={itemVariants}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-medium w-fit max-w-full order-1 hover:bg-teal-100"
+              className="inline-flex items-center gap-2 px-3.5 min-h-11 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-sm font-medium w-fit max-w-full order-1 hover:bg-teal-100"
             >
               <MapPin className="w-3.5 h-3.5 shrink-0" />
               <span className="truncate">Madhira · Vijayawada</span>
@@ -261,7 +261,7 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                   <h2 className="text-slate-900 font-semibold text-sm">Request an OPD Appointment</h2>
                 </div>
                 {freeOpActive && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 w-fit max-w-full">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 w-fit max-w-full">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                     <span className="sm:hidden">₹0 OP waiver (select doctors)</span>
                     <span className="hidden sm:inline">
@@ -563,16 +563,16 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                   const next = nextSessions(row.session, now, 1)[0];
                   const today = next !== undefined && toLocalDateString(next) === todayStr;
                   return (
-                    <div key={row.id} className="flex items-center justify-between gap-3 px-3.5 py-2.5 text-sm">
+                    <div key={row.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-3 px-3.5 py-2.5 text-sm">
                       <dt className="text-slate-600 min-w-0">
                         {row.label}
                         {today && row.id !== 'family' && (
-                          <span className="ml-1.5 align-middle text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-full px-1.5 py-0.5">
+                          <span className="ml-1.5 inline-block whitespace-nowrap align-middle text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-full px-1.5 py-0.5">
                             Today
                           </span>
                         )}
                       </dt>
-                      <dd className="font-semibold text-slate-900 text-right shrink-0">{formatSession(row.session)}</dd>
+                      <dd className="font-semibold text-slate-900 sm:text-right sm:shrink-0">{formatSession(row.session)}</dd>
                     </div>
                   );
                 })}
@@ -582,7 +582,7 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                 <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 px-3.5 py-3 space-y-2">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <div className="text-[11px] uppercase tracking-wide font-semibold text-emerald-800">
+                      <div className="text-xs uppercase tracking-wide font-semibold text-emerald-800">
                         OPD now serving
                       </div>
                       <div className="text-xl font-bold text-slate-900 tabular-nums" aria-live="polite">
@@ -636,7 +636,7 @@ export default function HeroTriage({ onGenerateToken, onBookingResult, prefill }
                   </a>
                 </div>
               </div>
-              <p className="text-[11px] text-slate-600">
+              <p className="text-xs text-slate-600">
                 {hospitalInfo.landmark}. In a life-threatening emergency, come straight to
                 casualty or dial {hospitalInfo.ambulancePhone}.
               </p>

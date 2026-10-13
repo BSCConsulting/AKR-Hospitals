@@ -36,7 +36,7 @@ export default function HeroCampCallout() {
       <div className="pointer-events-none absolute -top-10 -right-8 w-40 h-40 rounded-full bg-teal-400/20 blur-2xl" />
 
       <div className="relative space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase bg-white/80 border border-emerald-200 text-emerald-800">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-white/80 border border-emerald-200 text-emerald-800">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -60,7 +60,7 @@ export default function HeroCampCallout() {
           {perks.slice(0, 5).map((perk) => (
             <span
               key={perk}
-              className="inline-flex px-2.5 py-1 rounded-full text-[11px] font-medium bg-white border border-emerald-200/80 text-slate-700 shadow-sm"
+              className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-emerald-200/80 text-slate-700 shadow-sm"
             >
               {perk}
             </span>
@@ -76,7 +76,7 @@ export default function HeroCampCallout() {
           </p>
         )}
 
-        <p className="text-[11px] text-slate-600 leading-relaxed rounded-lg border border-sky-200 bg-sky-50/80 px-3 py-2">
+        <p className="text-xs text-slate-600 leading-relaxed rounded-lg border border-sky-200 bg-sky-50/80 px-3 py-2">
           <strong className="text-slate-800">Ultrasound subsidy:</strong> 50% off ultrasound applies
           during camp hours ({campDate}{camp.timeWindow ? ` · ${camp.timeWindow}` : ''}) and notified OPD windows —
           present camp token / RSVP confirmation at the diagnostics desk. Routine scans outside these

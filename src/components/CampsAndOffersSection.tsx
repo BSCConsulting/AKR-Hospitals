@@ -36,11 +36,11 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
 
       <div className="relative space-y-5">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase bg-rose-50 border border-rose-200 text-rose-700">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-rose-50 border border-rose-200 text-rose-700">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
             {camp.statusLabel ?? 'LIMITED TIME CAMP'}
           </span>
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-teal-50 border border-teal-200 text-teal-800">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-teal-50 border border-teal-200 text-teal-800">
             {camp.highlightBadge}
           </span>
         </div>
@@ -60,7 +60,7 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
           <div className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
             <Clock className="w-5 h-5 text-emerald-700" />
             <div>
-              <div className="text-[10px] uppercase tracking-wide text-emerald-700/80 font-semibold">
+              <div className="text-[11px] uppercase tracking-wide text-emerald-700/80 font-semibold">
                 Camp Hours
               </div>
               <div className="text-sm sm:text-base font-bold text-slate-900">{camp.timeWindow}</div>
@@ -85,8 +85,8 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
                   </div>
                   <div className="min-w-0">
                     <div className="text-sm font-semibold text-slate-900">{doc.name}</div>
-                    <div className="text-[11px] text-teal-700">{doc.title}</div>
-                    <div className="text-[11px] text-slate-500">{doc.qualification}</div>
+                    <div className="text-xs text-teal-700">{doc.title}</div>
+                    <div className="text-xs text-slate-500">{doc.qualification}</div>
                   </div>
                 </div>
               ))}
@@ -99,7 +99,7 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
             {camp.benefits.map((b) => (
               <span
                 key={b}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-50 border border-slate-200 text-slate-700"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-50 border border-slate-200 text-slate-700"
               >
                 <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                 {b}
@@ -115,7 +115,7 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
               {camp.symptoms.map((s) => (
                 <span
                   key={s}
-                  className="px-2 py-0.5 rounded-md text-[11px] bg-white text-slate-600 border border-slate-200"
+                  className="px-2 py-0.5 rounded-md text-xs bg-white text-slate-600 border border-slate-200"
                 >
                   {s}
                 </span>
@@ -124,7 +124,7 @@ function CampFeatureCard({ camp }: { camp: Promotion }) {
           </div>
         )}
 
-        <p className="text-[11px] text-slate-600 leading-relaxed rounded-lg border border-sky-200 bg-sky-50/80 px-3 py-2">
+        <p className="text-xs text-slate-600 leading-relaxed rounded-lg border border-sky-200 bg-sky-50/80 px-3 py-2">
           <strong className="text-slate-800">Ultrasound subsidy condition:</strong> 50% off ultrasound
           is valid only during camp hours ({camp.timeWindow ?? 'see schedule'}) on the camp date, or
           other windows notified by the hospital. Bring your WhatsApp RSVP / camp token to diagnostics.
@@ -163,7 +163,7 @@ function RoutineSubsidiesCard() {
       className="relative overflow-hidden glass-surface p-5 sm:p-7"
     >
       <div className="relative space-y-5">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase bg-teal-50 border border-teal-200 text-teal-800">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-teal-50 border border-teal-200 text-teal-800">
           <ShieldCheck className="w-3 h-3" />
           Always Active
         </div>
@@ -190,7 +190,7 @@ function RoutineSubsidiesCard() {
           ))}
         </ul>
 
-        <p className="text-[11px] text-slate-500">
+        <p className="text-xs text-slate-500">
           * Ultrasound subsidy applies during camp hours and selected OPD windows. Confirm at reception.
         </p>
 
@@ -215,7 +215,7 @@ function PreventativePackagesFallback() {
       transition={{ duration: 0.5 }}
       className="relative overflow-hidden glass-surface p-5 sm:p-7"
     >
-      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase bg-sky-50 border border-sky-200 text-sky-800 mb-4">
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-sky-50 border border-sky-200 text-sky-800 mb-4">
         <HeartPulse className="w-3 h-3" />
         Everyday Savings
       </div>

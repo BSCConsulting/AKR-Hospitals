@@ -39,7 +39,7 @@ function Footer() {
                 <span className="text-slate-900 font-bold text-base">
                   AKR <span className="text-teal-700">Super Speciality</span>
                 </span>
-                <div className="text-[11px] text-slate-500 uppercase tracking-wide">Hospitals · Madhira</div>
+                <div className="text-xs text-slate-500 uppercase tracking-wide">Hospitals · Madhira</div>
               </div>
             </div>
             <p className="text-slate-600 text-sm leading-relaxed">
@@ -75,7 +75,7 @@ function Footer() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="py-2 md:py-1 text-slate-600 hover:text-teal-700 transition-colors"
+                  className="flex items-center min-h-11 md:min-h-0 md:py-1 text-slate-600 hover:text-teal-700 transition-colors"
                 >
                   {link.label}
                 </a>
@@ -94,25 +94,25 @@ function Footer() {
               href={hospitalInfo.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-teal-800 bg-teal-50 border border-teal-200 px-3 py-2.5 rounded-full hover:bg-teal-100 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-teal-800 bg-teal-50 border border-teal-200 px-3 min-h-11 rounded-full hover:bg-teal-100 transition-colors"
             >
               <MapPin className="w-3.5 h-3.5" />
               Google Maps Directions
             </a>
             <a
               href={hospitalInfo.phoneTel}
-              className="flex items-start gap-2.5 py-1.5 text-sm text-slate-600 hover:text-teal-700 transition-colors"
+              className="flex items-center gap-2.5 min-h-11 text-sm text-slate-600 hover:text-teal-700 transition-colors"
             >
-              <Phone className="w-4 h-4 mt-0.5 text-teal-600 shrink-0" />
+              <Phone className="w-4 h-4 text-teal-600 shrink-0" />
               Desk · {hospitalInfo.phone}
             </a>
             <a
               href={WHATSAPP_OPD_INQUIRE}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-start gap-2.5 py-1.5 text-sm text-slate-600 hover:text-[#0B6E62] transition-colors"
+              className="flex items-center gap-2.5 min-h-11 text-sm text-slate-600 hover:text-[#0B6E62] transition-colors"
             >
-              <WhatsAppIcon className="w-4 h-4 mt-0.5 text-[#0B6E62] shrink-0" />
+              <WhatsAppIcon className="w-4 h-4 text-[#0B6E62] shrink-0" />
               {hospitalInfo.appointmentLine} (WhatsApp)
             </a>
           </div>
@@ -135,7 +135,7 @@ function Footer() {
                 </div>
               </a>
               <div className="pl-6 border-t border-red-200/80 pt-2">
-                <a href={hospitalInfo.ambulanceTel} className="inline-block py-2 text-red-800 font-bold text-sm hover:underline">
+                <a href={hospitalInfo.ambulanceTel} className="inline-flex items-center min-h-11 text-red-800 font-bold text-sm hover:underline">
                   {hospitalInfo.ambulanceLabel}
                 </a>
               </div>

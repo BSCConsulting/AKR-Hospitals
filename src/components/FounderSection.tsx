@@ -56,7 +56,7 @@ export default function FounderSection() {
 
           {/* Right — structured authority card */}
           <div className="glass-surface p-6 sm:p-8 flex flex-col">
-            <p className="text-[11px] font-bold tracking-[0.14em] uppercase text-teal-700 mb-3">
+            <p className="text-xs font-bold tracking-[0.14em] uppercase text-teal-700 mb-3">
               Founder & Chief Physician
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
@@ -94,7 +94,7 @@ export default function FounderSection() {
                 <div className="text-xs font-bold tracking-wide text-slate-900 uppercase">
                   Institutional Seal
                 </div>
-                <div className="text-[11px] text-slate-500">
+                <div className="text-xs text-slate-500">
                   AKR Super Speciality Hospitals · Est. 2008
                 </div>
               </div>

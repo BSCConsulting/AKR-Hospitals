@@ -54,14 +54,14 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                   <h3 id="token-drawer-title" className="text-slate-900 font-semibold text-sm">
                     OPD Queue
                   </h3>
-                  <p className="text-[11px] text-slate-600">Check your turn</p>
+                  <p className="text-xs text-slate-600">Check your turn</p>
                 </div>
               </div>
               <button
                 type="button"
                 autoFocus
                 onClick={onClose}
-                className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                 aria-label="Close"
               >
                 <X className="w-5 h-5" />
@@ -82,7 +82,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                       <Stethoscope className="w-5 h-5 text-emerald-700" />
                     </div>
                     <div>
-                      <div className="text-[11px] text-slate-600 uppercase tracking-wide">Now serving</div>
+                      <div className="text-xs text-slate-600 uppercase tracking-wide">Now serving</div>
                       <div className="text-2xl font-bold text-slate-900 tabular-nums" aria-live="polite">
                         {currentTokenServed > 0 ? `#${currentTokenServed}` : 'Not started'}
                       </div>
@@ -131,7 +131,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                   <Navigation className="w-5 h-5 text-teal-700 shrink-0" />
                   <div className="flex-1 text-left">
                     <div className="text-sm font-semibold text-slate-900">Directions to hospital</div>
-                    <div className="text-[11px] text-slate-600 flex items-center gap-1 mt-0.5">
+                    <div className="text-xs text-slate-600 flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3 h-3" />
                       {hospitalInfo.address}
                     </div>
@@ -144,7 +144,7 @@ export default function LiveTokenDrawer({ open, onClose }: LiveTokenDrawerProps)
                   <Phone className="w-5 h-5 text-emerald-700 shrink-0" />
                   <div className="flex-1 text-left">
                     <div className="text-sm font-semibold text-slate-900">Call reception</div>
-                    <div className="text-[11px] text-slate-600 mt-0.5">{hospitalInfo.phone}</div>
+                    <div className="text-xs text-slate-600 mt-0.5">{hospitalInfo.phone}</div>
                   </div>
                 </a>
               </div>

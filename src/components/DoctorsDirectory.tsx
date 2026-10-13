@@ -87,15 +87,15 @@ function DoctorCard({
         <DoctorAvatar name={doctor.name} photo={doctor.photo} size="md" />
         <div className="min-w-0">
           <h3 className="text-slate-900 font-semibold text-sm">{doctor.name}</h3>
-          <p className="text-[11px] text-slate-500 mt-0.5">{doctor.credentials}</p>
+          <p className="text-xs text-slate-500 mt-0.5">{doctor.credentials}</p>
           {doctor.designation && (
-            <p className="text-[11px] text-teal-800 font-medium mt-0.5">{doctor.designation}</p>
+            <p className="text-xs text-teal-800 font-medium mt-0.5">{doctor.designation}</p>
           )}
         </div>
       </div>
 
       {doctor.registrationNumber && (
-        <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-slate-700 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg mb-3">
+        <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-700 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg mb-3">
           <IdCard className="w-3.5 h-3.5 text-teal-600" />
           {doctor.registrationNumber}
         </div>
@@ -113,7 +113,7 @@ function DoctorCard({
             OPD: {formatSession(opd)}
           </div>
         )}
-        <div className="flex items-center gap-2 rounded-lg bg-teal-50/70 border border-teal-100 px-2.5 py-1.5 text-[11px] text-teal-900">
+        <div className="flex items-center gap-2 rounded-lg bg-teal-50/70 border border-teal-100 px-2.5 py-1.5 text-xs text-teal-900">
           <CircleDollarSign className="w-3.5 h-3.5 text-teal-700" />
           {feeText}
         </div>

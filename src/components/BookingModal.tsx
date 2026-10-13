@@ -94,7 +94,7 @@ function ModalBody({ result, onClose }: { result: BookingResult; onClose: () => 
           type="button"
           autoFocus
           onClick={onClose}
-          className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+          className="p-3 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
           aria-label="Close"
         >
           <X className="w-5 h-5" />
@@ -109,7 +109,7 @@ function ModalBody({ result, onClose }: { result: BookingResult; onClose: () => 
               This is a request, not a confirmed slot yet.
             </p>
             <div className="rounded-xl border border-teal-200 bg-teal-50 p-4 text-center">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-teal-800">
+              <div className="text-xs font-semibold uppercase tracking-wide text-teal-800">
                 Your reference
               </div>
               <div className="text-2xl font-bold text-slate-900 tracking-wider mt-1">{reference}</div>

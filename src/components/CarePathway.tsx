@@ -33,10 +33,10 @@ export default function CarePathway() {
   return (
     <div className="glass-surface p-3 sm:p-4">
       <div className="flex items-center justify-between gap-2 mb-3 px-1">
-        <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-teal-700">
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-teal-700">
           Your care pathway
         </p>
-        <span className="text-[11px] text-slate-500">4 simple steps</span>
+        <span className="text-xs text-slate-500">4 simple steps</span>
       </div>
       <ol className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
         {steps.map((step, i) => (
@@ -69,14 +69,14 @@ export default function CarePathway() {
                 <span className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center shadow-md shadow-teal-600/20">
                   <step.icon className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
                 </span>
-                <span className="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center">
                   {i + 1}
                 </span>
               </span>
-              <span className="text-[11px] sm:text-xs font-bold text-slate-900 leading-tight">
+              <span className="text-xs font-bold text-slate-900 leading-tight">
                 {step.title}
               </span>
-              <span className="text-[11px] sm:text-xs text-slate-500 mt-0.5 leading-snug px-0.5">
+              <span className="text-xs text-slate-500 mt-0.5 leading-snug px-0.5">
                 {step.desc}
               </span>
             </motion.a>

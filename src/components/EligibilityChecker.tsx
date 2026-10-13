@@ -61,14 +61,14 @@ export default function EligibilityChecker({ open, onClose }: EligibilityChecker
                   <h3 id="eligibility-title" className="text-slate-900 font-semibold text-sm">
                     Cashless Eligibility Checker
                   </h3>
-                  <p className="text-[11px] text-slate-500">Select your insurance provider</p>
+                  <p className="text-xs text-slate-500">Select your insurance provider</p>
                 </div>
               </div>
               <button
                 type="button"
                 autoFocus
                 onClick={onClose}
-                className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                 aria-label="Close"
               >
                 <X className="w-5 h-5" />
@@ -90,7 +90,7 @@ export default function EligibilityChecker({ open, onClose }: EligibilityChecker
                       }`}
                     >
                       <div className="flex items-center gap-3 text-left">
-                        <div className={`px-2 py-0.5 rounded-md text-[10px] font-medium border ${typeColors[provider.type]}`}>
+                        <div className={`px-2 py-0.5 rounded-md text-[11px] font-medium border ${typeColors[provider.type]}`}>
                           {typeLabels[provider.type]}
                         </div>
                         <span className="text-sm font-semibold text-slate-900">{provider.name}</span>
@@ -123,7 +123,7 @@ export default function EligibilityChecker({ open, onClose }: EligibilityChecker
                                   </div>
                                 ))}
                               </div>
-                              <p className="text-[11px] text-slate-500">
+                              <p className="text-xs text-slate-500">
                                 Final coverage depends on your policy terms.
                               </p>
                             </div>

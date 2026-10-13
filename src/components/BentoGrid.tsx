@@ -116,7 +116,7 @@ function BentoCard({
           {dept.features.map((f) => (
             <span
               key={f}
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-white/80 border border-slate-200 px-2 py-0.5 rounded-full"
+              className="inline-flex items-center gap-1 text-xs font-medium text-slate-700 bg-white/80 border border-slate-200 px-2 py-0.5 rounded-full"
             >
               <CheckCircle2 className="w-3 h-3 text-emerald-600" />
               {f}

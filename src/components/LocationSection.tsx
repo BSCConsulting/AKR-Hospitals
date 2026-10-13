@@ -54,7 +54,7 @@ export default function LocationSection() {
                   <MapPin className="w-4 h-4 text-teal-600" />
                   <span className="text-sm font-semibold text-slate-900">{hospitalInfo.name}</span>
                 </div>
-                <div className="text-[11px] text-slate-500 mt-0.5">{address}</div>
+                <div className="text-xs text-slate-500 mt-0.5">{address}</div>
               </div>
             </div>
           </motion.div>
@@ -86,7 +86,7 @@ export default function LocationSection() {
                   </div>
                   <div>
                     <div className="text-sm font-semibold text-emerald-800">24/7 Casualty Entrance</div>
-                    <div className="text-[11px] text-slate-600 mt-0.5">Always open, day and night</div>
+                    <div className="text-xs text-slate-600 mt-0.5">Always open, day and night</div>
                   </div>
                 </div>
 

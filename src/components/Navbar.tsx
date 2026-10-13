@@ -64,7 +64,7 @@ export default function Navbar() {
       >
         <div className="section-shell">
           <div className="flex items-center h-16 gap-3 min-w-0">
-            <a href="#home" className="flex items-center gap-2.5 group shrink-0">
+            <a href="#home" className="flex items-center gap-2.5 min-h-11 group shrink-0">
               <img
                 src={hospitalInfo.logo}
                 alt=""
@@ -76,7 +76,7 @@ export default function Navbar() {
                 <span className="text-slate-900 font-bold text-sm xl:text-base tracking-tight">
                   AKR <span className="text-teal-700">Super Speciality</span>
                 </span>
-                <span className="text-[10px] text-slate-500 font-medium tracking-wide uppercase mt-0.5">
+                <span className="text-[11px] text-slate-500 font-medium tracking-wide uppercase mt-0.5">
                   Hospitals · Madhira
                 </span>
               </div>
@@ -144,7 +144,7 @@ export default function Navbar() {
                 href={hospitalInfo.phoneTel}
                 title={`24/7 Casualty ${hospitalInfo.phone} · ${hospitalInfo.ambulanceLabel}`}
                 aria-label={`24/7 Casualty: ${hospitalInfo.phone.replace('+91 ', '')}`}
-                className="ml-1 inline-flex items-center gap-1.5 px-2.5 xl:px-3 h-9 rounded-full text-[11px] xl:text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors shrink-0 whitespace-nowrap"
+                className="ml-1 inline-flex items-center gap-1.5 px-2.5 xl:px-3 h-9 rounded-full text-xs xl:text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors shrink-0 whitespace-nowrap"
               >
                 <Ambulance className="w-3.5 h-3.5 shrink-0" aria-hidden />
                 <span className="2xl:hidden">Casualty · {hospitalInfo.phone.replace('+91 ', '')}</span>
@@ -165,7 +165,7 @@ export default function Navbar() {
             <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 ml-auto shrink-0 relative z-10">
               <a
                 href={hospitalInfo.phoneTel}
-                className="inline-flex items-center gap-1 px-2 sm:px-2.5 min-h-11 h-11 rounded-full text-[11px] sm:text-xs font-bold bg-red-50 text-red-700 border border-red-200 active:bg-red-100"
+                className="inline-flex items-center gap-1 px-2 sm:px-2.5 min-h-11 h-11 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 active:bg-red-100"
                 aria-label={`Call 24/7 casualty ${hospitalInfo.phone}`}
                 title={`24/7 Casualty · ${hospitalInfo.phone}`}
               >
